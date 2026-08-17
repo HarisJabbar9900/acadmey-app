@@ -18,9 +18,9 @@ export default function CertificateModal({ scorer, month, onClose }) {
     try {
       setIsDownloading(true);
       const canvas = await html2canvas(certElement, {
-        scale: 2.5,
+        scale: 2.0,
         useCORS: true,
-        allowTaint: true,
+        allowTaint: false, // Must be false to allow generating data URL without SecurityError
         logging: false,
         backgroundColor: '#0f172a'
       });
@@ -35,7 +35,7 @@ export default function CertificateModal({ scorer, month, onClose }) {
       document.body.removeChild(link);
     } catch (error) {
       console.error('Failed to download certificate image:', error);
-      alert('Direct download error. You can use the Print button to Save as PDF.');
+      alert('Download Error: Click the "Print / Save PDF" button and select "Save as PDF" to save the certificate instantly.');
     } finally {
       setIsDownloading(false);
     }
