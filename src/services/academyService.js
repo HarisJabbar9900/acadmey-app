@@ -329,6 +329,10 @@ export const deleteFromFirestore = async (collectionName, docId) => {
 export const seedFirestoreData = async (currentData) => {
   if (isFirebaseActive() && db) {
     try {
+      // Unconditionally sync Admin PIN to Firestore settings collection
+      const currentPin = localStorage.getItem('academy_admin_pin') || '1234';
+      await setDoc(doc(db, 'settings', 'adminPin'), { pin: currentPin }, { merge: true });
+
       const snap = await getDocs(collection(db, 'students'));
       if (snap.empty) {
         console.log('Seeding initial data to Firestore database...');
@@ -362,13 +366,6 @@ export const seedFirestoreData = async (currentData) => {
         for (const fb of currentData.feedbacks || DEFAULT_FEEDBACKS) {
           await setDoc(doc(db, 'feedbacks', fb.id), fb, { merge: true });
         }
-        // Upload Admin PIN
-        const currentPin = localStorage.getItem('academy_admin_pin') || '1234';
-        await setDoc(doc(db, 'settings', 'adminPin'), { pin: currentPin }, { merge: true });
-      } else {
-        // Ensure settings/adminPin exists
-        const currentPin = localStorage.getItem('academy_admin_pin') || '1234';
-        await setDoc(doc(db, 'settings', 'adminPin'), { pin: currentPin }, { merge: true });
       }
     } catch (err) {
       console.warn('Firestore seeding error:', err);
