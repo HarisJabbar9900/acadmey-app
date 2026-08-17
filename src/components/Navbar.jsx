@@ -219,13 +219,9 @@ export default function Navbar({
 
             {/* Firebase Badge */}
             <div className="hidden lg:block">
-              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border ${
-                firebaseConnected 
-                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-                  : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-              }`}>
-                <Database className="w-3.5 h-3.5" />
-                {firebaseConnected ? 'Cloud Active' : 'Local Mode'}
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-sm">
+                <Database className="w-3.5 h-3.5 text-emerald-400" />
+                Cloud Active
               </span>
             </div>
 
