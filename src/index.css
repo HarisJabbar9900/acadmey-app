@@ -1,0 +1,230 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white min-h-screen font-sans;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Custom Hide Scrollbar Helper for Mobile Nav */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Smooth Touch Scrolling for Mobile Tables and Navigation */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Print CSS Rules for Fee Slips & Report Cards */
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+}
+
+/* ==========================================
+   ☀️ Light Mode High-Contrast Ultra-Clear Theme
+   ========================================== */
+
+.light-mode {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Force ALL gradient containers to clean crisp white in light mode */
+.light-mode [class*="bg-gradient-to"] {
+  background-image: none !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 8px -1px rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Notice Board, Wall of Honor & Dashboard Cards in Light Mode */
+.light-mode .bg-slate-900,
+.light-mode .bg-slate-950,
+.light-mode .bg-slate-900\/90,
+.light-mode .bg-slate-900\/80,
+.light-mode .bg-slate-900\/70,
+.light-mode .bg-slate-900\/60,
+.light-mode .bg-slate-950\/80,
+.light-mode .bg-slate-950\/60,
+.light-mode .bg-slate-950\/40,
+.light-mode .bg-slate-950\/85,
+.light-mode .bg-indigo-950,
+.light-mode .bg-indigo-950\/80,
+.light-mode .bg-indigo-950\/60,
+.light-mode .bg-indigo-950\/40 {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Secondary Panels, Filters, & Inner Boxes */
+.light-mode .bg-slate-800,
+.light-mode .bg-slate-800\/90,
+.light-mode .bg-slate-800\/80,
+.light-mode .bg-slate-800\/60,
+.light-mode .bg-slate-800\/50,
+.light-mode .bg-slate-800\/30 {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Borders in Light Mode */
+.light-mode [class*="border-slate"],
+.light-mode [class*="border-indigo-500"],
+.light-mode [class*="border-amber-500"],
+.light-mode [class*="border-emerald-500"] {
+  border-color: #cbd5e1 !important;
+}
+
+/* All Headings, Titles & Bold Text */
+.light-mode h1,
+.light-mode h2,
+.light-mode h3,
+.light-mode h4,
+.light-mode h5,
+.light-mode h6,
+.light-mode .text-white,
+.light-mode .text-slate-100,
+.light-mode .text-slate-200 {
+  color: #0f172a !important;
+}
+
+/* Paragraphs, Subtitles & Labels */
+.light-mode p,
+.light-mode label,
+.light-mode .text-slate-300,
+.light-mode .text-slate-400 {
+  color: #334155 !important;
+}
+
+/* Muted / Date Text */
+.light-mode .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* Accent Text Colors for Light Mode */
+.light-mode .text-indigo-400,
+.light-mode .text-indigo-300 {
+  color: #4338ca !important;
+}
+
+.light-mode .text-amber-400,
+.light-mode .text-amber-300 {
+  color: #b45309 !important;
+}
+
+.light-mode .text-emerald-400,
+.light-mode .text-emerald-300 {
+  color: #047857 !important;
+}
+
+.light-mode .text-rose-400,
+.light-mode .text-rose-300 {
+  color: #be123c !important;
+}
+
+/* Inputs, Selects, Options & Textareas */
+.light-mode input,
+.light-mode select,
+.light-mode option,
+.light-mode textarea {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+.light-mode input::placeholder,
+.light-mode textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Tables & Headers */
+.light-mode table {
+  background-color: #ffffff !important;
+}
+
+.light-mode th {
+  background-color: #f1f5f9 !important;
+  color: #1e293b !important;
+  border-color: #cbd5e1 !important;
+  font-weight: 700 !important;
+}
+
+.light-mode tr {
+  border-color: #e2e8f0 !important;
+}
+
+.light-mode td {
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+.light-mode tr:hover {
+  background-color: #f8fafc !important;
+}
+
+/* Active & Inactive Class Filter Pill Badges in Light Mode */
+.light-mode button.bg-indigo-600 {
+  background-color: #4338ca !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px 0 rgba(67, 56, 202, 0.35) !important;
+}
+
+.light-mode button.bg-indigo-600 span {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+}
+
+.light-mode button:not(.bg-indigo-600) span.rounded-full {
+  background-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+/* Accent Badges in Light Mode */
+.light-mode .bg-indigo-600 {
+  background-color: #4338ca !important;
+  color: #ffffff !important;
+}
+
+.light-mode .bg-indigo-500\/10,
+.light-mode .bg-indigo-600\/15,
+.light-mode .bg-indigo-500\/20 {
+  background-color: #e0e7ff !important;
+  color: #3730a3 !important;
+}
+
+.light-mode .bg-emerald-500\/10,
+.light-mode .bg-emerald-500\/20 {
+  background-color: #d1fae5 !important;
+  color: #065f46 !important;
+}
+
+.light-mode .bg-amber-500\/10,
+.light-mode .bg-amber-500\/20 {
+  background-color: #fef3c7 !important;
+  color: #92400e !important;
+}
+
+.light-mode .bg-rose-500\/10,
+.light-mode .bg-rose-500\/20 {
+  background-color: #ffe4e6 !important;
+  color: #9f1239 !important;
+}
+
+/* Modals backdrop & container in Light Mode */
+.light-mode .bg-slate-950\/85,
+.light-mode .bg-slate-950\/80 {
+  background-color: rgba(15, 23, 42, 0.6) !important;
+}

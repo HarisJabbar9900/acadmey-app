@@ -1,0 +1,327 @@
+import { db } from '../firebase/config';
+import { collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
+
+const STORAGE_KEY = 'academy_app_data_v2';
+
+// Standard Classes requested by Teacher/Admin
+const DEFAULT_CLASSES = [
+  { 
+    id: 'cls-9th', 
+    name: '9th', 
+    subject: 'Class 9th Computer & Science',
+    subjects: ['Physics', 'Chemistry', 'Math', 'Computer Science', 'Biology', 'English', 'Urdu', 'Islamiat', 'Tarjuma-tul-Quran']
+  },
+  { 
+    id: 'cls-10th', 
+    name: '10th', 
+    subject: 'Class 10th Computer & Science',
+    subjects: ['Physics', 'Chemistry', 'Math', 'Computer Science', 'Biology', 'English', 'Urdu', 'Pak Studies', 'Tarjuma-tul-Quran']
+  },
+  { 
+    id: 'cls-11th', 
+    name: '11th', 
+    subject: 'Class 11th Computer Science',
+    subjects: ['Physics', 'Chemistry', 'Math', 'Computer Science', 'Biology', 'English', 'Urdu', 'Islamic Education']
+  },
+  { 
+    id: 'cls-12th', 
+    name: '12th', 
+    subject: 'Class 12th Computer Science',
+    subjects: ['Physics', 'Chemistry', 'Math', 'Computer Science', 'Biology', 'English', 'Urdu', 'Pak Studies']
+  },
+  { 
+    id: 'cls-boys', 
+    name: 'Boys', 
+    subject: 'Boys Special Batch',
+    subjects: ['Physics', 'Chemistry', 'Math', 'Computer Science', 'English', 'Urdu']
+  },
+];
+
+const DEFAULT_STUDENTS = [
+  // Class 9th (4 Students)
+  { id: 'std-1', classId: 'cls-9th', rollNo: '101', name: 'Ali Ahmed', fname: 'Muhammad Ahmed', fatherNumber: '+92 300 1234567' },
+  { id: 'std-2', classId: 'cls-9th', rollNo: '102', name: 'Hamza Khan', fname: 'Tariq Khan', fatherNumber: '+92 301 2345678' },
+  { id: 'std-3', classId: 'cls-9th', rollNo: '103', name: 'Zainab Fatima', fname: 'Ghulam Hussain', fatherNumber: '+92 300 8765432' },
+  { id: 'std-4', classId: 'cls-9th', rollNo: '104', name: 'Abdullah Shah', fname: 'Syed Shah', fatherNumber: '+92 312 9876543' },
+
+  // Class 10th (3 Students)
+  { id: 'std-5', classId: 'cls-10th', rollNo: '201', name: 'Usman Ghani', fname: 'Abdul Ghani', fatherNumber: '+92 302 3456789' },
+  { id: 'std-6', classId: 'cls-10th', rollNo: '202', name: 'Ayesha Bibi', fname: 'Muhammad Rafiq', fatherNumber: '+92 333 4567891' },
+  { id: 'std-7', classId: 'cls-10th', rollNo: '203', name: 'Muhammad Omer', fname: 'Farooq Ahmed', fatherNumber: '+92 321 6543210' },
+
+  // Class 11th (3 Students)
+  { id: 'std-8', classId: 'cls-11th', rollNo: '301', name: 'Bilal Hassan', fname: 'Hassan Raza', fatherNumber: '+92 303 4567890' },
+  { id: 'std-9', classId: 'cls-11th', rollNo: '302', name: 'Mariam Tariq', fname: 'Tariq Mehmood', fatherNumber: '+92 345 7890123' },
+  { id: 'std-10', classId: 'cls-11th', rollNo: '303', name: 'Hassan Ali', fname: 'Liaquat Ali', fatherNumber: '+92 306 1122334' },
+
+  // Class 12th & Boys (4 Students)
+  { id: 'std-11', classId: 'cls-12th', rollNo: '401', name: 'Zaid Malik', fname: 'Malik Umar', fatherNumber: '+92 304 5678901' },
+  { id: 'std-12', classId: 'cls-12th', rollNo: '402', name: 'Noor Fatima', fname: 'Rashid Ahmed', fatherNumber: '+92 307 2233445' },
+  { id: 'std-13', classId: 'cls-12th', rollNo: '403', name: 'Shahzaib Khan', fname: 'Jahangir Khan', fatherNumber: '+92 313 5566778' },
+  { id: 'std-14', classId: 'cls-boys', rollNo: '501', name: 'Saad Rashid', fname: 'Rashid Mahmood', fatherNumber: '+92 305 6789012' },
+];
+
+const DEFAULT_ATTENDANCE = {
+  [`${new Date().toISOString().split('T')[0]}_cls-9th`]: {
+    date: new Date().toISOString().split('T')[0],
+    classId: 'cls-9th',
+    records: { 'std-1': 'Present', 'std-2': 'Absent', 'std-3': 'Present', 'std-4': 'Late' }
+  },
+  [`${new Date().toISOString().split('T')[0]}_cls-10th`]: {
+    date: new Date().toISOString().split('T')[0],
+    classId: 'cls-10th',
+    records: { 'std-5': 'Present', 'std-6': 'Present', 'std-7': 'Absent' }
+  },
+  [`${new Date().toISOString().split('T')[0]}_cls-11th`]: {
+    date: new Date().toISOString().split('T')[0],
+    classId: 'cls-11th',
+    records: { 'std-8': 'Present', 'std-9': 'Present', 'std-10': 'Present' }
+  },
+  [`${new Date().toISOString().split('T')[0]}_cls-12th`]: {
+    date: new Date().toISOString().split('T')[0],
+    classId: 'cls-12th',
+    records: { 'std-11': 'Present', 'std-12': 'Absent', 'std-13': 'Present' }
+  }
+};
+
+const DEFAULT_TESTS = [
+  {
+    id: 'tst-1',
+    classId: 'cls-9th',
+    title: 'Computer Basics Test 1',
+    subject: 'Computer Science',
+    maxMarks: 50,
+    date: '2026-08-05',
+    month: '2026-08',
+    scores: { 'std-1': 48, 'std-2': 42, 'std-3': 49, 'std-4': 38 }
+  },
+  {
+    id: 'tst-2',
+    classId: 'cls-10th',
+    title: 'Physics Mechanics Quiz',
+    subject: 'Physics',
+    maxMarks: 100,
+    date: '2026-08-10',
+    month: '2026-08',
+    scores: { 'std-5': 94, 'std-6': 88, 'std-7': 76 }
+  },
+  {
+    id: 'tst-3',
+    classId: 'cls-11th',
+    title: 'Chemistry Organic Test',
+    subject: 'Chemistry',
+    maxMarks: 75,
+    date: '2026-08-12',
+    month: '2026-08',
+    scores: { 'std-8': 70, 'std-9': 68, 'std-10': 62 }
+  },
+  {
+    id: 'tst-4',
+    classId: 'cls-12th',
+    title: 'Mathematics Algebra & Calculus',
+    subject: 'Math',
+    maxMarks: 100,
+    date: '2026-08-14',
+    month: '2026-08',
+    scores: { 'std-11': 98, 'std-12': 85, 'std-13': 91 }
+  }
+];
+
+const DEFAULT_TIMETABLE = [
+  { id: 'tt-1', time: '3:00 - 3:35', '9th': 'Bio/Comp (Combined 9th & 10th)', '10th': 'Bio/Comp (Combined 9th & 10th)', '11th': 'English', '12th': 'Math', 'boys': 'Urdu' },
+  { id: 'tt-2', time: '3:35 - 4:10', '9th': 'Urdu', '10th': 'English', '11th': 'Math', '12th': 'Bio/Comp', 'boys': 'Physics' },
+  { id: 'tt-3', time: '4:10 - 4:45', '9th': 'English', '10th': 'Urdu', '11th': 'Bio/Comp', '12th': 'Physics', 'boys': 'Math' },
+  { id: 'tt-4', time: '4:45 - 5:20', '9th': 'Math', '10th': 'Physics', '11th': 'Urdu', '12th': 'English', 'boys': 'Bio/Comp' },
+  { id: 'tt-5', time: '5:20 - 5:55', '9th': 'Chemistry', '10th': 'Math', '11th': 'Physics', '12th': 'Urdu', 'boys': 'English' },
+  { id: 'tt-6', time: '5:55 - 6:30', '9th': 'Physics', '10th': 'Chemistry', '11th': 'Quran Pak', '12th': 'Chemistry', 'boys': 'Chemistry' }
+];
+
+const DEFAULT_RESOURCES = [
+  {
+    id: 'res-1',
+    title: 'Class 9th Computer Science Complete Text Book',
+    category: 'Book',
+    classId: 'cls-9th',
+    subject: 'Computer Science',
+    fileName: '9th_Computer_Science_Book.pdf',
+    fileUrl: '',
+    date: '2026-08-16'
+  },
+  {
+    id: 'res-2',
+    title: 'Class 10th Physics Solved Numerical Notes',
+    category: 'Notes',
+    classId: 'cls-10th',
+    subject: 'Physics',
+    fileName: '10th_Physics_Notes.pdf',
+    fileUrl: '',
+    date: '2026-08-16'
+  },
+  {
+    id: 'res-3',
+    title: 'First Year Chemistry Top 100 Important MCQs',
+    category: 'MCQs',
+    classId: 'cls-11th',
+    subject: 'Chemistry',
+    fileName: '11th_Chemistry_MCQs.pdf',
+    fileUrl: '',
+    date: '2026-08-16'
+  }
+];
+
+const DEFAULT_FEES = {
+  [`2026-08_std-1`]: { month: '2026-08', studentId: 'std-1', monthlyFee: 2500, paidAmount: 2500, status: 'Paid', paidDate: '2026-08-05', paymentMethod: 'Cash' },
+  [`2026-08_std-2`]: { month: '2026-08', studentId: 'std-2', monthlyFee: 2500, paidAmount: 0, status: 'Unpaid', paidDate: '', paymentMethod: '' },
+  [`2026-08_std-3`]: { month: '2026-08', studentId: 'std-3', monthlyFee: 3000, paidAmount: 3000, status: 'Paid', paidDate: '2026-08-06', paymentMethod: 'EasyPaisa' },
+  [`2026-08_std-4`]: { month: '2026-08', studentId: 'std-4', monthlyFee: 2500, paidAmount: 0, status: 'Unpaid', paidDate: '', paymentMethod: '' },
+  [`2026-08_std-5`]: { month: '2026-08', studentId: 'std-5', monthlyFee: 3000, paidAmount: 3000, status: 'Paid', paidDate: '2026-08-02', paymentMethod: 'Cash' },
+  [`2026-08_std-6`]: { month: '2026-08', studentId: 'std-6', monthlyFee: 3000, paidAmount: 3000, status: 'Paid', paidDate: '2026-08-04', paymentMethod: 'JazzCash' },
+  [`2026-08_std-7`]: { month: '2026-08', studentId: 'std-7', monthlyFee: 3000, paidAmount: 0, status: 'Unpaid', paidDate: '', paymentMethod: '' },
+  [`2026-08_std-8`]: { month: '2026-08', studentId: 'std-8', monthlyFee: 3500, paidAmount: 3500, status: 'Paid', paidDate: '2026-08-01', paymentMethod: 'Cash' },
+  [`2026-08_std-9`]: { month: '2026-08', studentId: 'std-9', monthlyFee: 3500, paidAmount: 3500, status: 'Paid', paidDate: '2026-08-03', paymentMethod: 'Bank Transfer' },
+  [`2026-08_std-10`]: { month: '2026-08', studentId: 'std-10', monthlyFee: 3500, paidAmount: 0, status: 'Unpaid', paidDate: '', paymentMethod: '' },
+  [`2026-08_std-11`]: { month: '2026-08', studentId: 'std-11', monthlyFee: 4000, paidAmount: 4000, status: 'Paid', paidDate: '2026-08-01', paymentMethod: 'Cash' },
+  [`2026-08_std-12`]: { month: '2026-08', studentId: 'std-12', monthlyFee: 4000, paidAmount: 0, status: 'Unpaid', paidDate: '', paymentMethod: '' },
+  [`2026-08_std-13`]: { month: '2026-08', studentId: 'std-13', monthlyFee: 4000, paidAmount: 4000, status: 'Paid', paidDate: '2026-08-08', paymentMethod: 'Cash' },
+  [`2026-08_std-14`]: { month: '2026-08', studentId: 'std-14', monthlyFee: 2500, paidAmount: 2500, status: 'Paid', paidDate: '2026-08-05', paymentMethod: 'Cash' }
+};
+
+const DEFAULT_FEEDBACKS = [
+  {
+    id: 'fb-1',
+    studentName: 'Ali Ahmed',
+    className: '9th',
+    category: 'Study Material',
+    comment: 'Please upload 9th class Physics solved numerical notes in PDF format.',
+    date: '2026-08-16',
+    status: 'Pending'
+  },
+  {
+    id: 'fb-2',
+    studentName: 'Usman Ghani',
+    className: '10th',
+    category: 'Timetable',
+    comment: 'Is it possible to extend the computer practical lab time by 15 minutes?',
+    date: '2026-08-16',
+    status: 'Pending'
+  }
+];
+
+const DEFAULT_NOTICES = [
+  {
+    id: 'ntc-1',
+    title: 'Monthly Test Series Starting Next Monday',
+    category: 'Exam Notice',
+    targetClass: 'All Classes',
+    content: 'Monthly comprehensive tests for 9th, 10th, 11th, and 12th classes will begin from Monday 20th August. Attendance is mandatory.',
+    date: '17 August',
+    isPinned: true
+  },
+  {
+    id: 'ntc-2',
+    title: 'Academy Holiday Notice for Independence Day',
+    category: 'Holiday Notice',
+    targetClass: 'All Classes',
+    content: 'Al-Zia Science Academy will remain closed on 14th August on account of Independence Day celebrations.',
+    date: '14 August',
+    isPinned: false
+  }
+];
+
+export const isFirebaseActive = () => {
+  return Boolean(
+    import.meta.env.VITE_FIREBASE_API_KEY && 
+    import.meta.env.VITE_FIREBASE_API_KEY !== 'YOUR_API_KEY'
+  );
+};
+
+export const getInitialData = () => {
+  const local = localStorage.getItem(STORAGE_KEY);
+  if (local) {
+    try {
+      const parsed = JSON.parse(local);
+      if (!parsed.students || parsed.students.length < 10) {
+        parsed.students = DEFAULT_STUDENTS;
+        parsed.tests = DEFAULT_TESTS;
+        parsed.fees = DEFAULT_FEES;
+        parsed.attendance = DEFAULT_ATTENDANCE;
+      }
+      if (!parsed.timetable) {
+        parsed.timetable = DEFAULT_TIMETABLE;
+      }
+      if (!parsed.resources) {
+        parsed.resources = DEFAULT_RESOURCES;
+      }
+      if (!parsed.fees) {
+        parsed.fees = DEFAULT_FEES;
+      }
+      if (!parsed.feedbacks) {
+        parsed.feedbacks = DEFAULT_FEEDBACKS;
+      }
+      if (!parsed.notices) {
+        parsed.notices = DEFAULT_NOTICES;
+      }
+      if (parsed.classes) {
+        parsed.classes = parsed.classes.map(c => {
+          const defaultClass = DEFAULT_CLASSES.find(dc => dc.id === c.id || dc.name === c.name);
+          return {
+            ...c,
+            subjects: c.subjects && c.subjects.length > 0 ? c.subjects : (defaultClass?.subjects || ['Physics', 'Chemistry', 'Math', 'Computer Science', 'English', 'Urdu'])
+          };
+        });
+      }
+      return parsed;
+    } catch (e) {
+      console.error('Failed to parse local storage', e);
+    }
+  }
+  return {
+    classes: DEFAULT_CLASSES,
+    students: DEFAULT_STUDENTS,
+    attendance: DEFAULT_ATTENDANCE,
+    tests: DEFAULT_TESTS,
+    timetable: DEFAULT_TIMETABLE,
+    resources: DEFAULT_RESOURCES,
+    fees: DEFAULT_FEES,
+    feedbacks: DEFAULT_FEEDBACKS,
+    notices: DEFAULT_NOTICES,
+  };
+};
+
+export const saveLocalData = (data) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (e) {
+    console.warn('LocalStorage quota exceeded. Sanitizing large file strings...', e);
+    try {
+      const sanitizedResources = (data.resources || []).map(r => ({
+        ...r,
+        fileUrl: r.fileUrl && r.fileUrl.length > 500000 ? '' : r.fileUrl
+      }));
+      const sanitizedData = { ...data, resources: sanitizedResources };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitizedData));
+    } catch (err) {
+      console.error('Critical localStorage error', err);
+    }
+  }
+};
+
+export const syncWithFirestore = async (collectionName, docId, data) => {
+  if (isFirebaseActive() && db) {
+    try {
+      await setDoc(doc(db, collectionName, docId), data, { merge: true });
+    } catch (error) {
+      console.warn(`Firestore sync error on ${collectionName}/${docId}:`, error);
+    }
+  }
+};
+
+export const deleteFromFirestore = async (collectionName, docId) => {
+  if (isFirebaseActive() && db) {
+    try {
+      await deleteDoc(doc(db, collectionName, docId));
+    } catch (error) {
+      console.warn(`Firestore delete error on ${collectionName}/${docId}:`, error);
+    }
+  }
+};

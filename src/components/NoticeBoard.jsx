@@ -1,0 +1,254 @@
+import React, { useState } from 'react';
+import { Megaphone, Plus, Bell, Pin, Trash2, Calendar, AlertTriangle, FileText, X, CheckCircle2, ShieldAlert } from 'lucide-react';
+
+export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDeleteNotice }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('Exam Notice');
+  const [targetClass, setTargetClass] = useState('All Classes');
+  const [content, setContent] = useState('');
+  const [isPinned, setIsPinned] = useState(false);
+
+  const noticesList = data.notices || [];
+
+  const handleCreateNotice = (e) => {
+    e.preventDefault();
+    if (!title.trim() || !content.trim()) return;
+
+    const dateStr = new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long' });
+
+    const newNotice = {
+      id: `ntc-${Date.now()}`,
+      title: title.trim(),
+      category,
+      targetClass,
+      content: content.trim(),
+      date: dateStr,
+      isPinned
+    };
+
+    onAddNotice(newNotice);
+
+    // Reset Form
+    setTitle('');
+    setContent('');
+    setIsPinned(false);
+    setIsModalOpen(false);
+  };
+
+  const getCategoryBadgeClass = (cat) => {
+    switch (cat) {
+      case 'Urgent Alert':
+        return 'bg-rose-500/20 text-rose-300 border-rose-500/40 animate-pulse';
+      case 'Exam Notice':
+        return 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40';
+      case 'Holiday Notice':
+        return 'bg-amber-500/20 text-amber-300 border-amber-500/40';
+      default:
+        return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
+    }
+  };
+
+  return (
+    <div className="bg-gradient-to-r from-indigo-950/60 via-slate-900 to-indigo-950/60 border border-indigo-500/30 rounded-2xl p-5 shadow-xl mb-6 space-y-4">
+      
+      {/* Notice Board Top Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-xl animate-bounce">
+            <Megaphone className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
+              Al-Zia Science Academy Notice Board & Announcements
+            </h3>
+            <p className="text-xs text-slate-400">
+              Latest academy updates, exam schedules, and holiday announcements.
+            </p>
+          </div>
+        </div>
+
+        {isAdminLoggedIn && (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-lg shadow-amber-500/20 transition-all cursor-pointer whitespace-nowrap self-start sm:self-auto"
+          >
+            <Plus className="w-4 h-4" /> Post New Announcement
+          </button>
+        )}
+      </div>
+
+      {/* Notice Cards List / Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {noticesList.length > 0 ? (
+          noticesList.map(notice => (
+            <div
+              key={notice.id}
+              className={`p-4 rounded-xl border transition-all relative flex flex-col justify-between space-y-3 ${
+                notice.isPinned
+                  ? 'bg-gradient-to-b from-slate-900 to-indigo-950/80 border-amber-500/40 shadow-lg shadow-amber-500/5'
+                  : 'bg-slate-900/80 border-slate-800 hover:border-slate-700'
+              }`}
+            >
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-extrabold border ${getCategoryBadgeClass(notice.category)}`}>
+                      {notice.category}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-800 text-indigo-300 border border-slate-700">
+                      {notice.targetClass}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {notice.isPinned && (
+                      <span className="text-[10px] text-amber-400 font-bold flex items-center gap-0.5 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                        <Pin className="w-3 h-3 fill-amber-400" /> Pinned
+                      </span>
+                    )}
+                    {isAdminLoggedIn && (
+                      <button
+                        onClick={() => onDeleteNotice(notice.id)}
+                        className="p-1 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded transition-colors"
+                        title="Delete Announcement"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <h4 className="font-extrabold text-white text-sm tracking-tight mb-1">
+                  {notice.title}
+                </h4>
+
+                <p className="text-xs text-slate-300 leading-relaxed font-sans bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/80">
+                  {notice.content}
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between text-[10px] text-slate-500 pt-2 border-t border-slate-800/60 font-mono">
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-3 h-3 text-indigo-400" /> Date: {notice.date}
+                </span>
+                <span className="text-slate-400 font-semibold">Al-Zia Administration</span>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="col-span-full py-6 text-center text-slate-500 text-xs italic">
+            No active notices or announcements at the moment.
+          </div>
+        )}
+      </div>
+
+      {/* Admin Post Announcement Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5 my-auto">
+            
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <Megaphone className="w-5 h-5 text-amber-400" /> Post New Announcement
+              </h3>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="p-1.5 text-slate-400 hover:text-white rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateNotice} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Announcement Title *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Monthly Test Series Starting Next Monday..."
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Notice Category</label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-semibold focus:outline-none cursor-pointer"
+                  >
+                    <option value="Exam Notice">📝 Exam Notice</option>
+                    <option value="Urgent Alert">🚨 Urgent Alert</option>
+                    <option value="Holiday Notice">🏖️ Holiday Notice</option>
+                    <option value="General Info">ℹ️ General Info</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Target Class</label>
+                  <select
+                    value={targetClass}
+                    onChange={(e) => setTargetClass(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-semibold focus:outline-none cursor-pointer"
+                  >
+                    <option value="All Classes">All Classes</option>
+                    {data.classes.map(c => (
+                      <option key={c.id} value={`Class ${c.name}`}>Class {c.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Announcement Details *</label>
+                <textarea
+                  required
+                  rows="4"
+                  placeholder="Type the announcement details here for students and parents..."
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="pin-check"
+                  checked={isPinned}
+                  onChange={(e) => setIsPinned(e.target.checked)}
+                  className="rounded bg-slate-800 border-slate-700 text-amber-500 focus:ring-0 cursor-pointer"
+                />
+                <label htmlFor="pin-check" className="text-xs font-semibold text-slate-300 cursor-pointer">
+                  Pin to top of notice board ⭐
+                </label>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-xs font-bold shadow-lg shadow-amber-500/20"
+                >
+                  Publish Announcement
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
