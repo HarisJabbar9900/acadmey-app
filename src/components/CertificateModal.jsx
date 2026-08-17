@@ -243,31 +243,43 @@ export default function CertificateModal({ scorer, month, onClose }) {
             background: white !important;
             overflow: hidden !important;
           }
-          /* Hide all page layout contents visually */
-          #root {
-            visibility: hidden !important;
+          
+          /* Hide non-print containers without visibility rules */
+          nav, 
+          footer, 
+          header, 
+          .print-hidden, 
+          .print\\:hidden, 
+          .pointer-events-none,
+          .space-y-8 {
+            display: none !important;
           }
-          /* Render ONLY the certificate frame and its children */
-          #certificate-print-area,
-          #certificate-print-area * {
-            visibility: visible !important;
-          }
-          #certificate-print-area {
+          
+          /* Force certificate print frame to fill print screen */
+          .certificate-modal-wrapper {
             position: fixed !important;
             left: 0 !important;
             top: 0 !important;
             width: 100vw !important;
             height: 100vh !important;
+            background: white !important;
+            z-index: 99999999 !important;
+            padding: 0 !important;
             margin: 0 !important;
-            padding: 16px !important;
+          }
+          
+          .certificate-print-area {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
             box-sizing: border-box !important;
+            margin: 0 !important;
+            padding: 24px !important;
             background-color: white !important;
             color: black !important;
             border: 8px double #b45309 !important;
-            z-index: 99999999 !important;
-            page-break-after: avoid !important;
-            page-break-before: avoid !important;
-            page-break-inside: avoid !important;
             box-shadow: none !important;
           }
         }

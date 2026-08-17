@@ -35,19 +35,14 @@
     overflow: hidden !important;
   }
 
-  body * {
-    visibility: hidden;
-  }
-
-  #certificate-print-area,
-  #certificate-print-area *,
-  .report-card-print-area,
-  .report-card-print-area *,
-  .id-card-print-area,
-  .id-card-print-area *,
-  .fee-receipt-print-area,
-  .fee-receipt-print-area * {
-    visibility: visible !important;
+  /* Hide layout/background components */
+  nav, 
+  footer, 
+  header, 
+  .print-hidden, 
+  .print\:hidden, 
+  .pointer-events-none {
+    display: none !important;
   }
 }
 
