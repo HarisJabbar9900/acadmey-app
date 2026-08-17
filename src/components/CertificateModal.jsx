@@ -63,25 +63,25 @@ export default function CertificateModal({ scorer, month, onClose }) {
     <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto print:p-0 print:bg-white print:static">
       
       {/* Modal Container (Screen View) */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl space-y-6 my-auto max-h-[95vh] overflow-y-auto print:max-w-none print:w-full print:p-0 print:m-0 print:border-none print:shadow-none print:bg-white">
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-4 sm:p-8 shadow-2xl space-y-6 my-auto max-h-[95vh] overflow-y-auto print:max-w-none print:w-full print:p-0 print:m-0 print:border-none print:shadow-none print:bg-white relative">
         
-        {/* Screen Header Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4 print:hidden">
+        {/* Sticky Screen Header Controls */}
+        <div className="sticky top-0 z-20 bg-slate-900/95 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4 pt-2 print:hidden">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20">
-              <Award className="w-5 h-5" />
+            <div className="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20">
+              <Award className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-extrabold text-white text-base">Class Topper Certificate of Excellence</h3>
-              <p className="text-xs text-slate-400">Official Monthly Academic Merit Certificate for Class {scorer.className}</p>
+              <h3 className="font-extrabold text-white text-base sm:text-lg">Class Topper Certificate of Excellence</h3>
+              <p className="text-xs text-slate-400">Official Monthly Merit Certificate for Class {scorer.className}</p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex items-center gap-2.5 w-full sm:w-auto">
             <button
               onClick={handleDownloadImage}
               disabled={isDownloading}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition-all cursor-pointer disabled:opacity-50"
+              className="flex-1 sm:flex-initial px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition-all cursor-pointer disabled:opacity-50"
             >
               {isDownloading ? (
                 <>
@@ -90,7 +90,7 @@ export default function CertificateModal({ scorer, month, onClose }) {
                 </>
               ) : (
                 <>
-                  <Download className="w-4 h-4" />
+                  <Download className="w-4 h-4 text-white" />
                   <span>📥 Download HD Image</span>
                 </>
               )}
@@ -98,14 +98,15 @@ export default function CertificateModal({ scorer, month, onClose }) {
 
             <button
               onClick={handlePrint}
-              className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-amber-600/30 transition-all cursor-pointer"
+              className="px-4 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-lg shadow-amber-600/30 transition-all cursor-pointer"
             >
               <Printer className="w-4 h-4" /> Print / Save PDF
             </button>
 
             <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+              className="p-2.5 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0"
+              title="Close Certificate"
             >
               <X className="w-5 h-5" />
             </button>
@@ -222,6 +223,34 @@ export default function CertificateModal({ scorer, month, onClose }) {
             </div>
 
           </div>
+        </div>
+
+        {/* Sticky Bottom Action Bar for Mobile & Desktop */}
+        <div className="sticky bottom-0 z-20 bg-slate-900/95 backdrop-blur-md pt-3 pb-1 border-t border-slate-800 flex items-center justify-center gap-3 print:hidden">
+          <button
+            onClick={handleDownloadImage}
+            disabled={isDownloading}
+            className="flex-1 max-w-xs px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-xl shadow-emerald-600/30 transition-all cursor-pointer disabled:opacity-50"
+          >
+            {isDownloading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin text-white" />
+                <span>Generating HD Image...</span>
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4 text-white" />
+                <span>📥 Download HD Image (PNG)</span>
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={handlePrint}
+            className="px-5 py-3 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-xl shadow-amber-600/30 transition-all cursor-pointer"
+          >
+            <Printer className="w-4 h-4" /> Print / Save PDF
+          </button>
         </div>
 
       </div>
