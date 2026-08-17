@@ -209,7 +209,8 @@ const DEFAULT_FEEDBACKS = [
 
 const DEFAULT_NOTICES = [
   {
-    id: 'ntc-1',
+    id: `ntc-${Date.now()}`,
+    createdAt: Date.now(),
     title: 'Monthly Test Series Starting Next Monday',
     category: 'Exam Notice',
     targetClass: 'All Classes',

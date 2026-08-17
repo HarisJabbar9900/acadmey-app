@@ -11,6 +11,24 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
 
   const noticesList = data.notices || [];
 
+  // Helper: Check if notice was created within the last 4 hours (4 * 60 * 60 * 1000 = 14,400,000 ms)
+  const isNoticeRecent = (notice) => {
+    if (!notice) return false;
+    const FOUR_HOURS_MS = 14400000;
+    const now = Date.now();
+    let postTime = notice.createdAt;
+
+    if (!postTime && notice.id && typeof notice.id === 'string' && notice.id.startsWith('ntc-')) {
+      const parsed = parseInt(notice.id.replace('ntc-', ''), 10);
+      if (!isNaN(parsed) && parsed > 1000000000000) {
+        postTime = parsed;
+      }
+    }
+
+    if (!postTime) return false;
+    return (now - postTime) < FOUR_HOURS_MS && (now - postTime) >= 0;
+  };
+
   const handleCreateNotice = (e) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) return;
@@ -19,6 +37,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
 
     const newNotice = {
       id: `ntc-${Date.now()}`,
+      createdAt: Date.now(),
       title: title.trim(),
       category,
       targetClass,
@@ -81,43 +100,56 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
       {/* Notice Cards List / Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {noticesList.length > 0 ? (
-          noticesList.map(notice => (
-            <div
-              key={notice.id}
-              className={`p-4 rounded-xl border transition-all relative flex flex-col justify-between space-y-3 ${
-                notice.isPinned
-                  ? 'bg-gradient-to-b from-slate-900 to-indigo-950/80 border-amber-500/40 shadow-lg shadow-amber-500/5'
-                  : 'bg-slate-900/80 border-slate-800 hover:border-slate-700'
-              }`}
-            >
-              <div>
-                <div className="flex items-center justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-extrabold border ${getCategoryBadgeClass(notice.category)}`}>
-                      {notice.category}
-                    </span>
-                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-800 text-indigo-300 border border-slate-700">
-                      {notice.targetClass}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    {notice.isPinned && (
-                      <span className="text-[10px] text-amber-400 font-bold flex items-center gap-0.5 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
-                        <Pin className="w-3 h-3 fill-amber-400" /> Pinned
+          noticesList.map(notice => {
+            const isRecent = isNoticeRecent(notice);
+            return (
+              <div
+                key={notice.id}
+                className={`p-4 rounded-xl border transition-all relative flex flex-col justify-between space-y-3 ${
+                  isRecent
+                    ? 'bg-gradient-to-b from-slate-900 via-slate-900 to-rose-950/40 border-rose-500/60 shadow-xl shadow-rose-500/10 ring-2 ring-rose-500/40'
+                    : notice.isPinned
+                    ? 'bg-gradient-to-b from-slate-900 to-indigo-950/80 border-amber-500/40 shadow-lg shadow-amber-500/5'
+                    : 'bg-slate-900/80 border-slate-800 hover:border-slate-700'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {isRecent && (
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-gradient-to-r from-rose-500 to-amber-500 text-white border border-rose-400 shadow-md shadow-rose-500/30 animate-pulse flex items-center gap-1">
+                          <span className="relative flex h-1.5 w-1.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
+                          </span>
+                          NEW 🚨
+                        </span>
+                      )}
+                      <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-extrabold border ${getCategoryBadgeClass(notice.category)}`}>
+                        {notice.category}
                       </span>
-                    )}
-                    {isAdminLoggedIn && (
-                      <button
-                        onClick={() => onDeleteNotice(notice.id)}
-                        className="p-1 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded transition-colors"
-                        title="Delete Announcement"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    )}
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-800 text-indigo-300 border border-slate-700">
+                        {notice.targetClass}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {notice.isPinned && (
+                        <span className="text-[10px] text-amber-400 font-bold flex items-center gap-0.5 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                          <Pin className="w-3 h-3 fill-amber-400" /> Pinned
+                        </span>
+                      )}
+                      {isAdminLoggedIn && (
+                        <button
+                          onClick={() => onDeleteNotice(notice.id)}
+                          className="p-1 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded transition-colors"
+                          title="Delete Announcement"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
 
                 <h4 className="font-extrabold text-white text-sm tracking-tight mb-1">
                   {notice.title}
@@ -135,7 +167,8 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
                 <span className="text-slate-400 font-semibold">Al-Zia Administration</span>
               </div>
             </div>
-          ))
+          );
+        })
         ) : (
           <div className="col-span-full py-6 text-center text-slate-500 text-xs italic">
             No active notices or announcements at the moment.
