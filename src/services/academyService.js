@@ -508,3 +508,21 @@ export const cleanStalePresence = async () => {
   }
 };
 
+export const subscribeToCollection = (collectionName, callback) => {
+  if (!db) return () => {};
+  try {
+    return onSnapshot(collection(db, collectionName), (snapshot) => {
+      const items = [];
+      snapshot.forEach(docSnap => {
+        items.push({ id: docSnap.id, ...docSnap.data() });
+      });
+      callback(items);
+    }, (error) => {
+      console.warn(`Firestore subscription error on ${collectionName}:`, error);
+    });
+  } catch (e) {
+    console.warn(`Subscribe to ${collectionName} failed:`, e);
+    return () => {};
+  }
+};
+
