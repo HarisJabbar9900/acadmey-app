@@ -66,7 +66,6 @@ export default function App() {
       clearInterval(heartbeat);
       if (unsubscribePresence) unsubscribePresence();
       window.removeEventListener('beforeunload', handleUnload);
-      handleUnload();
     };
   }, []);
 
