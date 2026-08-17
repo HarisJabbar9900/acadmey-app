@@ -230,10 +230,8 @@ const DEFAULT_NOTICES = [
 ];
 
 export const isFirebaseActive = () => {
-  return Boolean(
-    import.meta.env.VITE_FIREBASE_API_KEY && 
-    import.meta.env.VITE_FIREBASE_API_KEY !== 'YOUR_API_KEY'
-  );
+  const key = import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyAMUj-krSK1AyikMXk0wz0C8N7C68rMBpU";
+  return Boolean(key && key !== 'YOUR_API_KEY');
 };
 
 export const getInitialData = () => {
