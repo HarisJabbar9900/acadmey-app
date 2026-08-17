@@ -24,10 +24,12 @@ import {
   Cell 
 } from 'recharts';
 import ReportCardModal from './ReportCardModal';
+import CertificateModal from './CertificateModal';
 
 export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn }) {
   const [selectedMonth, setSelectedMonth] = useState('2026-08');
   const [selectedReportStudent, setSelectedReportStudent] = useState(null);
+  const [selectedCertificateScorer, setSelectedCertificateScorer] = useState(null);
 
   // Filter Students based on selected class
   const filteredStudents = selectedClassId === 'ALL'
@@ -249,9 +251,13 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn 
 
                 {scorer && (
                   <div className="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
-                    <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
-                      <Clock className="w-3 h-3 text-indigo-400" /> {scorer.latestDate || 'Recent'}
-                    </span>
+                    <button
+                      onClick={() => setSelectedCertificateScorer(scorer)}
+                      className="px-2 py-0.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-md text-[10px] font-extrabold inline-flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                      title="Generate & Print Official Class Topper Certificate of Excellence"
+                    >
+                      📜 Certificate
+                    </button>
                     <span className="font-mono font-extrabold text-emerald-400 text-sm bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
                       {scorer.percentage}%
                     </span>
@@ -503,6 +509,15 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn 
           month={selectedMonth}
           data={data}
           onClose={() => setSelectedReportStudent(null)}
+        />
+      )}
+
+      {/* Printable Class Topper Certificate of Excellence Modal */}
+      {selectedCertificateScorer && (
+        <CertificateModal
+          scorer={selectedCertificateScorer}
+          month={selectedMonth}
+          onClose={() => setSelectedCertificateScorer(null)}
         />
       )}
     </div>
