@@ -35,13 +35,19 @@
     overflow: hidden !important;
   }
 
-  /* Hide all background layout, navbar, modals backdrop, and screen controls */
-  header, 
-  nav, 
-  footer, 
-  .fixed:not(.print-modal-container), 
-  .print\:hidden {
-    display: none !important;
+  body * {
+    visibility: hidden;
+  }
+
+  #certificate-print-area,
+  #certificate-print-area *,
+  .report-card-print-area,
+  .report-card-print-area *,
+  .id-card-print-area,
+  .id-card-print-area *,
+  .fee-receipt-print-area,
+  .fee-receipt-print-area * {
+    visibility: visible !important;
   }
 }
 

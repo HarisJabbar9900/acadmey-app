@@ -270,36 +270,29 @@ export default function CertificateModal({ scorer, month, onClose }) {
             height: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
-            overflow: hidden !important;
-            background: white !important;
-          }
-          body > div:not(.certificate-modal-wrapper), 
-          header, nav, main, footer, .print-hidden {
-            display: none !important;
-          }
-          .certificate-modal-wrapper {
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
             background: white !important;
             overflow: hidden !important;
           }
-          .certificate-print-area {
-            position: absolute !important;
+          body * {
+            visibility: hidden !important;
+          }
+          #certificate-print-area,
+          #certificate-print-area * {
+            visibility: visible !important;
+          }
+          #certificate-print-area {
+            position: fixed !important;
             left: 0 !important;
             top: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            box-sizing: border-box !important;
+            width: 100vw !important;
+            height: 100vh !important;
             margin: 0 !important;
             padding: 16px !important;
+            box-sizing: border-box !important;
             background-color: white !important;
             color: black !important;
             border: 8px double #b45309 !important;
+            z-index: 999999 !important;
             page-break-after: avoid !important;
             page-break-before: avoid !important;
             page-break-inside: avoid !important;
