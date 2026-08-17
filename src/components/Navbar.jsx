@@ -30,14 +30,11 @@ export default function Navbar({
   isAdminLoggedIn,
   setIsAdminLoggedIn,
   theme,
-  toggleTheme
+  toggleTheme,
+  adminPin,
+  onUpdateAdminPin
 }) {
   const firebaseConnected = isFirebaseActive();
-  
-  // Dynamic Admin PIN (Stored in localStorage, defaults to '1234')
-  const [adminPin, setAdminPin] = useState(() => {
-    return localStorage.getItem('academy_admin_pin') || '1234';
-  });
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isChangePinModalOpen, setIsChangePinModalOpen] = useState(false);
@@ -89,9 +86,8 @@ export default function Navbar({
       return;
     }
 
-    // Save new PIN
-    localStorage.setItem('academy_admin_pin', newPinInput);
-    setAdminPin(newPinInput);
+    // Save new PIN globally
+    onUpdateAdminPin(newPinInput);
     setChangePinSuccess(true);
     setChangePinError('');
     setOldPinInput('');

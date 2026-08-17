@@ -14,7 +14,8 @@ import {
   saveLocalData, 
   syncWithFirestore, 
   deleteFromFirestore,
-  seedFirestoreData
+  seedFirestoreData,
+  getFirestoreAdminPin
 } from './services/academyService';
 
 export default function App() {
@@ -23,9 +24,26 @@ export default function App() {
   const [selectedClassId, setSelectedClassId] = useState('ALL');
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
-  // Auto-seed existing student data to Firestore database if Firebase is connected and empty
+  // Global Admin PIN State (Synced with localStorage & Firebase Cloud)
+  const [adminPin, setAdminPin] = useState(() => {
+    return localStorage.getItem('academy_admin_pin') || '1234';
+  });
+
+  const handleUpdateAdminPin = (newPin) => {
+    setAdminPin(newPin);
+    localStorage.setItem('academy_admin_pin', newPin);
+    syncWithFirestore('settings', 'adminPin', { pin: newPin });
+  };
+
+  // Auto-seed existing student data & sync Admin PIN from Firestore
   useEffect(() => {
     seedFirestoreData(data);
+    getFirestoreAdminPin().then(remotePin => {
+      if (remotePin) {
+        setAdminPin(remotePin);
+        localStorage.setItem('academy_admin_pin', remotePin);
+      }
+    });
   }, []);
 
   // Light / Dark Theme State
@@ -278,6 +296,8 @@ export default function App() {
         setIsAdminLoggedIn={setIsAdminLoggedIn}
         theme={theme}
         toggleTheme={toggleTheme}
+        adminPin={adminPin}
+        onUpdateAdminPin={handleUpdateAdminPin}
       />
 
       {/* Main Content Area */}

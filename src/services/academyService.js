@@ -1,5 +1,5 @@
 import { db } from '../firebase/config';
-import { collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, getDoc, doc, setDoc, deleteDoc } from 'firebase/firestore';
 
 const STORAGE_KEY = 'academy_app_data_v2';
 
@@ -358,13 +358,16 @@ export const seedFirestoreData = async (currentData) => {
         for (const ntc of currentData.notices || DEFAULT_NOTICES) {
           await setDoc(doc(db, 'notices', ntc.id), ntc, { merge: true });
         }
-        // Upload feedbacks
-        for (const fb of currentData.feedbacks || DEFAULT_FEEDBACKS) {
-          await setDoc(doc(db, 'feedbacks', fb.id), fb, { merge: true });
-        }
+export const getFirestoreAdminPin = async () => {
+  if (isFirebaseActive() && db) {
+    try {
+      const docSnap = await getDoc(doc(db, 'settings', 'adminPin'));
+      if (docSnap.exists() && docSnap.data()?.pin) {
+        return docSnap.data().pin;
       }
-    } catch (err) {
-      console.warn('Firestore seeding error:', err);
+    } catch (e) {
+      console.warn('Failed to fetch admin pin from Firestore', e);
     }
   }
+  return null;
 };
