@@ -13,7 +13,8 @@ import {
   getInitialData, 
   saveLocalData, 
   syncWithFirestore, 
-  deleteFromFirestore 
+  deleteFromFirestore,
+  seedFirestoreData
 } from './services/academyService';
 
 export default function App() {
@@ -21,6 +22,11 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedClassId, setSelectedClassId] = useState('ALL');
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+
+  // Auto-seed existing student data to Firestore database if Firebase is connected and empty
+  useEffect(() => {
+    seedFirestoreData(data);
+  }, []);
 
   // Light / Dark Theme State
   const [theme, setTheme] = useState(() => {

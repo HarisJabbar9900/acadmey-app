@@ -325,3 +325,46 @@ export const deleteFromFirestore = async (collectionName, docId) => {
     }
   }
 };
+
+export const seedFirestoreData = async (currentData) => {
+  if (isFirebaseActive() && db) {
+    try {
+      const snap = await getDocs(collection(db, 'students'));
+      if (snap.empty) {
+        console.log('Seeding initial data to Firestore database...');
+        // Upload classes
+        for (const cls of currentData.classes || DEFAULT_CLASSES) {
+          await setDoc(doc(db, 'classes', cls.id), cls, { merge: true });
+        }
+        // Upload students
+        for (const std of currentData.students || DEFAULT_STUDENTS) {
+          await setDoc(doc(db, 'students', std.id), std, { merge: true });
+        }
+        // Upload tests
+        for (const tst of currentData.tests || DEFAULT_TESTS) {
+          await setDoc(doc(db, 'tests', tst.id), tst, { merge: true });
+        }
+        // Upload fees
+        if (currentData.fees) {
+          for (const [key, fee] of Object.entries(currentData.fees)) {
+            await setDoc(doc(db, 'fees', key), fee, { merge: true });
+          }
+        }
+        // Upload timetable
+        for (const tt of currentData.timetable || DEFAULT_TIMETABLE) {
+          await setDoc(doc(db, 'timetable', tt.id), tt, { merge: true });
+        }
+        // Upload notices
+        for (const ntc of currentData.notices || DEFAULT_NOTICES) {
+          await setDoc(doc(db, 'notices', ntc.id), ntc, { merge: true });
+        }
+        // Upload feedbacks
+        for (const fb of currentData.feedbacks || DEFAULT_FEEDBACKS) {
+          await setDoc(doc(db, 'feedbacks', fb.id), fb, { merge: true });
+        }
+      }
+    } catch (err) {
+      console.warn('Firestore seeding error:', err);
+    }
+  }
+};
