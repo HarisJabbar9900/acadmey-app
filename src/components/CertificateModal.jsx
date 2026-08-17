@@ -18,18 +18,21 @@ export default function CertificateModal({ scorer, month, onClose }) {
     try {
       setIsDownloading(true);
       const canvas = await html2canvas(certElement, {
-        scale: 3, // Ultra High Definition 4K Output
+        scale: 2.5,
         useCORS: true,
         allowTaint: true,
+        logging: false,
         backgroundColor: '#0f172a'
       });
 
       const image = canvas.toDataURL('image/png', 1.0);
       const link = document.createElement('a');
-      const cleanName = scorer.studentName.replace(/[^a-zA-Z0-9]/g, '_');
-      link.download = `Certificate_${cleanName}_Class_${scorer.className}.png`;
+      const cleanName = (scorer.studentName || 'Student').replace(/[^a-zA-Z0-9]/g, '_');
+      link.download = `Certificate_${cleanName}_Class_${scorer.className || 'Topper'}.png`;
       link.href = image;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
     } catch (error) {
       console.error('Failed to download certificate image:', error);
       alert('Direct download error. You can use the Print button to Save as PDF.');
@@ -189,11 +192,11 @@ export default function CertificateModal({ scorer, month, onClose }) {
               
               {/* QR Verification Seal */}
               <div className="flex items-center gap-3">
-                <img
-                  src={qrCodeUrl}
-                  alt="QR Verification"
-                  className="w-16 h-16 rounded-xl border border-amber-500/40 p-1 bg-white print:border-amber-600"
-                />
+                <div className="w-16 h-16 rounded-xl border border-amber-500/40 p-1.5 bg-white print:border-amber-600 flex flex-col items-center justify-center text-slate-900 shrink-0">
+                  <svg className="w-full h-full text-slate-900" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm8-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm13-2h3v3h-3v-3zm-5 0h3v3h-3v-3zm3 3h3v3h-3v-3zm-3 3h3v3h-3v-3zm5 0h3v3h-3v-3z" />
+                  </svg>
+                </div>
                 <div>
                   <div className="flex items-center gap-1 text-[11px] font-bold text-amber-400 print:text-amber-800">
                     <ShieldCheck className="w-3.5 h-3.5" /> Official Verified
