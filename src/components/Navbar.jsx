@@ -49,7 +49,7 @@ export default function Navbar({
   const [changePinError, setChangePinError] = useState('');
 
   const tabs = [
-    { id: 'dashboard', label: 'Admin Dashboard', icon: LayoutDashboard },
+    { id: 'dashboard', label: isAdminLoggedIn ? 'Admin Dashboard' : 'Dashboard', icon: LayoutDashboard },
     { id: 'timetable', label: 'Class Timetable', icon: Calendar },
     ...(isAdminLoggedIn ? [{ id: 'fees', label: 'Fee Manager', icon: CreditCard }] : []),
     { id: 'library', label: 'Study Material', icon: BookOpen },

@@ -267,11 +267,15 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn 
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
         <div>
           <div className="flex items-center gap-2 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-1">
-            <Sparkles className="w-4 h-4" /> Real-time Analytics & Monthly Overview
+            <Sparkles className="w-4 h-4" /> {isAdminLoggedIn ? 'Admin Management & Analytics' : 'Al-Zia Academy Portal'}
           </div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">Al-Zia Science Academy Overview</h2>
+          <h2 className="text-2xl font-bold text-white tracking-tight">
+            {isAdminLoggedIn ? 'Admin Dashboard' : 'Academy Dashboard'}
+          </h2>
           <p className="text-slate-400 text-sm mt-1">
-            Track student attendance, fee collections, test score accumulations, and overall class performance.
+            {isAdminLoggedIn 
+              ? 'Track student attendance, fee collections, test score accumulations, and overall class performance.'
+              : 'Welcome to Al-Zia Science Academy portal. View latest announcement notices, class wall of honor, and monthly performance.'}
           </p>
         </div>
 

@@ -302,20 +302,22 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
-        {/* Public Notice Board & Announcement Banner */}
-        <NoticeBoard
-          data={data}
-          isAdminLoggedIn={isAdminLoggedIn}
-          onAddNotice={handleAddNotice}
-          onDeleteNotice={handleDeleteNotice}
-        />
-
         {activeTab === 'dashboard' && (
-          <AdminDashboard
-            data={data}
-            selectedClassId={selectedClassId}
-            isAdminLoggedIn={isAdminLoggedIn}
-          />
+          <>
+            {/* Public Notice Board & Announcement Banner */}
+            <NoticeBoard
+              data={data}
+              isAdminLoggedIn={isAdminLoggedIn}
+              onAddNotice={handleAddNotice}
+              onDeleteNotice={handleDeleteNotice}
+            />
+
+            <AdminDashboard
+              data={data}
+              selectedClassId={selectedClassId}
+              isAdminLoggedIn={isAdminLoggedIn}
+            />
+          </>
         )}
 
         {activeTab === 'timetable' && (
