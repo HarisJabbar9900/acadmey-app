@@ -1,11 +1,41 @@
-import React from 'react';
-import { Trophy, Award, CheckCircle2, X, Printer, Sparkles, ShieldCheck } from 'lucide-react';
+import React, { useState } from 'react';
+import { Trophy, Award, CheckCircle2, X, Printer, Sparkles, ShieldCheck, Download, Loader2 } from 'lucide-react';
+import html2canvas from 'html2canvas';
 
 export default function CertificateModal({ scorer, month, onClose }) {
+  const [isDownloading, setIsDownloading] = useState(false);
+
   if (!scorer) return null;
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleDownloadImage = async () => {
+    const certElement = document.getElementById('certificate-print-area');
+    if (!certElement) return;
+
+    try {
+      setIsDownloading(true);
+      const canvas = await html2canvas(certElement, {
+        scale: 3, // Ultra High Definition 4K Output
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#0f172a'
+      });
+
+      const image = canvas.toDataURL('image/png', 1.0);
+      const link = document.createElement('a');
+      const cleanName = scorer.studentName.replace(/[^a-zA-Z0-9]/g, '_');
+      link.download = `Certificate_${cleanName}_Class_${scorer.className}.png`;
+      link.href = image;
+      link.click();
+    } catch (error) {
+      console.error('Failed to download certificate image:', error);
+      alert('Direct download error. You can use the Print button to Save as PDF.');
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   // Convert month e.g. "2026-08" to "August 2026"
@@ -36,7 +66,7 @@ export default function CertificateModal({ scorer, month, onClose }) {
       <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl space-y-6 my-auto max-h-[95vh] overflow-y-auto print:max-w-none print:w-full print:p-0 print:m-0 print:border-none print:shadow-none print:bg-white">
         
         {/* Screen Header Controls */}
-        <div className="flex items-center justify-between border-b border-slate-800 pb-4 print:hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4 print:hidden">
           <div className="flex items-center gap-2.5">
             <div className="p-2 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20">
               <Award className="w-5 h-5" />
@@ -47,16 +77,35 @@ export default function CertificateModal({ scorer, month, onClose }) {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              onClick={handleDownloadImage}
+              disabled={isDownloading}
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition-all cursor-pointer disabled:opacity-50"
+            >
+              {isDownloading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                  <span>Generating HD...</span>
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4" />
+                  <span>📥 Download HD Image</span>
+                </>
+              )}
+            </button>
+
             <button
               onClick={handlePrint}
-              className="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-amber-600/30 transition-all cursor-pointer"
+              className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-amber-600/30 transition-all cursor-pointer"
             >
-              <Printer className="w-4 h-4" /> Print Certificate (A4)
+              <Printer className="w-4 h-4" /> Print / Save PDF
             </button>
+
             <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-bold transition-all"
+              className="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -64,7 +113,7 @@ export default function CertificateModal({ scorer, month, onClose }) {
         </div>
 
         {/* Printable Certificate Frame */}
-        <div className="certificate-print-area relative bg-gradient-to-br from-amber-50/20 via-slate-900 to-indigo-950/40 p-6 sm:p-10 rounded-2xl border-4 border-amber-500/60 shadow-2xl text-slate-900 print:bg-white print:text-black print:p-8 print:border-8 print:border-amber-600 print:rounded-none">
+        <div id="certificate-print-area" className="certificate-print-area relative bg-gradient-to-br from-amber-50/20 via-slate-900 to-indigo-950/40 p-6 sm:p-10 rounded-2xl border-4 border-amber-500/60 shadow-2xl text-slate-900 print:bg-white print:text-black print:p-8 print:border-8 print:border-amber-600 print:rounded-none">
           
           {/* Decorative Inner Border Frame */}
           <div className="border-2 border-amber-500/40 p-6 sm:p-8 rounded-xl relative space-y-6 text-center print:border-2 print:border-amber-700">
