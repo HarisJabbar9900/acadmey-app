@@ -120,35 +120,12 @@ export default function Navbar({
                 <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight leading-none bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
                   Al-Zia Science Academy
                 </h1>
-                <div className="flex flex-wrap items-center gap-2 mt-1">
-                  <p className="text-xs text-slate-400">Online Student & Academy Portal</p>
-                  
-                  {/* Glowing Presence Badge */}
-                  <span 
-                    className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-md text-[10px] font-bold shadow-sm"
-                    title={isAdminLoggedIn 
-                      ? `Active: ${desktopCount} PC, ${mobileCount} Mobile` 
-                      : "Active students/visitors currently on the site"}
-                  >
-                    <span className="relative flex h-1.5 w-1.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-                    </span>
-                    <span>{onlineCount} Online</span>
-                  </span>
-                </div>
+                <p className="text-xs text-slate-400 mt-1">Online Student & Academy Portal</p>
               </div>
             </div>
 
             {/* Admin Toggle (Mobile) */}
             <div className="md:hidden flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-md text-[10px] font-bold">
-                <span className="relative flex h-1.5 w-1.5 mr-0.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-                </span>
-                {onlineCount} Online
-              </span>
 
               {isAdminLoggedIn ? (
                 <>
