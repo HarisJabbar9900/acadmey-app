@@ -374,6 +374,7 @@ export default function App() {
               data={data}
               selectedClassId={selectedClassId}
               isAdminLoggedIn={isAdminLoggedIn}
+              onlineUsers={onlineUsers}
             />
           </>
         )}

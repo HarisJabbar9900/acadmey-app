@@ -26,10 +26,15 @@ import {
 import ReportCardModal from './ReportCardModal';
 import CertificateModal from './CertificateModal';
 
-export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn }) {
+export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn, onlineUsers = [] }) {
   const [selectedMonth, setSelectedMonth] = useState('2026-08');
   const [selectedReportStudent, setSelectedReportStudent] = useState(null);
   const [selectedCertificateScorer, setSelectedCertificateScorer] = useState(null);
+
+  const safeOnlineUsers = Array.isArray(onlineUsers) ? onlineUsers : [];
+  const onlineCount = safeOnlineUsers.length;
+  const desktopCount = safeOnlineUsers.filter(u => u && typeof u.device === 'string' && u.device.includes('Desktop')).length;
+  const mobileCount = safeOnlineUsers.filter(u => u && typeof u.device === 'string' && u.device.includes('Mobile')).length;
 
   // Filter Students based on selected class
   const filteredStudents = selectedClassId === 'ALL'
@@ -307,7 +312,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn 
 
       {/* KPI Metric Cards (Visible ONLY to Logged-in Admin) */}
       {isAdminLoggedIn && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
           
           {/* Card 1: Total Students */}
           <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 hover:border-slate-700 transition-all">
@@ -360,10 +365,32 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn 
               </div>
             </div>
             <div className="text-3xl font-extrabold text-amber-400">
-              {studentPerformance.length > 0 ? `${studentPerformance[0].percentage}%` : 'N/A'}
+              {studentPerformance[0] ? `${studentPerformance[0].percentage}%` : 'N/A'}
             </div>
-            <p className="text-xs text-slate-400 mt-1 truncate font-semibold">
-              {studentPerformance.length > 0 ? `Top: ${studentPerformance[0].name}` : 'No test records'}
+            <p className="text-xs text-slate-400 mt-1 truncate">
+              {studentPerformance[0] ? `${studentPerformance[0].name} (${studentPerformance[0].className})` : 'No marks recorded'}
+            </p>
+          </div>
+
+          {/* Card 5: Real-Time Active Online Visitors */}
+          <div className="bg-slate-900/60 border border-emerald-500/30 rounded-2xl p-5 hover:border-emerald-500/50 transition-all relative overflow-hidden">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-emerald-400 text-xs font-extrabold uppercase tracking-wider flex items-center gap-1.5">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                Active Visitors
+              </span>
+              <div className="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
+                <Users className="w-5 h-5" />
+              </div>
+            </div>
+            <div className="text-3xl font-black text-emerald-400 font-mono flex items-baseline gap-2">
+              {onlineCount} <span className="text-xs font-sans font-bold text-slate-400">Online Now</span>
+            </div>
+            <p className="text-xs text-slate-400 mt-1 font-mono">
+              {desktopCount} PC • {mobileCount} Mobile
             </p>
           </div>
 

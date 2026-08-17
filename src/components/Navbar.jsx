@@ -37,6 +37,11 @@ export default function Navbar({
 }) {
   const firebaseConnected = isFirebaseActive();
 
+  const safeOnlineUsers = Array.isArray(onlineUsers) ? onlineUsers : [];
+  const onlineCount = safeOnlineUsers.length;
+  const desktopCount = safeOnlineUsers.filter(u => u && typeof u.device === 'string' && u.device.includes('Desktop')).length;
+  const mobileCount = safeOnlineUsers.filter(u => u && typeof u.device === 'string' && u.device.includes('Mobile')).length;
+
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isChangePinModalOpen, setIsChangePinModalOpen] = useState(false);
   
@@ -122,14 +127,14 @@ export default function Navbar({
                   <span 
                     className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-md text-[10px] font-bold shadow-sm"
                     title={isAdminLoggedIn 
-                      ? `Active: ${onlineUsers.filter(u => u.device?.includes('Desktop')).length} PC, ${onlineUsers.filter(u => u.device?.includes('Mobile')).length} Mobile` 
+                      ? `Active: ${desktopCount} PC, ${mobileCount} Mobile` 
                       : "Active students/visitors currently on the site"}
                   >
                     <span className="relative flex h-1.5 w-1.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                     </span>
-                    <span>{onlineUsers.length} Online</span>
+                    <span>{onlineCount} Online</span>
                   </span>
                 </div>
               </div>
@@ -142,7 +147,7 @@ export default function Navbar({
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                 </span>
-                {onlineUsers.length} Online
+                {onlineCount} Online
               </span>
 
               {isAdminLoggedIn ? (
@@ -229,14 +234,14 @@ export default function Navbar({
               <span 
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl text-xs font-extrabold shadow-sm cursor-help"
                 title={isAdminLoggedIn 
-                  ? `Active: ${onlineUsers.filter(u => u.device?.includes('Desktop')).length} PC, ${onlineUsers.filter(u => u.device?.includes('Mobile')).length} Mobile` 
+                  ? `Active: ${desktopCount} PC, ${mobileCount} Mobile` 
                   : "Active students/visitors currently on the site"}
               >
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                <span>{onlineUsers.length} Online</span>
+                <span>{onlineCount} Online</span>
               </span>
             </div>
 
