@@ -250,8 +250,7 @@ export default function CertificateModal({ scorer, month, onClose }) {
           header, 
           .print-hidden, 
           .print\\:hidden, 
-          .pointer-events-none,
-          .space-y-8 {
+          .pointer-events-none {
             display: none !important;
           }
           
@@ -260,12 +259,13 @@ export default function CertificateModal({ scorer, month, onClose }) {
             position: fixed !important;
             left: 0 !important;
             top: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
+            width: 100% !important;
+            height: 100% !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            padding: 0 !important;
             background: white !important;
             z-index: 99999999 !important;
-            padding: 0 !important;
-            margin: 0 !important;
           }
           
           .certificate-print-area {

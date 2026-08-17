@@ -181,7 +181,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn 
 
   return (
     <>
-      <div className="space-y-8 print:hidden">
+      <div className="dashboard-layout-main space-y-8 print:hidden">
       {/* 🏆 Class-Wise Top High Scorers (Wall of Honor - Right Below Notice Board) */}
       <div className="bg-gradient-to-r from-amber-950/20 via-slate-900 to-indigo-950/20 border border-amber-500/30 p-6 rounded-2xl shadow-xl space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-500/20 pb-3">

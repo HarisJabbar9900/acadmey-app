@@ -295,7 +295,7 @@ export default function App() {
       </div>
 
       {/* Top Navbar */}
-      <div className="print:hidden">
+      <div className="app-navbar-main print:hidden">
         <Navbar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -407,7 +407,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-slate-800/80 bg-slate-950/60 backdrop-blur-md px-6 py-4 text-center text-slate-500 text-xs print:hidden">
+      <footer className="app-footer-main relative z-10 border-t border-slate-800/80 bg-slate-950/60 backdrop-blur-md px-6 py-4 text-center text-slate-500 text-xs print:hidden">
         Al-Zia Science Academy • Online Management Portal
       </footer>
 
