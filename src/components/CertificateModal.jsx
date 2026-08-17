@@ -224,38 +224,8 @@ export default function CertificateModal({ scorer, month, onClose }) {
               </div>
 
             </div>
-
           </div>
         </div>
-
-        {/* Sticky Bottom Action Bar for Mobile & Desktop */}
-        <div className="sticky bottom-0 z-20 bg-slate-900/95 backdrop-blur-md pt-3 pb-1 border-t border-slate-800 flex items-center justify-center gap-3 print:hidden">
-          <button
-            onClick={handleDownloadImage}
-            disabled={isDownloading}
-            className="flex-1 max-w-xs px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-xl shadow-emerald-600/30 transition-all cursor-pointer disabled:opacity-50"
-          >
-            {isDownloading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin text-white" />
-                <span>Generating HD Image...</span>
-              </>
-            ) : (
-              <>
-                <Download className="w-4 h-4 text-white" />
-                <span>📥 Download HD Image (PNG)</span>
-              </>
-            )}
-          </button>
-
-          <button
-            onClick={handlePrint}
-            className="px-5 py-3 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-xl shadow-amber-600/30 transition-all cursor-pointer"
-          >
-            <Printer className="w-4 h-4" /> Print / Save PDF
-          </button>
-        </div>
-
       </div>
 
       {/* Print Specific CSS Styles (1 Single Sheet Output) */}
@@ -273,9 +243,11 @@ export default function CertificateModal({ scorer, month, onClose }) {
             background: white !important;
             overflow: hidden !important;
           }
-          body * {
+          /* Hide all page layout contents visually */
+          #root {
             visibility: hidden !important;
           }
+          /* Render ONLY the certificate frame and its children */
           #certificate-print-area,
           #certificate-print-area * {
             visibility: visible !important;
@@ -292,7 +264,7 @@ export default function CertificateModal({ scorer, month, onClose }) {
             background-color: white !important;
             color: black !important;
             border: 8px double #b45309 !important;
-            z-index: 999999 !important;
+            z-index: 99999999 !important;
             page-break-after: avoid !important;
             page-break-before: avoid !important;
             page-break-inside: avoid !important;
