@@ -251,13 +251,19 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn 
 
                 {scorer && (
                   <div className="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
-                    <button
-                      onClick={() => setSelectedCertificateScorer(scorer)}
-                      className="px-2 py-0.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-md text-[10px] font-extrabold inline-flex items-center gap-1 shadow-sm transition-all cursor-pointer"
-                      title="Generate & Print Official Class Topper Certificate of Excellence"
-                    >
-                      📜 Certificate
-                    </button>
+                    {isAdminLoggedIn ? (
+                      <button
+                        onClick={() => setSelectedCertificateScorer(scorer)}
+                        className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-[11px] font-extrabold inline-flex items-center gap-1 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+                        title="Generate & Print Official Class Topper Certificate of Excellence"
+                      >
+                        📜 Certificate
+                      </button>
+                    ) : (
+                      <span className="text-[10px] font-mono text-amber-400 font-bold flex items-center gap-1">
+                        🏆 1st Position
+                      </span>
+                    )}
                     <span className="font-mono font-extrabold text-emerald-400 text-sm bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
                       {scorer.percentage}%
                     </span>
