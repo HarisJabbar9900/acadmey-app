@@ -137,6 +137,14 @@ export default function Navbar({
 
             {/* Admin Toggle (Mobile) */}
             <div className="md:hidden flex items-center gap-2">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-md text-[10px] font-bold">
+                <span className="relative flex h-1.5 w-1.5 mr-0.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                </span>
+                {onlineUsers.length} Online
+              </span>
+
               {isAdminLoggedIn ? (
                 <>
                   <button
@@ -213,6 +221,22 @@ export default function Navbar({
               }`}>
                 <Database className="w-3.5 h-3.5" />
                 {firebaseConnected ? 'Cloud Active' : 'Local Mode'}
+              </span>
+            </div>
+
+            {/* Online Users Status Badge (Desktop) */}
+            <div className="hidden sm:block">
+              <span 
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl text-xs font-extrabold shadow-sm cursor-help"
+                title={isAdminLoggedIn 
+                  ? `Active: ${onlineUsers.filter(u => u.device?.includes('Desktop')).length} PC, ${onlineUsers.filter(u => u.device?.includes('Mobile')).length} Mobile` 
+                  : "Active students/visitors currently on the site"}
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span>{onlineUsers.length} Online</span>
               </span>
             </div>
 
