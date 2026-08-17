@@ -1,5 +1,5 @@
 import { db } from '../firebase/config';
-import { collection, getDocs, getDoc, doc, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
+import { collection, getDocs, getDoc, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp, writeBatch } from 'firebase/firestore';
 
 const STORAGE_KEY = 'academy_app_data_v2';
 
@@ -413,3 +413,86 @@ export const subscribeToAdminPin = (callback) => {
   }
   return () => {};
 };
+
+// ==========================================
+// 🟢 Real-Time Presence / Online Users Tracker
+// ==========================================
+
+export const updatePresence = async (sessionId, deviceType = 'Desktop') => {
+  if (!db || !sessionId || !isFirebaseActive()) return;
+  try {
+    const presenceDocRef = doc(db, 'presence', sessionId);
+    await setDoc(presenceDocRef, {
+      id: sessionId,
+      lastActive: serverTimestamp(),
+      device: deviceType,
+      updatedAt: Date.now()
+    }, { merge: true });
+  } catch (e) {
+    console.warn('Presence update failed:', e);
+  }
+};
+
+export const removePresence = async (sessionId) => {
+  if (!db || !sessionId || !isFirebaseActive()) return;
+  try {
+    const presenceDocRef = doc(db, 'presence', sessionId);
+    await deleteDoc(presenceDocRef);
+  } catch (e) {
+    console.warn('Presence remove failed:', e);
+  }
+};
+
+export const subscribeToPresence = (onUpdate) => {
+  if (!db || !isFirebaseActive()) return () => {};
+  try {
+    const presenceColRef = collection(db, 'presence');
+    return onSnapshot(presenceColRef, (snapshot) => {
+      const activeSessions = [];
+      const now = Date.now();
+      
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const lastActiveTime = data.updatedAt || (data.lastActive?.toMillis ? data.lastActive.toMillis() : now);
+        // Only show users active in the last 2 minutes
+        if (now - lastActiveTime < 120000) {
+          activeSessions.push(data);
+        }
+      });
+      onUpdate(activeSessions);
+    }, (error) => {
+      console.warn('Presence subscription failed:', error);
+    });
+  } catch (e) {
+    console.warn('Presence subscribe failed:', e);
+    return () => {};
+  }
+};
+
+export const cleanStalePresence = async () => {
+  if (!db || !isFirebaseActive()) return;
+  try {
+    const presenceColRef = collection(db, 'presence');
+    const qSnap = await getDocs(presenceColRef);
+    const now = Date.now();
+    const batch = writeBatch(db);
+    let staleCount = 0;
+    
+    qSnap.forEach((docSnap) => {
+      const data = docSnap.data();
+      const lastActiveTime = data.updatedAt || (data.lastActive?.toMillis ? data.lastActive.toMillis() : now);
+      if (now - lastActiveTime > 180000) { // older than 3 minutes
+        batch.delete(docSnap.ref);
+        staleCount++;
+      }
+    });
+    
+    if (staleCount > 0) {
+      await batch.commit();
+      console.log(`Cleaned ${staleCount} stale presence sessions.`);
+    }
+  } catch (e) {
+    console.warn('Stale presence cleanup failed:', e);
+  }
+};
+

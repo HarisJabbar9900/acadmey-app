@@ -17,7 +17,11 @@ import {
   seedFirestoreData,
   getFirestoreAdminPin,
   updateAdminPinInCloud,
-  subscribeToAdminPin
+  subscribeToAdminPin,
+  updatePresence,
+  removePresence,
+  subscribeToPresence,
+  cleanStalePresence
 } from './services/academyService';
 
 export default function App() {
@@ -25,6 +29,46 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedClassId, setSelectedClassId] = useState('ALL');
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+
+  // Real-time Active Presence Tracker
+  useEffect(() => {
+    let sessionId = sessionStorage.getItem('academy_session_id');
+    if (!sessionId) {
+      sessionId = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+      sessionStorage.setItem('academy_session_id', sessionId);
+    }
+
+    const deviceType = window.innerWidth < 768 ? 'Mobile📱' : 'Desktop💻';
+
+    // Report presence immediately
+    updatePresence(sessionId, deviceType);
+    
+    // Clean stale sessions on mount
+    cleanStalePresence();
+
+    // Heartbeat every 45 seconds to stay active
+    const heartbeat = setInterval(() => {
+      updatePresence(sessionId, deviceType);
+    }, 45000);
+
+    // Subscribe to online sessions
+    const unsubscribePresence = subscribeToPresence((activeSessions) => {
+      setOnlineUsers(activeSessions);
+    });
+
+    const handleUnload = () => {
+      removePresence(sessionId);
+    };
+    window.addEventListener('beforeunload', handleUnload);
+
+    return () => {
+      clearInterval(heartbeat);
+      if (unsubscribePresence) unsubscribePresence();
+      window.removeEventListener('beforeunload', handleUnload);
+      handleUnload();
+    };
+  }, []);
 
   // Global Admin PIN State (Synced with localStorage & Firebase Cloud)
   const [adminPin, setAdminPin] = useState(() => {
@@ -308,6 +352,7 @@ export default function App() {
           toggleTheme={toggleTheme}
           adminPin={adminPin}
           onUpdateAdminPin={handleUpdateAdminPin}
+          onlineUsers={onlineUsers}
         />
       </div>
 
