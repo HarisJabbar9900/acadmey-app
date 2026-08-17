@@ -230,7 +230,7 @@ export default function Navbar({
             </div>
 
             {/* Online Users Status Badge (Desktop) */}
-            <div className="hidden sm:block">
+            <div className="flex items-center">
               <span 
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl text-xs font-extrabold shadow-sm cursor-help"
                 title={isAdminLoggedIn 
