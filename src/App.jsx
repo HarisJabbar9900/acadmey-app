@@ -289,37 +289,41 @@ export default function App() {
     } flex flex-col font-sans selection:bg-indigo-500 selection:text-white`}>
       
       {/* Background Subtle Gradients */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 print:hidden">
         <div className={`absolute -top-40 -left-40 w-96 h-96 ${theme === 'dark' ? 'bg-indigo-600/15' : 'bg-indigo-500/10'} rounded-full blur-3xl`} />
         <div className={`absolute top-1/3 -right-40 w-96 h-96 ${theme === 'dark' ? 'bg-purple-600/15' : 'bg-purple-500/10'} rounded-full blur-3xl`} />
       </div>
 
       {/* Top Navbar */}
-      <Navbar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        classes={data.classes}
-        selectedClassId={selectedClassId}
-        setSelectedClassId={setSelectedClassId}
-        isAdminLoggedIn={isAdminLoggedIn}
-        setIsAdminLoggedIn={setIsAdminLoggedIn}
-        theme={theme}
-        toggleTheme={toggleTheme}
-        adminPin={adminPin}
-        onUpdateAdminPin={handleUpdateAdminPin}
-      />
+      <div className="print:hidden">
+        <Navbar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          classes={data.classes}
+          selectedClassId={selectedClassId}
+          setSelectedClassId={setSelectedClassId}
+          isAdminLoggedIn={isAdminLoggedIn}
+          setIsAdminLoggedIn={setIsAdminLoggedIn}
+          theme={theme}
+          toggleTheme={toggleTheme}
+          adminPin={adminPin}
+          onUpdateAdminPin={handleUpdateAdminPin}
+        />
+      </div>
 
       {/* Main Content Area */}
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
         {activeTab === 'dashboard' && (
           <>
             {/* Public Notice Board & Announcement Banner */}
-            <NoticeBoard
-              data={data}
-              isAdminLoggedIn={isAdminLoggedIn}
-              onAddNotice={handleAddNotice}
-              onDeleteNotice={handleDeleteNotice}
-            />
+            <div className="print:hidden">
+              <NoticeBoard
+                data={data}
+                isAdminLoggedIn={isAdminLoggedIn}
+                onAddNotice={handleAddNotice}
+                onDeleteNotice={handleDeleteNotice}
+              />
+            </div>
 
             <AdminDashboard
               data={data}
@@ -403,7 +407,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-slate-800/80 bg-slate-950/60 backdrop-blur-md px-6 py-4 text-center text-slate-500 text-xs">
+      <footer className="relative z-10 border-t border-slate-800/80 bg-slate-950/60 backdrop-blur-md px-6 py-4 text-center text-slate-500 text-xs print:hidden">
         Al-Zia Science Academy • Online Management Portal
       </footer>
 
