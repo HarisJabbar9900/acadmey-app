@@ -362,6 +362,13 @@ export const seedFirestoreData = async (currentData) => {
         for (const fb of currentData.feedbacks || DEFAULT_FEEDBACKS) {
           await setDoc(doc(db, 'feedbacks', fb.id), fb, { merge: true });
         }
+        // Upload Admin PIN
+        const currentPin = localStorage.getItem('academy_admin_pin') || '1234';
+        await setDoc(doc(db, 'settings', 'adminPin'), { pin: currentPin }, { merge: true });
+      } else {
+        // Ensure settings/adminPin exists
+        const currentPin = localStorage.getItem('academy_admin_pin') || '1234';
+        await setDoc(doc(db, 'settings', 'adminPin'), { pin: currentPin }, { merge: true });
       }
     } catch (err) {
       console.warn('Firestore seeding error:', err);
