@@ -358,6 +358,17 @@ export const seedFirestoreData = async (currentData) => {
         for (const ntc of currentData.notices || DEFAULT_NOTICES) {
           await setDoc(doc(db, 'notices', ntc.id), ntc, { merge: true });
         }
+        // Upload feedbacks
+        for (const fb of currentData.feedbacks || DEFAULT_FEEDBACKS) {
+          await setDoc(doc(db, 'feedbacks', fb.id), fb, { merge: true });
+        }
+      }
+    } catch (err) {
+      console.warn('Firestore seeding error:', err);
+    }
+  }
+};
+
 export const getFirestoreAdminPin = async () => {
   if (isFirebaseActive() && db) {
     try {
