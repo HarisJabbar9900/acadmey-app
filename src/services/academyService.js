@@ -1,5 +1,5 @@
 import { db } from '../firebase/config';
-import { collection, getDocs, getDoc, doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, getDoc, doc, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
 
 const STORAGE_KEY = 'academy_app_data_v2';
 
@@ -329,9 +329,12 @@ export const deleteFromFirestore = async (collectionName, docId) => {
 export const seedFirestoreData = async (currentData) => {
   if (isFirebaseActive() && db) {
     try {
-      // Unconditionally sync Admin PIN to Firestore settings collection
-      const currentPin = localStorage.getItem('academy_admin_pin') || '1234';
-      await setDoc(doc(db, 'settings', 'adminPin'), { pin: currentPin }, { merge: true });
+      // Check if adminPin exists in Firestore; only seed if missing
+      const pinSnap = await getDoc(doc(db, 'settings', 'adminPin'));
+      if (!pinSnap.exists()) {
+        const currentPin = localStorage.getItem('academy_admin_pin') || '1234';
+        await setDoc(doc(db, 'settings', 'adminPin'), { pin: String(currentPin) }, { merge: true });
+      }
 
       const snap = await getDocs(collection(db, 'students'));
       if (snap.empty) {
@@ -378,11 +381,35 @@ export const getFirestoreAdminPin = async () => {
     try {
       const docSnap = await getDoc(doc(db, 'settings', 'adminPin'));
       if (docSnap.exists() && docSnap.data()?.pin) {
-        return docSnap.data().pin;
+        return String(docSnap.data().pin);
       }
     } catch (e) {
       console.warn('Failed to fetch admin pin from Firestore', e);
     }
   }
   return null;
+};
+
+export const updateAdminPinInCloud = async (newPin) => {
+  if (isFirebaseActive() && db) {
+    try {
+      await setDoc(doc(db, 'settings', 'adminPin'), { pin: String(newPin) }, { merge: true });
+      console.log('Admin PIN successfully updated in Firebase Cloud:', newPin);
+    } catch (e) {
+      console.error('Failed to update Admin PIN in Cloud:', e);
+    }
+  }
+};
+
+export const subscribeToAdminPin = (callback) => {
+  if (isFirebaseActive() && db) {
+    return onSnapshot(doc(db, 'settings', 'adminPin'), (docSnap) => {
+      if (docSnap.exists() && docSnap.data()?.pin) {
+        callback(String(docSnap.data().pin));
+      }
+    }, (error) => {
+      console.warn('Admin PIN subscription error:', error);
+    });
+  }
+  return () => {};
 };

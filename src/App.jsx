@@ -15,7 +15,9 @@ import {
   syncWithFirestore, 
   deleteFromFirestore,
   seedFirestoreData,
-  getFirestoreAdminPin
+  getFirestoreAdminPin,
+  updateAdminPinInCloud,
+  subscribeToAdminPin
 } from './services/academyService';
 
 export default function App() {
@@ -30,20 +32,27 @@ export default function App() {
   });
 
   const handleUpdateAdminPin = (newPin) => {
-    setAdminPin(newPin);
-    localStorage.setItem('academy_admin_pin', newPin);
-    syncWithFirestore('settings', 'adminPin', { pin: newPin });
+    const stringPin = String(newPin);
+    setAdminPin(stringPin);
+    localStorage.setItem('academy_admin_pin', stringPin);
+    updateAdminPinInCloud(stringPin);
   };
 
-  // Auto-seed existing student data & sync Admin PIN from Firestore
+  // Auto-seed existing student data & subscribe to real-time Admin PIN from Firestore
   useEffect(() => {
     seedFirestoreData(data);
-    getFirestoreAdminPin().then(remotePin => {
+    
+    // Subscribe to real-time cloud PIN changes
+    const unsubscribePin = subscribeToAdminPin(remotePin => {
       if (remotePin) {
-        setAdminPin(remotePin);
-        localStorage.setItem('academy_admin_pin', remotePin);
+        setAdminPin(String(remotePin));
+        localStorage.setItem('academy_admin_pin', String(remotePin));
       }
     });
+
+    return () => {
+      if (unsubscribePin) unsubscribePin();
+    };
   }, []);
 
   // Light / Dark Theme State
