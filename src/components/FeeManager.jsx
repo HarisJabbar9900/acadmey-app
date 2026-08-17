@@ -104,6 +104,10 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
     setTimeout(() => setNotification(null), 4000);
   };
 
+  // Pagination State (Max 10 per page)
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   // Filter students based on Class, Search Query & Status
   const filteredStudents = data.students.filter(student => {
     const isClassMatch = activeClassFilter === 'ALL' || student.classId === activeClassFilter;
@@ -120,6 +124,9 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
 
     return isClassMatch && isStatusMatch && isSearchMatch;
   });
+
+  const totalPages = Math.ceil(filteredStudents.length / itemsPerPage) || 1;
+  const paginatedStudents = filteredStudents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   // Calculate Whole Academy Statistics for selected month
   let grandTotalCollected = 0;
@@ -420,8 +427,8 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60 text-slate-200">
-              {filteredStudents.length > 0 ? (
-                filteredStudents.map(student => {
+              {paginatedStudents.length > 0 ? (
+                paginatedStudents.map(student => {
                   const studentClassObj = data.classes.find(c => c.id === student.classId);
                   const feeKey = `${selectedMonth}_${student.id}`;
                   const feeRecord = feesObj[feeKey];
@@ -545,6 +552,49 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Pager Controls (Max 10 per page) */}
+        {filteredStudents.length > 0 && (
+          <div className="p-4 border-t border-slate-800 bg-slate-900/90 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="text-xs text-slate-400 font-medium">
+              Showing <strong className="text-white">{(currentPage - 1) * itemsPerPage + 1}</strong> to <strong className="text-white">{Math.min(currentPage * itemsPerPage, filteredStudents.length)}</strong> of <strong className="text-indigo-400">{filteredStudents.length}</strong> Fee Records
+            </div>
+
+            {totalPages > 1 && (
+              <div className="flex items-center gap-1.5">
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                >
+                  ◀ Previous
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`w-8 h-8 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      currentPage === page
+                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                <button
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                >
+                  Next ▶
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Modal: Mark Paid Form */}
