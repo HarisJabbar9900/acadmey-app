@@ -259,8 +259,22 @@ export const getInitialData = () => {
       if (!parsed.feedbacks) {
         parsed.feedbacks = DEFAULT_FEEDBACKS;
       }
-      if (!parsed.notices) {
+      if (!parsed.notices || parsed.notices.length === 0) {
         parsed.notices = DEFAULT_NOTICES;
+      } else {
+        parsed.notices = parsed.notices.map(n => {
+          let ts = n.createdAt;
+          if (!ts && n.id && typeof n.id === 'string' && n.id.startsWith('ntc-')) {
+            const parsedTs = parseInt(n.id.replace('ntc-', ''), 10);
+            if (!isNaN(parsedTs) && parsedTs > 1000000000000) {
+              ts = parsedTs;
+            }
+          }
+          return {
+            ...n,
+            createdAt: ts || Date.now()
+          };
+        });
       }
       if (parsed.classes) {
         parsed.classes = parsed.classes.map(c => {
