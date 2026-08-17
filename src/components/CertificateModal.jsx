@@ -63,7 +63,7 @@ export default function CertificateModal({ scorer, month, onClose }) {
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${qrData}`;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto print:p-0 print:bg-white print:static">
+    <div className="certificate-modal-wrapper fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto print:p-0 print:bg-white print:static">
       
       {/* Modal Container (Screen View) */}
       <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-4 sm:p-8 shadow-2xl space-y-6 my-auto max-h-[95vh] overflow-y-auto print:max-w-none print:w-full print:p-0 print:m-0 print:border-none print:shadow-none print:bg-white relative">
@@ -258,30 +258,51 @@ export default function CertificateModal({ scorer, month, onClose }) {
 
       </div>
 
-      {/* Print Specific CSS Styles */}
+      {/* Print Specific CSS Styles (1 Single Sheet Output) */}
       <style>{`
         @media print {
           @page {
             size: A4 landscape;
-            margin: 10mm;
+            margin: 0;
           }
-          body * {
-            visibility: hidden;
+          html, body {
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            background: white !important;
           }
-          .certificate-print-area, .certificate-print-area * {
-            visibility: visible;
+          body > div:not(.certificate-modal-wrapper), 
+          header, nav, main, footer, .print-hidden {
+            display: none !important;
+          }
+          .certificate-modal-wrapper {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: white !important;
+            overflow: hidden !important;
           }
           .certificate-print-area {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 20px !important;
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            padding: 16px !important;
             background-color: white !important;
             color: black !important;
             border: 8px double #b45309 !important;
+            page-break-after: avoid !important;
+            page-break-before: avoid !important;
+            page-break-inside: avoid !important;
             box-shadow: none !important;
           }
         }

@@ -21,11 +21,27 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* Print CSS Rules for Fee Slips & Report Cards */
+/* ==========================================
+   🖨️ Universal Print CSS Rules (1-Page Output)
+   ========================================== */
 @media print {
-  body {
+  html, body {
     background-color: white !important;
     color: black !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Hide all background layout, navbar, modals backdrop, and screen controls */
+  header, 
+  nav, 
+  footer, 
+  .fixed:not(.print-modal-container), 
+  .print\:hidden {
+    display: none !important;
   }
 }
 
@@ -201,7 +217,7 @@
 .light-mode .bg-indigo-500\/10,
 .light-mode .bg-indigo-600\/15,
 .light-mode .bg-indigo-500\/20 {
-  background-color: #e0e7ff !important;
+  background-color: #e0e0ff !important;
   color: #3730a3 !important;
 }
 
