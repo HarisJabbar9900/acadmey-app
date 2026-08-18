@@ -50,9 +50,52 @@ export default function ClassStudentManager({
   const [editingSubjectIndex, setEditingSubjectIndex] = useState(null);
   const [editingSubjectText, setEditingSubjectText] = useState('');
 
-  // Class Form State
-  const [className, setClassName] = useState('');
-  const [subjectName, setSubjectName] = useState('');
+  // Class Edit / Delete States
+  const [editingClass, setEditingClass] = useState(null);
+  const [editClassName, setEditClassName] = useState('');
+  const [editClassSubject, setEditClassSubject] = useState('');
+
+  const handleOpenEditClass = (classObj) => {
+    setEditingClass(classObj);
+    setEditClassName(classObj.name || '');
+    setEditClassSubject(classObj.subject || '');
+  };
+
+  const handleSaveEditClass = (e) => {
+    e.preventDefault();
+    if (!editingClass || !editClassName.trim()) return;
+
+    const updatedClass = {
+      ...editingClass,
+      name: editClassName.trim(),
+      subject: editClassSubject.trim() || `${editClassName.trim()} Batch`
+    };
+
+    if (onUpdateClass) {
+      onUpdateClass(updatedClass);
+    }
+    setEditingClass(null);
+    setNotification(`Class updated to "${editClassName.trim()}" successfully!`);
+    setTimeout(() => setNotification(null), 4000);
+  };
+
+  const handleDeleteClassWithConfirm = (classObj) => {
+    const studentCount = data.students.filter(s => s.classId === classObj.id).length;
+    const confirmMessage = studentCount > 0
+      ? `Are you sure you want to delete "Class ${classObj.name}"? This will also remove ${studentCount} enrolled student(s) in this class!`
+      : `Are you sure you want to delete "Class ${classObj.name}"?`;
+
+    if (window.confirm(confirmMessage)) {
+      if (onDeleteClass) {
+        onDeleteClass(classObj.id);
+      }
+      if (filterClassId === classObj.id) {
+        setFilterClassId('ALL');
+      }
+      setNotification(`Class "${classObj.name}" deleted successfully!`);
+      setTimeout(() => setNotification(null), 4000);
+    }
+  };
 
   // Add Student Form State
   const [name, setName] = useState('');
@@ -315,20 +358,49 @@ export default function ClassStudentManager({
             const count = data.students.filter(s => s.classId === c.id).length;
             const isSelected = filterClassId === c.id;
             return (
-              <button
-                key={c.id}
-                onClick={() => setFilterClassId(c.id)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
-                  isSelected
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20 scale-105'
-                    : 'bg-slate-800 text-slate-300 hover:text-white'
-                }`}
-              >
-                <span>Class {c.name}</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-indigo-800 text-white' : 'bg-slate-700 text-slate-300'}`}>
-                  {count}
-                </span>
-              </button>
+              <div key={c.id} className="flex items-center gap-1 shrink-0">
+                <button
+                  onClick={() => setFilterClassId(c.id)}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                    isSelected
+                      ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20 scale-105'
+                      : 'bg-slate-800 text-slate-300 hover:text-white'
+                  }`}
+                >
+                  <span>Class {c.name}</span>
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-indigo-800 text-white' : 'bg-slate-700 text-slate-300'}`}>
+                    {count}
+                  </span>
+                </button>
+
+                {isAdminLoggedIn && (
+                  <div className="flex items-center gap-0.5">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenEditClass(c);
+                      }}
+                      className="p-1.5 text-slate-400 hover:text-indigo-300 hover:bg-slate-800 rounded-lg text-xs transition-colors"
+                      title={`Edit Class ${c.name}`}
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteClassWithConfirm(c);
+                      }}
+                      className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg text-xs transition-colors"
+                      title={`Delete Class ${c.name}`}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
@@ -605,6 +677,60 @@ export default function ClassStudentManager({
           data={data}
           onClose={() => setSelectedIdCardStudent(null)}
         />
+      )}
+
+      {/* Modal: Edit Class */}
+      {editingClass && (
+        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 my-auto max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h3 className="font-bold text-white text-lg flex items-center gap-2">
+                <Edit3 className="w-5 h-5 text-indigo-400" />
+                Edit Class {editingClass.name}
+              </h3>
+              <button onClick={() => setEditingClass(null)} className="text-slate-400 hover:text-white text-sm font-bold">✕</button>
+            </div>
+
+            <form onSubmit={handleSaveEditClass} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Class Name (e.g. 9th, 10th, 1st Year)</label>
+                <input
+                  type="text"
+                  required
+                  value={editClassName}
+                  onChange={(e) => setEditClassName(e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Description / Batch Name</label>
+                <input
+                  type="text"
+                  value={editClassSubject}
+                  onChange={(e) => setEditClassSubject(e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setEditingClass(null)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30"
+                >
+                  Save Class Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
 
       {/* Modal: Add New Class */}
