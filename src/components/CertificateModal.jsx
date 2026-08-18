@@ -8,7 +8,14 @@ export default function CertificateModal({ scorer, month, onClose }) {
   if (!scorer) return null;
 
   const handlePrint = () => {
+    const oldTitle = document.title;
+    const cleanName = (scorer.studentName || 'Student').trim().replace(/\s+/g, '_');
+    const cleanClass = (scorer.className || 'Topper').trim().replace(/\s+/g, '_');
+    document.title = `Certificate_${cleanName}_Class_${cleanClass}`;
     window.print();
+    setTimeout(() => {
+      document.title = oldTitle;
+    }, 1000);
   };
 
   const handleDownloadImage = async () => {
@@ -18,17 +25,18 @@ export default function CertificateModal({ scorer, month, onClose }) {
     try {
       setIsDownloading(true);
       const canvas = await html2canvas(certElement, {
-        scale: 2.0,
+        scale: 2.5,
         useCORS: true,
-        allowTaint: false, // Must be false to allow generating data URL without SecurityError
+        allowTaint: true,
         logging: false,
         backgroundColor: '#0f172a'
       });
 
       const image = canvas.toDataURL('image/png', 1.0);
       const link = document.createElement('a');
-      const cleanName = (scorer.studentName || 'Student').replace(/[^a-zA-Z0-9]/g, '_');
-      link.download = `Certificate_${cleanName}_Class_${scorer.className || 'Topper'}.png`;
+      const cleanName = (scorer.studentName || 'Student').trim().replace(/\s+/g, '_');
+      const cleanClass = (scorer.className || 'Topper').trim().replace(/\s+/g, '_');
+      link.download = `Certificate_${cleanName}_Class_${cleanClass}.png`;
       link.href = image;
       document.body.appendChild(link);
       link.click();
