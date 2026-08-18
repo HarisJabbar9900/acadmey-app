@@ -22,29 +22,96 @@ export default function CertificateModal({ scorer, month, onClose }) {
     const certElement = document.getElementById('certificate-print-area');
     if (!certElement) return;
 
+    const cleanName = (scorer.studentName || 'Student').trim().replace(/\s+/g, '_');
+    const cleanClass = (scorer.className || 'Topper').trim().replace(/\s+/g, '_');
+    const fileName = `Certificate_${cleanName}_Class_${cleanClass}.png`;
+
+    setIsDownloading(true);
+
+    // Primary Method: html2canvas
     try {
-      setIsDownloading(true);
       const canvas = await html2canvas(certElement, {
         scale: 2.0,
         useCORS: true,
         allowTaint: false,
         logging: false,
-        backgroundColor: '#0f172a'
+        backgroundColor: '#0f172a',
+        ignoreElements: (el) => el.classList && el.classList.contains('print-hidden')
       });
 
       const image = canvas.toDataURL('image/png', 1.0);
       const link = document.createElement('a');
-      const cleanName = (scorer.studentName || 'Student').trim().replace(/\s+/g, '_');
-      const cleanClass = (scorer.className || 'Topper').trim().replace(/\s+/g, '_');
-      link.download = `Certificate_${cleanName}_Class_${cleanClass}.png`;
+      link.download = fileName;
       link.href = image;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    } catch (error) {
-      console.error('Failed to download certificate image:', error);
-      alert('Download Error: Click the "Print / Save PDF" button and select "Save as PDF" to save the certificate instantly.');
-    } finally {
+      setIsDownloading(false);
+      return;
+    } catch (err1) {
+      console.warn('html2canvas primary attempt failed, trying fallback SVG canvas...', err1);
+    }
+
+    // Secondary Fallback Method: Native SVG foreignObject
+    try {
+      const rect = certElement.getBoundingClientRect();
+      const width = rect.width || 800;
+      const height = rect.height || 600;
+
+      const outerHTML = certElement.outerHTML;
+      const svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml">${outerHTML}</div></foreignObject></svg>`;
+
+      const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = width * 2;
+          canvas.height = height * 2;
+          const ctx = canvas.getContext('2d');
+          ctx.scale(2, 2);
+          ctx.drawImage(img, 0, 0);
+
+          const pngUrl = canvas.toDataURL('image/png', 1.0);
+          const link = document.createElement('a');
+          link.download = fileName;
+          link.href = pngUrl;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } catch (e) {
+          // Direct SVG File Download
+          const link = document.createElement('a');
+          link.download = `Certificate_${cleanName}_Class_${cleanClass}.svg`;
+          link.href = url;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } finally {
+          URL.revokeObjectURL(url);
+          setIsDownloading(false);
+        }
+      };
+
+      img.onerror = () => {
+        // Direct SVG File Download
+        const link = document.createElement('a');
+        link.download = `Certificate_${cleanName}_Class_${cleanClass}.svg`;
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setIsDownloading(false);
+      };
+
+      img.src = url;
+    } catch (err2) {
+      console.error('All certificate image download methods failed:', err2);
+      alert('Notice: Click "Print / Save PDF" button and select "Save as PDF" to save the certificate instantly.');
       setIsDownloading(false);
     }
   };
