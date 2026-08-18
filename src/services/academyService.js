@@ -512,11 +512,12 @@ export const subscribeToCollection = (collectionName, callback) => {
   if (!db) return () => {};
   try {
     return onSnapshot(collection(db, collectionName), (snapshot) => {
-      const items = [];
+      const itemsMap = new Map();
       snapshot.forEach(docSnap => {
-        items.push({ id: docSnap.id, ...docSnap.data() });
+        const itemData = { id: docSnap.id, ...docSnap.data() };
+        itemsMap.set(docSnap.id, itemData);
       });
-      callback(items);
+      callback(Array.from(itemsMap.values()));
     }, (error) => {
       console.warn(`Firestore subscription error on ${collectionName}:`, error);
     });

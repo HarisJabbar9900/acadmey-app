@@ -154,10 +154,16 @@ export default function App() {
 
   // Handler: Add Class
   const handleAddClass = (newClass) => {
-    setData(prev => ({
-      ...prev,
-      classes: [...prev.classes, newClass]
-    }));
+    setData(prev => {
+      const existingClasses = prev.classes || [];
+      if (existingClasses.some(c => c.id === newClass.id || c.name.trim().toLowerCase() === newClass.name.trim().toLowerCase())) {
+        return prev;
+      }
+      return {
+        ...prev,
+        classes: [...existingClasses, newClass]
+      };
+    });
 
     syncWithFirestore('classes', newClass.id, newClass);
   };

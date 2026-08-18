@@ -358,51 +358,20 @@ export default function ClassStudentManager({
             const count = data.students.filter(s => s.classId === c.id).length;
             const isSelected = filterClassId === c.id;
             return (
-              <div key={c.id} className={`flex items-center border rounded-xl overflow-hidden shrink-0 transition-all ${
-                isSelected 
-                  ? 'border-indigo-500 bg-indigo-950/40 shadow-lg shadow-indigo-950/50 ring-1 ring-indigo-500/50' 
-                  : 'border-slate-700/80 bg-slate-800/90'
-              }`}>
-                <button
-                  onClick={() => setFilterClassId(c.id)}
-                  className={`px-3.5 py-1.5 text-xs font-bold whitespace-nowrap flex items-center gap-1.5 transition-all ${
-                    isSelected
-                      ? 'bg-indigo-600 text-white'
-                      : 'text-slate-300 hover:text-white'
-                  }`}
-                >
-                  <span>Class {c.name}</span>
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-indigo-900 text-white' : 'bg-slate-700 text-slate-300'}`}>
-                    {count}
-                  </span>
-                </button>
-
-                <div className="flex items-center border-l border-slate-700/80 bg-slate-900 px-1 py-1 gap-1">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOpenEditClass(c);
-                    }}
-                    className="p-1 text-indigo-400 hover:text-white hover:bg-indigo-600/60 rounded-lg transition-all"
-                    title={`Edit Class ${c.name}`}
-                  >
-                    <Edit3 className="w-3.5 h-3.5" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteClassWithConfirm(c);
-                    }}
-                    className="p-1 text-rose-400 hover:text-white hover:bg-rose-600/60 rounded-lg transition-all"
-                    title={`Delete Class ${c.name}`}
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
+              <button
+                key={c.id}
+                onClick={() => setFilterClassId(c.id)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                  isSelected
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 scale-105'
+                    : 'bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700'
+                }`}
+              >
+                <span>Class {c.name}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-indigo-900 text-white' : 'bg-slate-700 text-slate-300'}`}>
+                  {count}
+                </span>
+              </button>
             );
           })}
         </div>
