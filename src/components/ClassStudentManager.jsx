@@ -358,30 +358,34 @@ export default function ClassStudentManager({
             const count = data.students.filter(s => s.classId === c.id).length;
             const isSelected = filterClassId === c.id;
             return (
-              <div key={c.id} className="flex items-center gap-1 shrink-0">
+              <div key={c.id} className={`flex items-center border rounded-xl overflow-hidden shrink-0 transition-all ${
+                isSelected 
+                  ? 'border-indigo-500 bg-indigo-950/40 shadow-lg shadow-indigo-950/50 ring-1 ring-indigo-500/50' 
+                  : 'border-slate-700/80 bg-slate-800/90'
+              }`}>
                 <button
                   onClick={() => setFilterClassId(c.id)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                  className={`px-3.5 py-1.5 text-xs font-bold whitespace-nowrap flex items-center gap-1.5 transition-all ${
                     isSelected
-                      ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20 scale-105'
-                      : 'bg-slate-800 text-slate-300 hover:text-white'
+                      ? 'bg-indigo-600 text-white'
+                      : 'text-slate-300 hover:text-white'
                   }`}
                 >
                   <span>Class {c.name}</span>
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-indigo-800 text-white' : 'bg-slate-700 text-slate-300'}`}>
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-indigo-900 text-white' : 'bg-slate-700 text-slate-300'}`}>
                     {count}
                   </span>
                 </button>
 
                 {isAdminLoggedIn && (
-                  <div className="flex items-center gap-0.5">
+                  <div className="flex items-center border-l border-slate-700/80 bg-slate-900 px-1 py-1 gap-1">
                     <button
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleOpenEditClass(c);
                       }}
-                      className="p-1.5 text-slate-400 hover:text-indigo-300 hover:bg-slate-800 rounded-lg text-xs transition-colors"
+                      className="p-1 text-indigo-400 hover:text-white hover:bg-indigo-600/60 rounded-lg transition-all"
                       title={`Edit Class ${c.name}`}
                     >
                       <Edit3 className="w-3.5 h-3.5" />
@@ -393,7 +397,7 @@ export default function ClassStudentManager({
                         e.stopPropagation();
                         handleDeleteClassWithConfirm(c);
                       }}
-                      className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg text-xs transition-colors"
+                      className="p-1 text-rose-400 hover:text-white hover:bg-rose-600/60 rounded-lg transition-all"
                       title={`Delete Class ${c.name}`}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -453,54 +457,80 @@ export default function ClassStudentManager({
 
         {/* Render Subject Chips */}
         {selectedClassObj ? (
-          <div className="flex flex-wrap items-center gap-2">
-            {(selectedClassObj.subjects || ['Physics', 'Chemistry', 'Math', 'Computer Science', 'English', 'Urdu']).map((sub, idx) => {
-              const isEditingThis = editingSubjectIndex === `${selectedClassObj.id}-${idx}`;
+          <>
+            <div className="flex flex-wrap items-center gap-2">
+              {(selectedClassObj.subjects || ['Physics', 'Chemistry', 'Math', 'Computer Science', 'English', 'Urdu']).map((sub, idx) => {
+                const isEditingThis = editingSubjectIndex === `${selectedClassObj.id}-${idx}`;
 
-              return (
-                <div key={idx} className="bg-slate-800/90 border border-slate-700/80 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-200 flex items-center gap-2 group hover:border-indigo-500/50 transition-all">
-                  {isEditingThis ? (
-                    <input
-                      type="text"
-                      defaultValue={sub}
-                      autoFocus
-                      onBlur={(e) => handleRenameSubject(selectedClassObj, idx, e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') handleRenameSubject(selectedClassObj, idx, e.currentTarget.value);
-                      }}
-                      className="bg-slate-950 px-2 py-0.5 rounded text-white text-xs font-bold border border-indigo-500 focus:outline-none w-28"
-                    />
-                  ) : (
-                    <span>{sub}</span>
-                  )}
-
-                  {isAdminLoggedIn && (
-                    <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditingSubjectIndex(`${selectedClassObj.id}-${idx}`);
-                          setEditingSubjectText(sub);
+                return (
+                  <div key={idx} className="bg-slate-800/90 border border-slate-700/80 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-200 flex items-center gap-2 group hover:border-indigo-500/50 transition-all">
+                    {isEditingThis ? (
+                      <input
+                        type="text"
+                        defaultValue={sub}
+                        autoFocus
+                        onBlur={(e) => handleRenameSubject(selectedClassObj, idx, e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleRenameSubject(selectedClassObj, idx, e.currentTarget.value);
                         }}
-                        className="text-slate-400 hover:text-indigo-300 p-0.5"
-                        title="Rename Subject"
-                      >
-                        <Edit2 className="w-3 h-3" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteSubjectFromClass(selectedClassObj, sub)}
-                        className="text-slate-500 hover:text-rose-400 p-0.5"
-                        title="Delete Subject"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </div>
-                  )}
+                        className="bg-slate-950 px-2 py-0.5 rounded text-white text-xs font-bold border border-indigo-500 focus:outline-none w-28"
+                      />
+                    ) : (
+                      <span>{sub}</span>
+                    )}
+
+                    {isAdminLoggedIn && (
+                      <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingSubjectIndex(`${selectedClassObj.id}-${idx}`);
+                            setEditingSubjectText(sub);
+                          }}
+                          className="text-slate-400 hover:text-indigo-300 p-0.5"
+                          title="Rename Subject"
+                        >
+                          <Edit2 className="w-3 h-3" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteSubjectFromClass(selectedClassObj, sub)}
+                          className="text-slate-500 hover:text-rose-400 p-0.5"
+                          title="Delete Subject"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {isAdminLoggedIn && selectedClassObj && (
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-800/80 mt-2">
+                <span className="text-xs text-slate-400 font-semibold flex items-center gap-1.5">
+                  <span>Class <strong className="text-indigo-300">{selectedClassObj.name}</strong> Settings:</span>
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenEditClass(selectedClassObj)}
+                    className="px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" /> Edit Class Name
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteClassWithConfirm(selectedClassObj)}
+                    className="px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" /> Delete Class {selectedClassObj.name}
+                  </button>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-xs text-slate-400 italic bg-slate-950/40 p-3 rounded-xl border border-slate-800/80">
             💡 Select any specific Class filter above (e.g. <strong className="text-indigo-400">Class 9th</strong> or <strong className="text-indigo-400">Class 10th</strong>) to add, rename or delete subjects for that class!
