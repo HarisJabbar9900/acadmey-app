@@ -25,9 +25,9 @@ export default function CertificateModal({ scorer, month, onClose }) {
     try {
       setIsDownloading(true);
       const canvas = await html2canvas(certElement, {
-        scale: 2.5,
+        scale: 2.0,
         useCORS: true,
-        allowTaint: true,
+        allowTaint: false,
         logging: false,
         backgroundColor: '#0f172a'
       });
