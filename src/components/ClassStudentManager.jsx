@@ -52,6 +52,10 @@ export default function ClassStudentManager({
   const [editingSubjectIndex, setEditingSubjectIndex] = useState(null);
   const [editingSubjectText, setEditingSubjectText] = useState('');
 
+  // Add Class Form State
+  const [newClassName, setNewClassName] = useState('');
+  const [newClassSubject, setNewClassSubject] = useState('');
+
   // Class Edit / Delete States
   const [editingClass, setEditingClass] = useState(null);
   const [editClassName, setEditClassName] = useState('');
@@ -126,20 +130,21 @@ export default function ClassStudentManager({
   // Submit Add Class
   const handleCreateClass = (e) => {
     e.preventDefault();
-    if (!className) return;
+    if (!newClassName.trim()) return;
 
     const newClass = {
       id: 'cls-' + Date.now(),
-      name: className,
-      subject: subjectName || `${className} Batch`,
+      name: newClassName.trim(),
+      subject: newClassSubject.trim() || `${newClassName.trim()} Batch`,
       subjects: ['Physics', 'Chemistry', 'Math', 'Computer Science', 'English', 'Urdu']
     };
 
     onAddClass(newClass);
-    setClassName('');
-    setSubjectName('');
+    const addedName = newClassName.trim();
+    setNewClassName('');
+    setNewClassSubject('');
     setIsClassModalOpen(false);
-    setNotification(`New Class "${className}" added successfully!`);
+    setNotification(`New Class "${addedName}" added successfully!`);
     setTimeout(() => setNotification(null), 4000);
   };
 
@@ -820,8 +825,8 @@ export default function ClassStudentManager({
                   type="text"
                   required
                   placeholder="e.g. 9th"
-                  value={className}
-                  onChange={(e) => setClassName(e.target.value)}
+                  value={newClassName}
+                  onChange={(e) => setNewClassName(e.target.value)}
                   className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
                 />
               </div>
@@ -831,8 +836,8 @@ export default function ClassStudentManager({
                 <input
                   type="text"
                   placeholder="e.g. Science Batch"
-                  value={subjectName}
-                  onChange={(e) => setSubjectName(e.target.value)}
+                  value={newClassSubject}
+                  onChange={(e) => setNewClassSubject(e.target.value)}
                   className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
                 />
               </div>
