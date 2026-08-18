@@ -377,33 +377,31 @@ export default function ClassStudentManager({
                   </span>
                 </button>
 
-                {isAdminLoggedIn && (
-                  <div className="flex items-center border-l border-slate-700/80 bg-slate-900 px-1 py-1 gap-1">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenEditClass(c);
-                      }}
-                      className="p-1 text-indigo-400 hover:text-white hover:bg-indigo-600/60 rounded-lg transition-all"
-                      title={`Edit Class ${c.name}`}
-                    >
-                      <Edit3 className="w-3.5 h-3.5" />
-                    </button>
+                <div className="flex items-center border-l border-slate-700/80 bg-slate-900 px-1 py-1 gap-1">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenEditClass(c);
+                    }}
+                    className="p-1 text-indigo-400 hover:text-white hover:bg-indigo-600/60 rounded-lg transition-all"
+                    title={`Edit Class ${c.name}`}
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                  </button>
 
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteClassWithConfirm(c);
-                      }}
-                      className="p-1 text-rose-400 hover:text-white hover:bg-rose-600/60 rounded-lg transition-all"
-                      title={`Delete Class ${c.name}`}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                )}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteClassWithConfirm(c);
+                    }}
+                    className="p-1 text-rose-400 hover:text-white hover:bg-rose-600/60 rounded-lg transition-all"
+                    title={`Delete Class ${c.name}`}
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             );
           })}
@@ -507,7 +505,7 @@ export default function ClassStudentManager({
               })}
             </div>
 
-            {isAdminLoggedIn && selectedClassObj && (
+            {selectedClassObj && (
               <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-800/80 mt-2">
                 <span className="text-xs text-slate-400 font-semibold flex items-center gap-1.5">
                   <span>Class <strong className="text-indigo-300">{selectedClassObj.name}</strong> Settings:</span>
