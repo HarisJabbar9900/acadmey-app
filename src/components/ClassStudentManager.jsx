@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   Users, 
   UserPlus, 
@@ -677,9 +678,9 @@ export default function ClassStudentManager({
       )}
 
       {/* Modal: Manage All Classes (Edit & Delete) */}
-      {isManageClassesModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 my-auto max-h-[85vh] overflow-y-auto">
+      {isManageClassesModalOpen && createPortal(
+        <div className="fixed inset-0 z-[99999] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-900 border-2 border-indigo-500/40 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 my-auto max-h-[85vh] overflow-y-auto relative z-[100000]">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div>
                 <h3 className="font-bold text-white text-lg flex items-center gap-2">
@@ -741,13 +742,14 @@ export default function ClassStudentManager({
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Modal: Edit Class */}
-      {editingClass && (
-        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 my-auto max-h-[85vh] overflow-y-auto">
+      {editingClass && createPortal(
+        <div className="fixed inset-0 z-[99999] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-900 border-2 border-indigo-500/40 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 my-auto max-h-[85vh] overflow-y-auto relative z-[100000]">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h3 className="font-bold text-white text-lg flex items-center gap-2">
                 <Edit3 className="w-5 h-5 text-indigo-400" />
@@ -795,13 +797,14 @@ export default function ClassStudentManager({
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Modal: Add New Class */}
-      {isClassModalOpen && (
-        <div className="fixed inset-0 z-[9999] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-slate-900 border-2 border-indigo-500/50 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 my-auto relative z-[10000]">
+      {isClassModalOpen && createPortal(
+        <div className="fixed inset-0 z-[99999] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-900 border-2 border-indigo-500/50 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 my-auto relative z-[100000]">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h3 className="font-bold text-white text-lg flex items-center gap-2">
                 <FolderPlus className="w-5 h-5 text-indigo-400" />
@@ -851,13 +854,14 @@ export default function ClassStudentManager({
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Modal: Add New Student */}
-      {isAddStudentModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 my-auto max-h-[85vh] overflow-y-auto">
+      {isAddStudentModalOpen && createPortal(
+        <div className="fixed inset-0 z-[99999] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 my-auto max-h-[85vh] overflow-y-auto relative z-[100000]">
             
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h3 className="font-bold text-white text-lg">Enroll New Student</h3>
@@ -949,13 +953,14 @@ export default function ClassStudentManager({
             </form>
 
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Modal: Edit Student */}
-      {editingStudent && (
-        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 my-auto max-h-[85vh] overflow-y-auto">
+      {editingStudent && createPortal(
+        <div className="fixed inset-0 z-[99999] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 my-auto max-h-[85vh] overflow-y-auto relative z-[100000]">
             
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <h3 className="font-bold text-white text-lg">Edit Student Record</h3>
@@ -1043,7 +1048,8 @@ export default function ClassStudentManager({
             </form>
 
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
     </div>
