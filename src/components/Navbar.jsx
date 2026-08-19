@@ -157,26 +157,8 @@ export default function Navbar({
             </div>
           </div>
 
-          {/* Class Selector & Admin Access Button */}
+          {/* Theme & Admin Access Header Controls */}
           <div className="flex flex-wrap items-center gap-3">
-            
-            {/* Class Filter Dropdown */}
-            <div className="flex items-center gap-2 bg-slate-800/80 border border-slate-700/80 rounded-xl px-3 py-1.5 flex-1 md:flex-initial">
-              <Layers className="w-4 h-4 text-indigo-400 shrink-0" />
-              <span className="text-xs text-slate-400 font-medium shrink-0">Filter:</span>
-              <select
-                value={selectedClassId}
-                onChange={(e) => setSelectedClassId(e.target.value)}
-                className="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer w-full"
-              >
-                <option value="ALL" className="bg-slate-900 text-white">All Classes</option>
-                {(classes || []).map((c) => (
-                  <option key={c.id} value={c.id} className="bg-slate-900 text-white">
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </div>
 
             {/* Theme Toggle Button (Light / Dark Mode) */}
             <button
