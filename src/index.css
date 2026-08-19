@@ -22,37 +22,30 @@
 }
 
 /* ==========================================
-   🖨️ Universal Print CSS Rules (Certificates & Report Cards)
+   🖨️ Universal Print CSS Rules (Single Page A4 Print)
    ========================================== */
 @media print {
   @page {
     size: A4 portrait;
-    margin: 5mm;
+    margin: 0;
   }
 
-  body {
+  /* Hide main app root container to eliminate useless page 1 */
+  #root {
+    display: none !important;
+  }
+
+  html, body {
     background-color: #ffffff !important;
     color: #0f172a !important;
     width: 100% !important;
     height: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
+    overflow: visible !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color-adjust: exact !important;
-  }
-
-  /* Unhide root, modal wrappers, and print areas */
-  #root, 
-  .certificate-modal-wrapper, 
-  #certificate-print-area, 
-  #certificate-print-area *,
-  .report-modal-wrapper,
-  #report-card-print-area,
-  #report-card-print-area * {
-    visibility: visible !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
   }
 
   /* Hide non-print elements */
@@ -65,13 +58,22 @@
     display: none !important;
   }
 
+  /* Certificate Modal Print Settings */
+  body:has(.certificate-modal-wrapper) {
+    background-color: #0f172a !important;
+  }
+
   .certificate-modal-wrapper {
-    position: static !important;
+    display: block !important;
+    visibility: visible !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
     background-color: #0f172a !important;
     padding: 0 !important;
     margin: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
   }
 
   #certificate-print-area {
@@ -86,13 +88,18 @@
     border: 10px double #f59e0b !important;
   }
 
+  /* Report Card Modal Print Settings */
   .report-modal-wrapper {
-    position: static !important;
+    display: block !important;
+    visibility: visible !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
     background-color: #ffffff !important;
     padding: 0 !important;
     margin: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
   }
 
   #report-card-print-area {
@@ -104,7 +111,7 @@
     background-color: #ffffff !important;
     color: #0f172a !important;
     box-shadow: none !important;
-    border: 1px solid #cbd5e1 !important;
+    border: none !important;
   }
 }
 
