@@ -33,69 +33,84 @@ export default function App() {
 
   // Real-time Active Presence Tracker
   useEffect(() => {
-    let sessionId = sessionStorage.getItem('academy_session_id');
-    if (!sessionId) {
-      sessionId = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-      sessionStorage.setItem('academy_session_id', sessionId);
+    let unsubscribePresence = null;
+    let heartbeat = null;
+
+    try {
+      let sessionId = sessionStorage.getItem('academy_session_id');
+      if (!sessionId) {
+        sessionId = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+        sessionStorage.setItem('academy_session_id', sessionId);
+      }
+
+      const deviceType = window.innerWidth < 768 ? 'Mobile📱' : 'Desktop💻';
+
+      updatePresence(sessionId, deviceType).catch(() => {});
+      cleanStalePresence().catch(() => {});
+
+      heartbeat = setInterval(() => {
+        updatePresence(sessionId, deviceType).catch(() => {});
+      }, 45000);
+
+      unsubscribePresence = subscribeToPresence((activeSessions) => {
+        setOnlineUsers(activeSessions || []);
+      });
+
+      const handleUnload = () => {
+        removePresence(sessionId).catch(() => {});
+      };
+      window.addEventListener('beforeunload', handleUnload);
+
+      return () => {
+        if (heartbeat) clearInterval(heartbeat);
+        if (typeof unsubscribePresence === 'function') unsubscribePresence();
+        window.removeEventListener('beforeunload', handleUnload);
+      };
+    } catch (err) {
+      console.warn('Presence Tracker initialization warning:', err);
     }
-
-    const deviceType = window.innerWidth < 768 ? 'Mobile📱' : 'Desktop💻';
-
-    // Report presence immediately
-    updatePresence(sessionId, deviceType);
-    
-    // Clean stale sessions on mount
-    cleanStalePresence();
-
-    // Heartbeat every 45 seconds to stay active
-    const heartbeat = setInterval(() => {
-      updatePresence(sessionId, deviceType);
-    }, 45000);
-
-    // Subscribe to online sessions
-    const unsubscribePresence = subscribeToPresence((activeSessions) => {
-      setOnlineUsers(activeSessions);
-    });
-
-    const handleUnload = () => {
-      removePresence(sessionId);
-    };
-    window.addEventListener('beforeunload', handleUnload);
-
-    return () => {
-      clearInterval(heartbeat);
-      if (unsubscribePresence) unsubscribePresence();
-      window.removeEventListener('beforeunload', handleUnload);
-    };
   }, []);
 
   // Global Admin PIN State (Synced with localStorage & Firebase Cloud)
   const [adminPin, setAdminPin] = useState(() => {
-    return localStorage.getItem('academy_admin_pin') || '1234';
+    try {
+      return localStorage.getItem('academy_admin_pin') || '1234';
+    } catch (e) {
+      return '1234';
+    }
   });
 
   const handleUpdateAdminPin = (newPin) => {
     const stringPin = String(newPin);
     setAdminPin(stringPin);
-    localStorage.setItem('academy_admin_pin', stringPin);
-    updateAdminPinInCloud(stringPin);
+    try {
+      localStorage.setItem('academy_admin_pin', stringPin);
+    } catch (e) {}
+    updateAdminPinInCloud(stringPin).catch(() => {});
   };
 
   // Auto-seed existing student data & subscribe to real-time Admin PIN from Firestore
   useEffect(() => {
-    seedFirestoreData(data);
-    
-    // Subscribe to real-time cloud PIN changes
-    const unsubscribePin = subscribeToAdminPin(remotePin => {
-      if (remotePin) {
-        setAdminPin(String(remotePin));
-        localStorage.setItem('academy_admin_pin', String(remotePin));
+    try {
+      if (data) {
+        seedFirestoreData(data).catch(() => {});
       }
-    });
+      
+      const unsubscribePin = subscribeToAdminPin(remotePin => {
+        if (remotePin) {
+          setAdminPin(String(remotePin));
+          try {
+            localStorage.setItem('academy_admin_pin', String(remotePin));
+          } catch (e) {}
+        }
+      });
 
-    return () => {
-      if (unsubscribePin) unsubscribePin();
-    };
+      return () => {
+        if (typeof unsubscribePin === 'function') unsubscribePin();
+      };
+    } catch (err) {
+      console.warn('Admin PIN sync warning:', err);
+    }
   }, []);
 
   // Light / Dark Theme State
