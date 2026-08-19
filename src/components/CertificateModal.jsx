@@ -125,13 +125,13 @@ export default function CertificateModal({ scorer, month, onClose }) {
         <div id="certificate-print-area" className="certificate-print-area relative bg-gradient-to-br from-slate-900 via-indigo-950/60 to-slate-950 p-6 sm:p-10 rounded-2xl border-4 border-amber-500/80 shadow-2xl text-slate-100">
           
           {/* Decorative Inner Border Frame */}
-          <div className="border-2 border-amber-500/50 p-6 sm:p-8 rounded-xl relative space-y-6 text-center">
+          <div className="border-2 border-amber-500/50 p-6 sm:p-10 pb-10 sm:pb-12 rounded-xl relative space-y-6 text-center">
             
             {/* Corner Ornate Badges */}
-            <div className="absolute top-2 left-2 text-amber-400 text-xs font-serif font-bold opacity-80">❖ AL-ZIA ❖</div>
-            <div className="absolute top-2 right-2 text-amber-400 text-xs font-serif font-bold opacity-80">❖ ACADEMY ❖</div>
-            <div className="absolute bottom-2 left-2 text-amber-400 text-xs font-serif font-bold opacity-80">❖ EXCELLENCE ❖</div>
-            <div className="absolute bottom-2 right-2 text-amber-400 text-xs font-serif font-bold opacity-80">❖ MERIT ❖</div>
+            <div className="absolute top-2.5 left-3 text-amber-400 text-xs font-serif font-bold opacity-80 pointer-events-none">❖ AL-ZIA ❖</div>
+            <div className="absolute top-2.5 right-3 text-amber-400 text-xs font-serif font-bold opacity-80 pointer-events-none">❖ ACADEMY ❖</div>
+            <div className="absolute bottom-2.5 left-3 text-amber-400 text-xs font-serif font-bold opacity-80 pointer-events-none">❖ EXCELLENCE ❖</div>
+            <div className="absolute bottom-2.5 right-3 text-amber-400 text-xs font-serif font-bold opacity-80 pointer-events-none">❖ MERIT ❖</div>
 
             {/* Top Emblem & Header */}
             <div className="space-y-2">
@@ -193,7 +193,7 @@ export default function CertificateModal({ scorer, month, onClose }) {
             </div>
 
             {/* Bottom Signatures & Seal Grid */}
-            <div className="pt-8 flex items-end justify-between text-left text-xs text-slate-300">
+            <div className="pt-6 flex items-end justify-between text-left text-xs text-slate-300">
               
               {/* QR Verification Seal */}
               <div className="flex items-center gap-3">
@@ -221,8 +221,8 @@ export default function CertificateModal({ scorer, month, onClose }) {
 
               {/* Director Signature Line */}
               <div className="text-center space-y-1">
-                <div className="w-40 border-b-2 border-amber-400 font-serif italic text-sm text-indigo-300 font-bold pb-1">
-                  Haris Jabbar / Admin
+                <div className="w-40 border-b-2 border-amber-400 font-serif italic text-base text-indigo-300 font-bold pb-1">
+                  Administrator
                 </div>
                 <div className="text-[11px] font-bold text-white">Academy Director</div>
                 <div className="text-[9px] text-slate-400 uppercase tracking-wider">Al-Zia Science Academy</div>
