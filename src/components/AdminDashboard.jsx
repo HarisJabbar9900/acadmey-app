@@ -271,7 +271,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
                         {scorer.fname}
                       </p>
 
-                      <div className="bg-slate-950/80 p-2 rounded-lg border border-slate-800/80 space-y-1">
+                      <div className="bg-indigo-500/10 p-2.5 rounded-lg border border-indigo-500/20 space-y-1">
                         <div className="text-[11px] font-bold text-indigo-300 flex items-center justify-between">
                           <span>Overall Score:</span>
                           <span className="text-emerald-400 font-bold font-mono">{scorer.obtainedMarks} / {scorer.maxMarks}</span>
@@ -488,7 +488,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
             {filteredClasses.map((cls) => {
               const classTopper = studentPerformance.find(s => s.className === cls.name && s.classRank === 1 && s.totalMaxMarks > 0);
               return (
-                <div key={cls.id} className="bg-slate-950/80 border border-amber-500/30 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg relative overflow-hidden">
+                <div key={cls.id} className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm relative overflow-hidden">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-extrabold uppercase text-amber-400 font-mono tracking-wider">
                       Class {cls.name} 1st Rank
