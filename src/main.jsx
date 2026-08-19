@@ -22,7 +22,8 @@ class GlobalPortalBoundary extends Component {
       localStorage.clear();
       sessionStorage.clear();
     } catch (e) {}
-    window.location.href = window.location.origin + window.location.pathname + '?v=' + Date.now();
+    this.setState({ hasError: false, error: null });
+    window.location.href = window.location.origin + window.location.pathname;
   };
 
   render() {

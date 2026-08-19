@@ -4,7 +4,8 @@ import { Printer, GraduationCap, Award, Calendar, CheckCircle2, XCircle, FileTex
 export default function ReportCardModal({ student, month, data, onClose }) {
   if (!student) return null;
 
-  const studentClass = data.classes.find(c => c.id === student.classId);
+  const safeClasses = Array.isArray(data?.classes) ? data.classes : [];
+  const studentClass = safeClasses.find(c => c && c.id === student.classId);
 
   // 1. Calculate Monthly Test Scores for this student
   const monthlyTests = (data.tests || []).filter(t => {
