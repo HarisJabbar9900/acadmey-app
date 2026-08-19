@@ -29,6 +29,7 @@ import CertificateModal from './CertificateModal';
 export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn, onlineUsers = [] }) {
   const [selectedMonth, setSelectedMonth] = useState('2026-08');
   const [selectedReportStudent, setSelectedReportStudent] = useState(null);
+  const [selectedCertificateScorer, setSelectedCertificateScorer] = useState(null);
   const getMonthTitle = (monthStr) => {
     if (!monthStr) return '';
     try {
