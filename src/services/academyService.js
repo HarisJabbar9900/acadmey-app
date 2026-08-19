@@ -235,69 +235,59 @@ export const isFirebaseActive = () => {
 
 export const getInitialData = () => {
   const local = localStorage.getItem(STORAGE_KEY);
+  let parsed = null;
   if (local) {
     try {
-      const parsed = JSON.parse(local);
-      if (!parsed.students || parsed.students.length < 10) {
-        parsed.students = DEFAULT_STUDENTS;
-        parsed.tests = DEFAULT_TESTS;
-        parsed.fees = DEFAULT_FEES;
-        parsed.attendance = DEFAULT_ATTENDANCE;
-      }
-      if (!parsed.timetable) {
-        parsed.timetable = DEFAULT_TIMETABLE;
-      }
-      if (!parsed.resources) {
-        parsed.resources = DEFAULT_RESOURCES;
-      }
-      if (!parsed.fees) {
-        parsed.fees = DEFAULT_FEES;
-      }
-      if (!parsed.feedbacks) {
-        parsed.feedbacks = DEFAULT_FEEDBACKS;
-      }
-      if (!parsed.notices || parsed.notices.length === 0) {
-        parsed.notices = DEFAULT_NOTICES;
-      } else {
-        parsed.notices = parsed.notices.map(n => {
-          let ts = n.createdAt;
-          if (!ts && n.id && typeof n.id === 'string' && n.id.startsWith('ntc-')) {
-            const parsedTs = parseInt(n.id.replace('ntc-', ''), 10);
-            if (!isNaN(parsedTs) && parsedTs > 1000000000000) {
-              ts = parsedTs;
-            }
-          }
-          return {
-            ...n,
-            createdAt: ts || Date.now()
-          };
-        });
-      }
-      if (parsed.classes) {
-        parsed.classes = parsed.classes.map(c => {
-          const defaultClass = DEFAULT_CLASSES.find(dc => dc.id === c.id || dc.name === c.name);
-          return {
-            ...c,
-            subjects: c.subjects && c.subjects.length > 0 ? c.subjects : (defaultClass?.subjects || ['Physics', 'Chemistry', 'Math', 'Computer Science', 'English', 'Urdu'])
-          };
-        });
-      }
-      return parsed;
+      parsed = JSON.parse(local);
     } catch (e) {
       console.error('Failed to parse local storage', e);
     }
   }
-  return {
-    classes: DEFAULT_CLASSES,
-    students: DEFAULT_STUDENTS,
-    attendance: DEFAULT_ATTENDANCE,
-    tests: DEFAULT_TESTS,
-    timetable: DEFAULT_TIMETABLE,
-    resources: DEFAULT_RESOURCES,
-    fees: DEFAULT_FEES,
-    feedbacks: DEFAULT_FEEDBACKS,
-    notices: DEFAULT_NOTICES,
-  };
+
+  if (!parsed || typeof parsed !== 'object') {
+    parsed = {};
+  }
+
+  if (!Array.isArray(parsed.classes) || parsed.classes.length === 0) {
+    parsed.classes = DEFAULT_CLASSES;
+  } else {
+    parsed.classes = parsed.classes.map(c => {
+      const defaultClass = DEFAULT_CLASSES.find(dc => dc.id === c.id || dc.name === c.name);
+      return {
+        ...c,
+        subjects: Array.isArray(c.subjects) && c.subjects.length > 0 
+          ? c.subjects 
+          : (defaultClass?.subjects || ['Physics', 'Chemistry', 'Math', 'Computer Science', 'English', 'Urdu'])
+      };
+    });
+  }
+
+  if (!Array.isArray(parsed.students) || parsed.students.length === 0) {
+    parsed.students = DEFAULT_STUDENTS;
+  }
+  if (!Array.isArray(parsed.tests)) {
+    parsed.tests = DEFAULT_TESTS;
+  }
+  if (!Array.isArray(parsed.timetable)) {
+    parsed.timetable = DEFAULT_TIMETABLE;
+  }
+  if (!Array.isArray(parsed.resources)) {
+    parsed.resources = DEFAULT_RESOURCES;
+  }
+  if (!Array.isArray(parsed.feedbacks)) {
+    parsed.feedbacks = DEFAULT_FEEDBACKS;
+  }
+  if (!Array.isArray(parsed.notices)) {
+    parsed.notices = DEFAULT_NOTICES;
+  }
+  if (!parsed.fees || typeof parsed.fees !== 'object') {
+    parsed.fees = DEFAULT_FEES;
+  }
+  if (!parsed.attendance || typeof parsed.attendance !== 'object') {
+    parsed.attendance = DEFAULT_ATTENDANCE;
+  }
+
+  return parsed;
 };
 
 export const saveLocalData = (data) => {
