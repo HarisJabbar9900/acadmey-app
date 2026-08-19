@@ -488,12 +488,12 @@ export default function TestPaperGenerator({ classes = [] }) {
             <div className="pt-3 border-t border-slate-800 space-y-3">
               <div className="flex items-center justify-between text-slate-300 font-bold">
                 <span>Objective MCQs:</span>
-                <span className="text-amber-400 font-extrabold">{mcqCount} Questions</span>
+                <span className="text-amber-400 font-extrabold">{mcqCount} Questions {mcqCount === 0 && '(None)'}</span>
               </div>
               <input
                 type="range"
-                min="2"
-                max="10"
+                min="0"
+                max="15"
                 value={mcqCount}
                 onChange={(e) => setMcqCount(Number(e.target.value))}
                 className="w-full accent-amber-500 cursor-pointer"
@@ -501,12 +501,12 @@ export default function TestPaperGenerator({ classes = [] }) {
 
               <div className="flex items-center justify-between text-slate-300 font-bold">
                 <span>Short Questions:</span>
-                <span className="text-indigo-400 font-extrabold">{shortCount} Questions</span>
+                <span className="text-indigo-400 font-extrabold">{shortCount} Questions {shortCount === 0 && '(None)'}</span>
               </div>
               <input
                 type="range"
-                min="2"
-                max="8"
+                min="0"
+                max="10"
                 value={shortCount}
                 onChange={(e) => setShortCount(Number(e.target.value))}
                 className="w-full accent-indigo-500 cursor-pointer"
@@ -514,12 +514,12 @@ export default function TestPaperGenerator({ classes = [] }) {
 
               <div className="flex items-center justify-between text-slate-300 font-bold">
                 <span>Long / Essay Questions:</span>
-                <span className="text-purple-400 font-extrabold">{longCount} Questions</span>
+                <span className="text-purple-400 font-extrabold">{longCount} Questions {longCount === 0 && '(None)'}</span>
               </div>
               <input
                 type="range"
-                min="1"
-                max="4"
+                min="0"
+                max="5"
                 value={longCount}
                 onChange={(e) => setLongCount(Number(e.target.value))}
                 className="w-full accent-purple-500 cursor-pointer"
