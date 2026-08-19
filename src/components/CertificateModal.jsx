@@ -127,110 +127,110 @@ export default function CertificateModal({ scorer, month, onClose }) {
         </div>
 
         {/* Printable Certificate Frame */}
-        <div id="certificate-print-area" className="certificate-print-area relative bg-gradient-to-br from-amber-50/20 via-slate-900 to-indigo-950/40 p-6 sm:p-10 rounded-2xl border-4 border-amber-500/60 shadow-2xl text-slate-900 print:bg-white print:text-black print:p-8 print:border-8 print:border-amber-600 print:rounded-none">
+        <div id="certificate-print-area" className="certificate-print-area relative bg-gradient-to-br from-slate-900 via-indigo-950/60 to-slate-950 p-6 sm:p-10 rounded-2xl border-4 border-amber-500/80 shadow-2xl text-slate-100">
           
           {/* Decorative Inner Border Frame */}
-          <div className="border-2 border-amber-500/40 p-6 sm:p-8 rounded-xl relative space-y-6 text-center print:border-2 print:border-amber-700">
+          <div className="border-2 border-amber-500/50 p-6 sm:p-8 rounded-xl relative space-y-6 text-center">
             
             {/* Corner Ornate Badges */}
-            <div className="absolute top-2 left-2 text-amber-500 text-xs font-serif font-bold opacity-70 print:text-amber-700">❖ AL-ZIA ❖</div>
-            <div className="absolute top-2 right-2 text-amber-500 text-xs font-serif font-bold opacity-70 print:text-amber-700">❖ ACADEMY ❖</div>
-            <div className="absolute bottom-2 left-2 text-amber-500 text-xs font-serif font-bold opacity-70 print:text-amber-700">❖ EXCELLENCE ❖</div>
-            <div className="absolute bottom-2 right-2 text-amber-500 text-xs font-serif font-bold opacity-70 print:text-amber-700">❖ MERIT ❖</div>
+            <div className="absolute top-2 left-2 text-amber-400 text-xs font-serif font-bold opacity-80">❖ AL-ZIA ❖</div>
+            <div className="absolute top-2 right-2 text-amber-400 text-xs font-serif font-bold opacity-80">❖ ACADEMY ❖</div>
+            <div className="absolute bottom-2 left-2 text-amber-400 text-xs font-serif font-bold opacity-80">❖ EXCELLENCE ❖</div>
+            <div className="absolute bottom-2 right-2 text-amber-400 text-xs font-serif font-bold opacity-80">❖ MERIT ❖</div>
 
             {/* Top Emblem & Header */}
             <div className="space-y-2">
               <div className="flex items-center justify-center gap-3">
-                <Trophy className="w-10 h-10 text-amber-400 print:text-amber-600" />
-                <h1 className="text-3xl sm:text-4xl font-extrabold tracking-wider text-amber-400 print:text-amber-800 font-serif uppercase">
+                <Trophy className="w-10 h-10 text-amber-400" />
+                <h1 className="text-3xl sm:text-4xl font-extrabold tracking-wider text-amber-400 font-serif uppercase">
                   Al-Zia Science Academy
                 </h1>
-                <Trophy className="w-10 h-10 text-amber-400 print:text-amber-600" />
+                <Trophy className="w-10 h-10 text-amber-400" />
               </div>
-              <p className="text-xs sm:text-sm font-semibold tracking-widest text-indigo-300 uppercase print:text-slate-700 font-sans">
+              <p className="text-xs sm:text-sm font-semibold tracking-widest text-indigo-300 uppercase font-sans">
                 Center for Science, Computer & Modern Academic Learning
               </p>
-              <div className="w-32 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto rounded-full mt-2 print:bg-amber-600" />
+              <div className="w-32 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto rounded-full mt-2" />
             </div>
 
             {/* Certificate Title */}
             <div className="py-2">
-              <span className="inline-block px-6 py-2 bg-gradient-to-r from-amber-500/20 via-amber-500/30 to-amber-500/20 text-amber-300 border border-amber-500/40 rounded-full font-serif text-lg sm:text-2xl font-bold uppercase tracking-widest print:bg-amber-100 print:text-amber-900 print:border-amber-600">
+              <span className="inline-block px-6 py-2 bg-gradient-to-r from-amber-500/20 via-amber-500/30 to-amber-500/20 text-amber-300 border border-amber-500/40 rounded-full font-serif text-lg sm:text-2xl font-bold uppercase tracking-widest">
                 📜 Certificate of Excellence 📜
               </span>
-              <p className="text-xs font-serif italic text-slate-300 mt-2 print:text-slate-600">
+              <p className="text-xs font-serif italic text-slate-300 mt-2">
                 This prestigious certificate is proudly presented to
               </p>
             </div>
 
             {/* Recipient Name Box */}
-            <div className="py-2 border-b-2 border-amber-500/30 w-3/4 mx-auto print:border-amber-600">
-              <h2 className="text-3xl sm:text-4xl font-black text-white tracking-wide font-serif print:text-black">
+            <div className="py-2 border-b-2 border-amber-500/40 w-3/4 mx-auto">
+              <h2 className="text-3xl sm:text-4xl font-black text-white tracking-wide font-serif">
                 {scorer.studentName}
               </h2>
-              <p className="text-sm font-semibold text-amber-300 mt-1 print:text-amber-800">
-                Son / Daughter of: <span className="text-white print:text-black font-bold">{scorer.fname || 'N/A'}</span>
+              <p className="text-sm font-semibold text-amber-300 mt-1">
+                Son / Daughter of: <span className="text-white font-bold">{scorer.fname || 'N/A'}</span>
               </p>
             </div>
 
             {/* Academic Details & Citation */}
-            <div className="max-w-2xl mx-auto space-y-3 text-sm text-slate-200 print:text-slate-800 font-sans leading-relaxed">
+            <div className="max-w-2xl mx-auto space-y-3 text-sm text-slate-200 font-sans leading-relaxed">
               <p>
-                In recognition of outstanding academic dedication and achieving <strong className="text-amber-400 print:text-amber-800 font-bold">1st Position (Class Topper)</strong> in <strong className="text-indigo-300 print:text-indigo-900 font-bold">Class {scorer.className}</strong> for the entire month of <strong className="text-white print:text-black font-bold">{monthFormatted}</strong>.
+                In recognition of outstanding academic dedication and achieving <strong className="text-amber-400 font-bold">1st Position (Class Topper)</strong> in <strong className="text-indigo-300 font-bold">Class {scorer.className}</strong> for the entire month of <strong className="text-white font-bold">{monthFormatted}</strong>.
               </p>
               
-              <div className="inline-flex flex-wrap items-center justify-center gap-4 bg-slate-950/80 border border-amber-500/30 px-6 py-2.5 rounded-2xl print:bg-amber-50 print:border-amber-400 print:text-black font-mono">
+              <div className="inline-flex flex-wrap items-center justify-center gap-4 bg-slate-950/90 border border-amber-500/40 px-6 py-2.5 rounded-2xl font-mono">
                 <div>
-                  <span className="text-xs text-slate-400 print:text-slate-600 block">Roll Number:</span>
-                  <strong className="text-indigo-400 print:text-indigo-900 text-base">#{scorer.rollNo}</strong>
+                  <span className="text-xs text-slate-400 block">Roll Number:</span>
+                  <strong className="text-indigo-400 text-base">#{scorer.rollNo}</strong>
                 </div>
-                <div className="w-px h-6 bg-slate-800 print:bg-amber-300" />
+                <div className="w-px h-6 bg-slate-800" />
                 <div>
-                  <span className="text-xs text-slate-400 print:text-slate-600 block">Overall Monthly Marks:</span>
-                  <strong className="text-emerald-400 print:text-emerald-800 text-base">{scorer.obtainedMarks} / {scorer.maxMarks}</strong>
+                  <span className="text-xs text-slate-400 block">Overall Monthly Marks:</span>
+                  <strong className="text-emerald-400 text-base">{scorer.obtainedMarks} / {scorer.maxMarks}</strong>
                 </div>
-                <div className="w-px h-6 bg-slate-800 print:bg-amber-300" />
+                <div className="w-px h-6 bg-slate-800" />
                 <div>
-                  <span className="text-xs text-slate-400 print:text-slate-600 block">Aggregate Percentage:</span>
-                  <strong className="text-amber-400 print:text-amber-800 text-base">{scorer.percentage}%</strong>
+                  <span className="text-xs text-slate-400 block">Aggregate Percentage:</span>
+                  <strong className="text-amber-400 text-base">{scorer.percentage}%</strong>
                 </div>
               </div>
             </div>
 
             {/* Bottom Signatures & Seal Grid */}
-            <div className="pt-8 flex items-end justify-between text-left text-xs text-slate-300 print:text-slate-800">
+            <div className="pt-8 flex items-end justify-between text-left text-xs text-slate-300">
               
               {/* QR Verification Seal */}
               <div className="flex items-center gap-3">
-                <div className="w-16 h-16 rounded-xl border border-amber-500/40 p-1.5 bg-white print:border-amber-600 flex flex-col items-center justify-center text-slate-900 shrink-0">
+                <div className="w-16 h-16 rounded-xl border border-amber-500/50 p-1.5 bg-white flex flex-col items-center justify-center text-slate-900 shrink-0 shadow-lg">
                   <svg className="w-full h-full text-slate-900" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm8-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm13-2h3v3h-3v-3zm-5 0h3v3h-3v-3zm3 3h3v3h-3v-3zm-3 3h3v3h-3v-3zm5 0h3v3h-3v-3z" />
                   </svg>
                 </div>
                 <div>
-                  <div className="flex items-center gap-1 text-[11px] font-bold text-amber-400 print:text-amber-800">
+                  <div className="flex items-center gap-1 text-[11px] font-bold text-amber-400">
                     <ShieldCheck className="w-3.5 h-3.5" /> Official Verified
                   </div>
-                  <div className="text-[10px] font-mono text-slate-400 print:text-slate-600">Issued: {issueDate}</div>
-                  <div className="text-[9px] font-mono text-slate-500 print:text-slate-500">Al-Zia Merit Reg #AZ-{scorer.rollNo}-{scorer.classId}</div>
+                  <div className="text-[10px] font-mono text-slate-400">Issued: {issueDate}</div>
+                  <div className="text-[9px] font-mono text-slate-500">Al-Zia Merit Reg #AZ-{scorer.rollNo}-{scorer.classId}</div>
                 </div>
               </div>
 
               {/* Gold Ribbon Seal Emblem */}
               <div className="hidden sm:flex flex-col items-center justify-center">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 border-2 border-white shadow-xl flex items-center justify-center text-slate-950 font-bold text-center text-[10px] p-1 print:border-amber-800">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 border-2 border-white shadow-xl flex items-center justify-center text-slate-950 font-bold text-center text-[10px] p-1">
                   🏆 TOPPER 1ST POS
                 </div>
-                <span className="text-[10px] font-mono text-amber-400 print:text-amber-800 mt-1 font-bold">MERIT SEAL</span>
+                <span className="text-[10px] font-mono text-amber-400 mt-1 font-bold">MERIT SEAL</span>
               </div>
 
               {/* Director Signature Line */}
               <div className="text-center space-y-1">
-                <div className="w-40 border-b-2 border-slate-400 print:border-black font-serif italic text-sm text-indigo-300 print:text-black font-bold pb-1">
+                <div className="w-40 border-b-2 border-amber-400 font-serif italic text-sm text-indigo-300 font-bold pb-1">
                   Haris Jabbar / Admin
                 </div>
-                <div className="text-[11px] font-bold text-white print:text-black">Academy Director</div>
-                <div className="text-[9px] text-slate-400 print:text-slate-600 uppercase tracking-wider">Al-Zia Science Academy</div>
+                <div className="text-[11px] font-bold text-white">Academy Director</div>
+                <div className="text-[9px] text-slate-400 uppercase tracking-wider">Al-Zia Science Academy</div>
               </div>
 
             </div>
@@ -238,7 +238,7 @@ export default function CertificateModal({ scorer, month, onClose }) {
         </div>
       </div>
 
-      {/* Print Specific CSS Styles (1 Single Sheet Output) */}
+      {/* Print Specific CSS Styles (Rich Dark & Gold Colorful A4 Landscape) */}
       <style>{`
         @media print {
           @page {
@@ -250,11 +250,14 @@ export default function CertificateModal({ scorer, month, onClose }) {
             height: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
-            background: white !important;
+            background-color: #0b0f19 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
             overflow: hidden !important;
           }
           
-          /* Hide non-print containers without visibility rules */
+          /* Hide non-print containers */
           nav, 
           footer, 
           header, 
@@ -264,33 +267,37 @@ export default function CertificateModal({ scorer, month, onClose }) {
             display: none !important;
           }
           
-          /* Force certificate print frame to fill print screen */
           .certificate-modal-wrapper {
             position: fixed !important;
-            left: 0 !important;
-            top: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            box-sizing: border-box !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
             margin: 0 !important;
             padding: 0 !important;
-            background: white !important;
+            background-color: #0b0f19 !important;
             z-index: 99999999 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           
           .certificate-print-area {
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
             box-sizing: border-box !important;
             margin: 0 !important;
-            padding: 24px !important;
-            background-color: white !important;
-            color: black !important;
-            border: 8px double #b45309 !important;
+            padding: 2.5rem !important;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #020617 100%) !important;
+            color: #ffffff !important;
+            border: 12px double #f59e0b !important;
             box-shadow: none !important;
+            border-radius: 0 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
           }
         }
       `}</style>
