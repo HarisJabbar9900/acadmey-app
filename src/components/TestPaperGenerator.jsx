@@ -16,7 +16,8 @@ import {
   Copy, 
   Loader2,
   ListChecks,
-  FileSpreadsheet
+  FileSpreadsheet,
+  GraduationCap
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
