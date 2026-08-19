@@ -58,8 +58,8 @@ export default function StudyMaterial({ data, selectedClassId, isAdminLoggedIn, 
     const file = e.target.files[0];
     setFileError('');
     if (file) {
-      if (file.size > 3 * 1024 * 1024) { // 3MB limit for inline base64
-        setFileError('File size is larger than 3MB. For large PDF books, please paste a Google Drive link below.');
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit for direct PDF upload
+        setFileError('File size is larger than 10MB. For heavy 50MB+ complete textbooks, please paste a Google Drive or OneDrive link below.');
       }
 
       if (isEdit) {
