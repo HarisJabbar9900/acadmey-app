@@ -78,11 +78,25 @@ export default function ReportCardModal({ student, month, data, onClose }) {
     ? Math.round(((presentDays + (lateDays * 0.5)) / totalDays) * 100) 
     : 100;
 
+  // Month Title Formatter
+  const getMonthTitle = () => {
+    if (!month) return 'Current Month';
+    try {
+      const [year, m] = month.split('-');
+      const date = new Date(year, parseInt(m, 10) - 1, 1);
+      return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+    } catch (e) {
+      return month;
+    }
+  };
+
+  const monthFormatted = getMonthTitle();
+  const monthClean = monthFormatted.replace(/\s+/g, '_');
+
   const handlePrint = () => {
     const oldTitle = document.title;
-    const cleanName = (student.name || 'Student').trim().replace(/\s+/g, '_');
-    const cleanRoll = (student.rollNo || '0').trim();
-    document.title = `Report_Card_${cleanName}_Roll_${cleanRoll}`;
+    const studentNameClean = (student.name || 'Student').trim();
+    document.title = `${studentNameClean} - Report Card ${monthFormatted}`;
     window.print();
     setTimeout(() => {
       document.title = oldTitle;
@@ -93,9 +107,8 @@ export default function ReportCardModal({ student, month, data, onClose }) {
     const reportElement = document.getElementById('report-card-print-area');
     if (!reportElement) return;
 
-    const cleanName = (student.name || 'Student').trim().replace(/\s+/g, '_');
-    const cleanRoll = (student.rollNo || '0').trim();
-    const fileName = `Report_Card_${cleanName}_Roll_${cleanRoll}.png`;
+    const studentNameClean = (student.name || 'Student').trim().replace(/\s+/g, '_');
+    const fileName = `${studentNameClean}_Report_Card_${monthClean}.png`;
 
     try {
       setIsDownloading(true);
@@ -121,20 +134,6 @@ export default function ReportCardModal({ student, month, data, onClose }) {
       setIsDownloading(false);
     }
   };
-
-  // Month Title Formatter
-  const getMonthTitle = () => {
-    if (!month) return 'Current Month';
-    try {
-      const [year, m] = month.split('-');
-      const date = new Date(year, parseInt(m, 10) - 1, 1);
-      return date.toLocaleString('default', { month: 'long', year: 'numeric' });
-    } catch (e) {
-      return month;
-    }
-  };
-
-  const monthFormatted = getMonthTitle();
 
   return createPortal(
     <div className="report-modal-wrapper fixed inset-0 z-[99999] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
