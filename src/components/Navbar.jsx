@@ -16,6 +16,8 @@ import {
   BookOpen,
   CreditCard,
   MessageSquare,
+  FileText,
+  Sparkles,
   Sun,
   Moon
 } from 'lucide-react';
@@ -59,6 +61,7 @@ export default function Navbar({
     { id: 'timetable', label: 'Class Timetable', icon: Calendar },
     ...(isAdminLoggedIn ? [{ id: 'fees', label: 'Fee Manager', icon: CreditCard }] : []),
     { id: 'library', label: 'Study Material', icon: BookOpen },
+    { id: 'paper', label: '📝 AI Test Generator', icon: FileText },
     ...(isAdminLoggedIn ? [{ id: 'attendance', label: 'Daily Attendance', icon: ClipboardCheck }] : []),
     { id: 'marks', label: 'Tests & Marks', icon: Award },
     { id: 'students', label: 'Classes & Students', icon: Users },

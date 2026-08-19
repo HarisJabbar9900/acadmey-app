@@ -9,6 +9,7 @@ import MarksLedger from './components/MarksLedger';
 import ClassStudentManager from './components/ClassStudentManager';
 import StudentFeedback from './components/StudentFeedback';
 import NoticeBoard from './components/NoticeBoard';
+import TestPaperGenerator from './components/TestPaperGenerator';
 import { 
   getInitialData, 
   saveLocalData, 
@@ -426,6 +427,10 @@ export default function App() {
             onUpdateResource={handleUpdateResource}
             onDeleteResource={handleDeleteResource}
           />
+        )}
+
+        {activeTab === 'paper' && (
+          <TestPaperGenerator classes={data.classes || []} />
         )}
 
         {activeTab === 'attendance' && (
