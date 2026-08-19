@@ -86,8 +86,17 @@ export default function ReportCardModal({ student, month, data, onClose }) {
           <p className="text-xs font-bold text-slate-600 uppercase tracking-widest">
             Official Monthly Student Progress & Performance Report Card
           </p>
-          <div className="inline-block bg-indigo-900 text-white text-xs font-mono font-bold px-3 py-1 rounded-full mt-1">
-            Month: {month}
+          <div className="inline-block bg-indigo-900 text-white text-xs font-mono font-bold px-3.5 py-1 rounded-full mt-1">
+            Month: {(() => {
+              if (!month) return 'Current Month';
+              try {
+                const [year, m] = month.split('-');
+                const date = new Date(year, parseInt(m, 10) - 1, 1);
+                return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+              } catch (e) {
+                return month;
+              }
+            })()}
           </div>
         </div>
 

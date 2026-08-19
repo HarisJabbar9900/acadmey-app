@@ -29,7 +29,18 @@ import CertificateModal from './CertificateModal';
 export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn, onlineUsers = [] }) {
   const [selectedMonth, setSelectedMonth] = useState('2026-08');
   const [selectedReportStudent, setSelectedReportStudent] = useState(null);
-  const [selectedCertificateScorer, setSelectedCertificateScorer] = useState(null);
+  const getMonthTitle = (monthStr) => {
+    if (!monthStr) return '';
+    try {
+      const [year, m] = monthStr.split('-');
+      const date = new Date(year, parseInt(m, 10) - 1, 1);
+      return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+    } catch (e) {
+      return monthStr;
+    }
+  };
+
+  const formattedMonthName = getMonthTitle(selectedMonth);
 
   const safeOnlineUsers = Array.isArray(onlineUsers) ? onlineUsers : [];
   const onlineCount = safeOnlineUsers.length;
@@ -408,7 +419,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
               Performance Chart
             </h3>
             <p className="text-xs text-slate-400 mb-6">
-              Cumulative score percentages for {selectedMonth}
+              Cumulative score percentages for {formattedMonthName}
             </p>
           </div>
 
@@ -442,7 +453,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 mb-4 gap-2">
             <div>
               <h3 className="text-lg font-bold text-white">Monthly Marks Accumulation Ledger</h3>
-              <p className="text-xs text-slate-400">Total obtained marks vs max available marks for {selectedMonth}</p>
+              <p className="text-xs text-slate-400">Total obtained marks vs max available marks for {formattedMonthName}</p>
             </div>
             <span className="text-xs font-medium px-3 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-full w-fit">
               {monthlyTests.length} Subject Test(s) Evaluated
