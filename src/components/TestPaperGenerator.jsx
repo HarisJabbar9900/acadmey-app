@@ -17,109 +17,34 @@ import {
   Loader2,
   ListChecks,
   FileSpreadsheet,
-  GraduationCap
+  GraduationCap,
+  Upload,
+  FileType,
+  FileCheck,
+  Check
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
-// Intelligent Question Bank Presets by Subject & Topic
-const QUESTION_BANK = {
-  'Computer Science': {
-    mcqs: [
-      { q: "Which symbol is used for flowchart decision making?", options: ["Oval", "Rectangle", "Diamond", "Parallelogram"], ans: "Diamond" },
-      { q: "Which operator is used for logical AND in C language?", options: ["&", "&&", "|", "||"], ans: "&&" },
-      { q: "What is the size of an integer data type in 32-bit C compiler?", options: ["1 Byte", "2 Bytes", "4 Bytes", "8 Bytes"], ans: "4 Bytes" },
-      { q: "Which loop guarantees execution at least once?", options: ["for loop", "while loop", "do-while loop", "nested loop"], ans: "do-while loop" },
-      { q: "Which memory is volatile in computer systems?", options: ["ROM", "Hard Disk", "RAM", "Flash Memory"], ans: "RAM" },
-      { q: "Which header file is required for printf() and scanf()?", options: ["<conio.h>", "<math.h>", "<stdio.h>", "<stdlib.h>"], ans: "<stdio.h>" },
-      { q: "What does HTML stand for?", options: ["Hyper Text Markup Language", "High Tech Machine Language", "Hyperlink Text Module Language", "Home Tool Markup Language"], ans: "Hyper Text Markup Language" },
-      { q: "Which statement is used to terminate a loop prematurely?", options: ["exit", "stop", "break", "continue"], ans: "break" }
-    ],
-    shorts: [
-      "Define a variable and state rules for naming variables in C language.",
-      "Differentiate between compiler and interpreter with examples.",
-      "Explain the difference between syntax error and logical error.",
-      "What is an algorithm? Write two advantages of using flowcharts.",
-      "Explain the function of CPU registers (MAR and MDR).",
-      "What is the purpose of switch statement? Give syntax.",
-      "Define array and explain how 1D array is declared in C."
-    ],
-    longs: [
-      { main: "Explain different types of loops in C language with syntax and programming code examples.", parts: ["a) Differentiate between while and do-while loop.", "b) Write a program to print first 10 natural numbers using for loop."] },
-      { main: "What is Data Type? Explain Primary Data Types in C in detail with memory sizes and range.", parts: ["a) Explain int, float, and char data types.", "b) Discuss type casting with an example."] }
-    ]
-  },
-  'Physics': {
-    mcqs: [
-      { q: "What is the SI unit of Force?", options: ["Joule", "Pascal", "Newton", "Watt"], ans: "Newton" },
-      { q: "The rate of change of momentum is equal to:", options: ["Work", "Applied Force", "Impulse", "Acceleration"], ans: "Applied Force" },
-      { q: "Work done is maximum when the angle between Force and Displacement is:", options: ["0°", "45°", "90°", "180°"], ans: "0°" },
-      { q: "Which instrument is used to measure potential difference?", options: ["Ammeter", "Voltmeter", "Galvanometer", "Rheostat"], ans: "Voltmeter" },
-      { q: "Sound waves are which type of waves?", options: ["Transverse", "Electromagnetic", "Longitudinal", "Radio Waves"], ans: "Longitudinal" },
-      { q: "Value of 'g' at the surface of Earth is approximately:", options: ["8.8 m/s²", "9.8 m/s²", "10.8 m/s²", "12 m/s²"], ans: "9.8 m/s²" }
-    ],
-    shorts: [
-      "State Newton's Second Law of Motion and derive its formula F = ma.",
-      "Define Kinetic Energy and write its mathematical equation.",
-      "Explain Pascal's Law and name two hydraulic applications.",
-      "Differentiate between speed and velocity with SI units.",
-      "State Hooke's Law and define Elastic Limit.",
-      "What is total internal reflection? State conditions for its occurrence."
-    ],
-    longs: [
-      { main: "Define Work. Derive the expression for Kinetic Energy (K.E = 1/2 mv²).", parts: ["a) Explain Law of Conservation of Energy with diagram.", "b) Calculate work done when 50N force moves a body through 5m."] },
-      { main: "State Ohm's Law. Explain series and parallel combination of resistors with circuit diagrams.", parts: ["a) Derive equivalent resistance for series circuit.", "b) State limitations of Ohm's Law."] }
-    ]
-  },
-  'Chemistry': {
-    mcqs: [
-      { q: "What is the atomic number of Carbon?", options: ["6", "8", "12", "14"], ans: "6" },
-      { q: "pH of pure neutral water at 25°C is:", options: ["0", "5", "7", "14"], ans: "7" },
-      { q: "The horizontal rows in the Periodic Table are called:", options: ["Groups", "Periods", "Blocks", "Families"], ans: "Periods" },
-      { q: "Which chemical bond is formed by mutual sharing of electrons?", options: ["Ionic Bond", "Covalent Bond", "Metallic Bond", "Coordinate Bond"], ans: "Covalent Bond" },
-      { q: "Gas law stating V ∝ T at constant pressure is:", options: ["Boyle's Law", "Charles's Law", "Avogadro's Law", "Dalton's Law"], ans: "Charles's Law" }
-    ],
-    shorts: [
-      "State Boyle's Law and write its mathematical equation.",
-      "Differentiate between Ionic and Covalent compounds with two properties.",
-      "What is Avogadro's number? Write its numerical value.",
-      "Explain the concept of pH and pOH.",
-      "Define isotopes and give two examples of isotopes of Hydrogen.",
-      "What is electronegativity? State its trend in the periodic table."
-    ],
-    longs: [
-      { main: "Explain Rutherford's Atomic Model and state its main drawbacks.", parts: ["a) Write Bohr's Atomic Theory postulates.", "b) Compare Rutherford and Bohr atomic models."] },
-      { main: "Define Chemical Equilibrium. State Le Chatelier's Principle and explain effect of concentration.", parts: ["a) Derive equilibrium constant Expression (Kc).", "b) State two applications of equilibrium constant."] }
-    ]
-  },
-  'Mathematics': {
-    mcqs: [
-      { q: "Value of sin(90°) is:", options: ["0", "0.5", "1", "Undefined"], ans: "1" },
-      { q: "The roots of quadratic equation ax² + bx + c = 0 are real and equal if Discriminant is:", options: ["D > 0", "D = 0", "D < 0", "D = 1"], ans: "D = 0" },
-      { q: "Derivative of xⁿ with respect to x is:", options: ["xⁿ⁺¹", "n·xⁿ⁻¹", "n·xⁿ⁺¹", "xⁿ/n"], ans: "n·xⁿ⁻¹" },
-      { q: "A matrix having single row is called:", options: ["Column Matrix", "Row Matrix", "Square Matrix", "Diagonal Matrix"], ans: "Row Matrix" }
-    ],
-    shorts: [
-      "Solve the quadratic equation by factorization: x² - 5x + 6 = 0.",
-      "Find the determinant of matrix A = [[2, 4], [1, 3]].",
-      "State Pythagorean Theorem and write its formula.",
-      "Find the 10th term of Arithmetic Progression: 2, 5, 8, 11...",
-      "Evaluate: ∫ (3x² + 2x + 1) dx."
-    ],
-    longs: [
-      { main: "Solve the system of linear equations using Cramer's Rule / Matrix Inversion Method.", parts: ["a) 2x + 3y = 12", "b) x - y = 1"] },
-      { main: "Prove that: (sin θ + cos θ)² = 1 + 2 sin θ cos θ.", parts: ["a) Verify trigonometric identity for θ = 30°.", "b) State fundamental trigonometric identities."] }
-    ]
-  }
-};
+// Default Sample Syllabus Text
+const SAMPLE_SYLLABUS_TEXT = `Data structures are specialized formats for organizing, processing, retrieving and storing data. An array is a collection of elements identified by index or key. A linked list consists of nodes where each node contains data and a reference pointer to the next node. Stack is a linear data type that follows Last In First Out (LIFO) principle. Queue is a linear data structure that follows First In First Out (FIFO) order. Trees and graphs are non-linear data structures used for hierarchical and networked data representation. Sorting algorithms like QuickSort and MergeSort organize elements in specific order for fast searching. Binary Search algorithm requires sorted data and has a time complexity of O(log n). Memory management in C is handled using malloc and free functions to prevent memory leaks. Encryption is the process of converting plaintext into ciphertext to secure information.`;
 
 export default function TestPaperGenerator({ classes = [] }) {
-  // Form Configuration State
-  const [topicTitle, setTopicTitle] = useState('Chapter 1: Introduction & Core Concepts');
+  // Input Mode: 'text' | 'file' | 'preset'
+  const [inputMode, setInputMode] = useState('text');
+  
+  // Custom Syllabus / Notes Text State
+  const [customText, setCustomText] = useState(SAMPLE_SYLLABUS_TEXT);
+  const [fileName, setFileName] = useState('');
+  const [parsingStatus, setParsingStatus] = useState('');
+
+  // Paper Configuration State
+  const [paperTitle, setPaperTitle] = useState('Data Structures & Algorithms Evaluation');
   const [selectedClass, setSelectedClass] = useState('10th');
   const [subject, setSubject] = useState('Computer Science');
   const [paperType, setPaperType] = useState('Monthly Test Exam');
   const [totalTime, setTotalTime] = useState('45 Minutes');
   const [totalMarks, setTotalMarks] = useState('25');
+  
   const [mcqCount, setMcqCount] = useState(5);
   const [shortCount, setShortCount] = useState(5);
   const [longCount, setLongCount] = useState(2);
@@ -127,40 +52,183 @@ export default function TestPaperGenerator({ classes = [] }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
-  // Generated Paper Paper Data State
-  const [generatedPaper, setGeneratedPaper] = useState(() => buildExamPaper());
+  // Generated Paper Questions State
+  const [generatedPaper, setGeneratedPaper] = useState(() => buildExamPaper(customText, 5, 5, 2));
 
-  function buildExamPaper() {
-    const bank = QUESTION_BANK[subject] || QUESTION_BANK['Computer Science'];
+  // NLP Question Extractor from Custom Text / File Content
+  function extractQuestionsFromCustomText(rawText, reqMcqs, reqShorts, reqLongs) {
+    const textToProcess = (rawText && rawText.trim().length >= 30) ? rawText : SAMPLE_SYLLABUS_TEXT;
     
-    // Pick MCQs
-    const shuffledMcqs = [...bank.mcqs].sort(() => 0.5 - Math.random());
-    const selectedMcqs = shuffledMcqs.slice(0, Math.min(mcqCount, shuffledMcqs.length));
+    // Clean & Split Text into Sentences and Paragraphs
+    const cleanedText = textToProcess.replace(/\r\n/g, '\n');
+    const sentences = cleanedText
+      .split(/(?<=[.?!])\s+/)
+      .map(s => s.trim())
+      .filter(s => s.length > 15 && s.length < 280);
 
-    // Pick Short Questions
-    const shuffledShorts = [...bank.shorts].sort(() => 0.5 - Math.random());
-    const selectedShorts = shuffledShorts.slice(0, Math.min(shortCount, shuffledShorts.length));
+    const paragraphs = cleanedText
+      .split(/\n\s*\n/)
+      .map(p => p.trim())
+      .filter(p => p.length > 30);
 
-    // Pick Long Questions
-    const shuffledLongs = [...bank.longs].sort(() => 0.5 - Math.random());
-    const selectedLongs = shuffledLongs.slice(0, Math.min(longCount, shuffledLongs.length));
+    // 1. Extract MCQs from definitions & sentences
+    const mcqs = [];
+    sentences.forEach((sent) => {
+      if (mcqs.length >= reqMcqs) return;
+
+      if (sent.includes(' is ') || sent.includes(' are ') || sent.includes(' defines ') || sent.includes(' follows ')) {
+        const isMatch = sent.match(/\b(is|are|follows|defines)\b/i);
+        if (isMatch) {
+          const splitIdx = isMatch.index;
+          const subjectTerm = sent.substring(0, splitIdx).trim();
+          const predicate = sent.substring(splitIdx + isMatch[0].length).trim().replace(/[.?!]$/, '');
+
+          if (subjectTerm.length >= 2 && subjectTerm.length < 40 && predicate.length > 10) {
+            // Collect distractors from other sentences
+            const otherTerms = sentences
+              .map(s => s.split(' ')[0])
+              .filter(t => t && t.toLowerCase() !== subjectTerm.toLowerCase() && t.length > 3)
+              .slice(0, 3);
+
+            const optionsList = [subjectTerm, ...otherTerms];
+            while (optionsList.length < 4) {
+              optionsList.push(`Option ${String.fromCharCode(65 + optionsList.length)}`);
+            }
+            
+            // Shuffle Options
+            const shuffledOptions = optionsList.sort(() => 0.5 - Math.random());
+
+            mcqs.push({
+              q: `Which of the following ${isMatch[0]} ${predicate.substring(0, 110)}?`,
+              options: shuffledOptions,
+              ans: subjectTerm
+            });
+          }
+        }
+      }
+    });
+
+    // Fill remaining MCQs with fill-in-blank sentences if needed
+    if (mcqs.length < reqMcqs) {
+      sentences.forEach((sent) => {
+        if (mcqs.length >= reqMcqs) return;
+        const words = sent.split(' ').filter(w => w.length > 4 && !/^[0-9]+$/.test(w));
+        if (words.length > 2) {
+          const targetWord = words[Math.floor(Math.random() * words.length)];
+          const blankSentence = sent.replace(targetWord, '__________');
+          
+          const options = [
+            targetWord, 
+            'System', 
+            'Process', 
+            'Algorithm'
+          ].sort(() => 0.5 - Math.random());
+
+          mcqs.push({
+            q: `Fill in the blank: "${blankSentence}"`,
+            options: options,
+            ans: targetWord
+          });
+        }
+      });
+    }
+
+    // 2. Extract Short Answer Questions
+    const shorts = [];
+    sentences.forEach((sent) => {
+      if (shorts.length >= reqShorts) return;
+      
+      const firstWord = sent.split(' ')[0];
+      if (sent.includes(' is ') || sent.includes(' defined ') || sent.includes(' used ')) {
+        shorts.push(`Explain the concept and significance of "${firstWord}" as described in the text.`);
+      } else if (sent.length > 25) {
+        shorts.push(`Briefly discuss: "${sent.substring(0, 85)}..."`);
+      }
+    });
+
+    while (shorts.length < reqShorts) {
+      shorts.push(`Write a concise short note on Key Concept ${shorts.length + 1} mentioned in the syllabus.`);
+    }
+
+    // 3. Extract Long Essay Questions
+    const longs = [];
+    paragraphs.forEach((p) => {
+      if (longs.length >= reqLongs) return;
+      const sents = p.split(/(?<=[.?!])\s+/);
+      const mainTitle = sents[0] ? sents[0].substring(0, 90) : 'Theoretical Foundations';
+
+      longs.push({
+        main: `Detailed Question: Comprehensive analysis of "${mainTitle}..."`,
+        parts: [
+          `a) Explain the fundamental principles and working mechanisms in detail.`,
+          `b) Discuss practical applications and key advantages based on the provided text.`
+        ]
+      });
+    });
+
+    while (longs.length < reqLongs) {
+      longs.push({
+        main: `Detailed Question ${longs.length + 1}: Discuss the theoretical models and implementations covered in this chapter.`,
+        parts: [
+          `a) Derive formulas / draw block diagrams where appropriate.`,
+          `b) Highlight core advantages and limitations.`
+        ]
+      });
+    }
 
     return {
-      mcqs: selectedMcqs,
-      shorts: selectedShorts,
-      longs: selectedLongs
+      mcqs: mcqs.slice(0, reqMcqs),
+      shorts: shorts.slice(0, reqShorts),
+      longs: longs.slice(0, reqLongs),
+      parsedSentenceCount: sentences.length,
+      wordCount: textToProcess.trim().split(/\s+/).length
     };
   }
 
+  function buildExamPaper(text, mCount = mcqCount, sCount = shortCount, lCount = longCount) {
+    return extractQuestionsFromCustomText(text, mCount, sCount, lCount);
+  }
+
+  // Handle File Upload (.txt or .pdf text stream)
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setFileName(file.name);
+    setParsingStatus('Reading and extracting text content...');
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const textContent = event.target.result;
+      if (textContent && typeof textContent === 'string') {
+        // Clean binary noise if PDF stream was uploaded as raw text
+        const cleaned = textContent.replace(/[^\x20-\x7E\n\r\t]/g, ' ').replace(/\s+/g, ' ');
+        setCustomText(cleaned);
+        setParsingStatus(`Successfully extracted text! (${cleaned.split(/\s+/).length} words found)`);
+        
+        // Auto regenerate paper with uploaded file text
+        setGeneratedPaper(buildExamPaper(cleaned, mcqCount, shortCount, longCount));
+      } else {
+        setParsingStatus('Could not read text content from file.');
+      }
+    };
+
+    reader.onerror = () => {
+      setParsingStatus('Error reading file.');
+    };
+
+    reader.readAsText(file);
+  };
+
   const handleGenerate = (e) => {
     if (e) e.preventDefault();
-    setGeneratedPaper(buildExamPaper());
+    setGeneratedPaper(buildExamPaper(customText, mcqCount, shortCount, longCount));
   };
 
   const handlePrint = () => {
     const oldTitle = document.title;
-    const cleanTopic = topicTitle.trim().replace(/\s+/g, '_');
-    document.title = `AlZia_Exam_Paper_${subject}_Class_${selectedClass}_${cleanTopic}`;
+    const cleanTitle = paperTitle.trim().replace(/\s+/g, '_');
+    document.title = `AlZia_Exam_Paper_${subject}_Class_${selectedClass}_${cleanTitle}`;
     window.print();
     setTimeout(() => {
       document.title = oldTitle;
@@ -171,8 +239,8 @@ export default function TestPaperGenerator({ classes = [] }) {
     const paperElement = document.getElementById('exam-paper-print-sheet');
     if (!paperElement) return;
 
-    const cleanTopic = topicTitle.trim().replace(/\s+/g, '_');
-    const fileName = `AlZia_Paper_${subject}_Class_${selectedClass}_${cleanTopic}.png`;
+    const cleanTitle = paperTitle.trim().replace(/\s+/g, '_');
+    const fileName = `AlZia_Paper_${subject}_Class_${selectedClass}_${cleanTitle}.png`;
 
     try {
       setIsDownloading(true);
@@ -210,13 +278,13 @@ export default function TestPaperGenerator({ classes = [] }) {
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-full text-xs font-bold uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>AI Exam & Test Paper Generator Engine</span>
+              <span>Direct PDF / Text AI Question Extractor</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-              Al-Zia Exam & Test Paper Creator
+              Al-Zia Custom Text & PDF Exam Paper Generator
             </h1>
             <p className="text-sm text-slate-400 max-w-2xl">
-              Select subject, input topic/chapter details, and instantly generate board-standard examination question papers formatted for clean single-page A4 printing!
+              Paste your custom chapter text/notes OR upload a PDF file. The AI engine extracts MCQs, Short Questions, and Long Questions **100% directly from your provided content**!
             </p>
           </div>
 
@@ -226,37 +294,120 @@ export default function TestPaperGenerator({ classes = [] }) {
               className="px-5 py-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-black rounded-2xl text-sm flex items-center gap-2 shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
             >
               <RefreshCw className="w-4 h-4" />
-              <span>Regenerate Paper</span>
+              <span>Extract Questions from Provided Text</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Main Grid: Form Controls (Left) & Live A4 Paper Sheet (Right) */}
+      {/* Main Grid: Form Setup (Left) & Live A4 Examination Sheet (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Left Column: Form Setup Controls */}
-        <div className="lg:col-span-4 bg-slate-900/60 border border-slate-800/80 rounded-3xl p-6 space-y-6 print-hidden print:hidden">
+        <div className="lg:col-span-5 bg-slate-900/60 border border-slate-800/80 rounded-3xl p-6 space-y-6 print-hidden print:hidden">
+          
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <h3 className="text-base font-extrabold text-white flex items-center gap-2">
               <Sliders className="w-5 h-5 text-indigo-400" />
-              <span>Paper Setup Controls</span>
+              <span>Input Custom Content & Paper Setup</span>
             </h3>
-            <span className="text-xs text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full font-bold">
-              BISE Format
-            </span>
+          </div>
+
+          {/* Mode Tabs: Paste Text vs Upload File */}
+          <div className="grid grid-cols-2 gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800 text-xs font-bold">
+            <button
+              type="button"
+              onClick={() => setInputMode('text')}
+              className={`py-2 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                inputMode === 'text' 
+                  ? 'bg-indigo-600 text-white shadow-md' 
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <FileType className="w-3.5 h-3.5" />
+              <span>Paste Custom Text</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setInputMode('file')}
+              className={`py-2 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                inputMode === 'file' 
+                  ? 'bg-indigo-600 text-white shadow-md' 
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Upload className="w-3.5 h-3.5" />
+              <span>Upload PDF / File</span>
+            </button>
           </div>
 
           <form onSubmit={handleGenerate} className="space-y-4 text-xs font-sans">
             
-            {/* Topic / Chapter Title Input */}
+            {/* INPUT MODE A: Paste Custom Text Area */}
+            {inputMode === 'text' && (
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-slate-300 font-bold">
+                  <label>Paste Chapter Paragraphs / Notes Text</label>
+                  <span className="text-[10px] text-indigo-400 font-mono">
+                    {customText.trim().split(/\s+/).length} Words
+                  </span>
+                </div>
+                <textarea
+                  rows={6}
+                  value={customText}
+                  onChange={(e) => setCustomText(e.target.value)}
+                  placeholder="Paste your chapter text, definitions, or syllabus notes here..."
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white font-mono text-xs focus:outline-none focus:border-indigo-500 leading-relaxed resize-y"
+                />
+              </div>
+            )}
+
+            {/* INPUT MODE B: Upload File / PDF */}
+            {inputMode === 'file' && (
+              <div className="space-y-2 bg-slate-950/80 p-4 rounded-xl border border-dashed border-slate-700 text-center">
+                <Upload className="w-8 h-8 text-indigo-400 mx-auto" />
+                <div className="space-y-1">
+                  <p className="text-slate-200 font-bold">Upload PDF or Text Document</p>
+                  <p className="text-[11px] text-slate-400">Select `.pdf`, `.txt`, or `.doc` file to extract questions</p>
+                </div>
+
+                <input
+                  type="file"
+                  accept=".txt,.pdf,.doc,.docx"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                  id="pdf-text-file-input"
+                />
+
+                <label
+                  htmlFor="pdf-text-file-input"
+                  className="inline-block px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold cursor-pointer transition-all"
+                >
+                  Choose File
+                </label>
+
+                {fileName && (
+                  <div className="pt-2 text-xs font-mono text-amber-400 flex items-center justify-center gap-1">
+                    <FileCheck className="w-4 h-4 text-emerald-400" />
+                    <span>Loaded: {fileName}</span>
+                  </div>
+                )}
+
+                {parsingStatus && (
+                  <p className="text-[10px] text-emerald-400 font-mono italic">{parsingStatus}</p>
+                )}
+              </div>
+            )}
+
+            {/* Paper Title / Exam Heading Input */}
             <div className="space-y-1.5">
-              <label className="text-slate-300 font-bold block">Topic / Chapter Name</label>
+              <label className="text-slate-300 font-bold block">Paper Title / Chapter Heading</label>
               <input
                 type="text"
-                value={topicTitle}
-                onChange={(e) => setTopicTitle(e.target.value)}
-                placeholder="e.g. Chapter 1: Flowchart & Algorithms"
+                value={paperTitle}
+                onChange={(e) => setPaperTitle(e.target.value)}
+                placeholder="e.g. Chapter Evaluation: Data Structures"
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white font-medium focus:outline-none focus:border-indigo-500"
               />
             </div>
@@ -274,6 +425,8 @@ export default function TestPaperGenerator({ classes = [] }) {
                   <option value="Physics">Physics</option>
                   <option value="Chemistry">Chemistry</option>
                   <option value="Mathematics">Mathematics</option>
+                  <option value="Biology">Biology</option>
+                  <option value="English">English</option>
                 </select>
               </div>
 
@@ -378,7 +531,7 @@ export default function TestPaperGenerator({ classes = [] }) {
               className="w-full mt-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-amber-300" />
-              <span>Generate Custom Paper Sheet</span>
+              <span>Generate Paper from Text / PDF</span>
             </button>
 
           </form>
@@ -414,26 +567,31 @@ export default function TestPaperGenerator({ classes = [] }) {
         </div>
 
         {/* Right Column: Live Printable A4 Examination Paper View */}
-        <div className="lg:col-span-8 space-y-4">
+        <div className="lg:col-span-7 space-y-4">
           
           {/* Action Toolbar above Paper */}
-          <div className="flex items-center justify-between bg-slate-900/90 border border-slate-800 px-5 py-3 rounded-2xl print-hidden print:hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900/90 border border-slate-800 px-5 py-3 rounded-2xl print-hidden print:hidden">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-300">
               <FileText className="w-4 h-4 text-amber-400" />
-              <span>A4 Examination Sheet Preview</span>
+              <span>A4 Examination Sheet (Extracted 100% from your Text/PDF)</span>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full font-mono font-bold flex items-center gap-1">
+                <Check className="w-3 h-3 text-emerald-400" />
+                <span>{generatedPaper.wordCount || 0} Words Processed</span>
+              </span>
+
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                   isEditing 
                     ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' 
                     : 'bg-slate-800 text-slate-300 hover:text-white'
                 }`}
               >
                 <Edit3 className="w-3.5 h-3.5" />
-                <span>{isEditing ? 'Done Editing' : 'Edit Text Mode'}</span>
+                <span>{isEditing ? 'Done Editing' : 'Edit Mode'}</span>
               </button>
             </div>
           </div>
@@ -453,7 +611,7 @@ export default function TestPaperGenerator({ classes = [] }) {
                   </h1>
                 </div>
                 <p className="text-xs font-extrabold text-slate-700 uppercase tracking-widest font-sans">
-                  {paperType} — {topicTitle}
+                  {paperType} — {paperTitle}
                 </p>
 
                 {/* Exam Meta Info Table */}
@@ -490,7 +648,7 @@ export default function TestPaperGenerator({ classes = [] }) {
               </div>
 
               {/* SECTION A: OBJECTIVE TYPE (MCQs) */}
-              {generatedPaper.mcqs.length > 0 && (
+              {generatedPaper.mcqs && generatedPaper.mcqs.length > 0 && (
                 <div className="mt-6 space-y-3 font-sans">
                   <div className="bg-indigo-950 text-white px-3 py-1.5 rounded text-xs font-black uppercase tracking-wider flex items-center justify-between">
                     <span>SECTION - A: OBJECTIVE TYPE (MULTIPLE CHOICE QUESTIONS)</span>
@@ -521,7 +679,7 @@ export default function TestPaperGenerator({ classes = [] }) {
               )}
 
               {/* SECTION B: SUBJECTIVE TYPE (SHORT QUESTIONS) */}
-              {generatedPaper.shorts.length > 0 && (
+              {generatedPaper.shorts && generatedPaper.shorts.length > 0 && (
                 <div className="mt-6 space-y-3 font-sans">
                   <div className="bg-indigo-950 text-white px-3 py-1.5 rounded text-xs font-black uppercase tracking-wider flex items-center justify-between">
                     <span>SECTION - B: SHORT ANSWER QUESTIONS</span>
@@ -540,7 +698,7 @@ export default function TestPaperGenerator({ classes = [] }) {
               )}
 
               {/* SECTION C: LONG / DETAILED ESSAY QUESTIONS */}
-              {generatedPaper.longs.length > 0 && (
+              {generatedPaper.longs && generatedPaper.longs.length > 0 && (
                 <div className="mt-6 space-y-3 font-sans">
                   <div className="bg-indigo-950 text-white px-3 py-1.5 rounded text-xs font-black uppercase tracking-wider flex items-center justify-between">
                     <span>SECTION - C: DETAILED / ESSAY TYPE QUESTIONS</span>
