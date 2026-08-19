@@ -18,9 +18,11 @@ class ErrorBoundary extends Component {
   }
 
   handleReset = () => {
-    localStorage.clear();
-    sessionStorage.clear();
-    window.location.reload();
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+    } catch (e) {}
+    window.location.href = window.location.origin + window.location.pathname + '?r=' + Date.now();
   };
 
   render() {

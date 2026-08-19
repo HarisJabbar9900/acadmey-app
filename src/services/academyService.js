@@ -234,60 +234,97 @@ export const isFirebaseActive = () => {
 };
 
 export const getInitialData = () => {
-  const local = localStorage.getItem(STORAGE_KEY);
-  let parsed = null;
-  if (local) {
-    try {
-      parsed = JSON.parse(local);
-    } catch (e) {
-      console.error('Failed to parse local storage', e);
+  try {
+    const local = localStorage.getItem(STORAGE_KEY);
+    let parsed = null;
+    if (local) {
+      try {
+        parsed = JSON.parse(local);
+      } catch (e) {
+        console.error('Failed to parse local storage', e);
+      }
     }
-  }
 
-  if (!parsed || typeof parsed !== 'object') {
-    parsed = {};
-  }
+    if (!parsed || typeof parsed !== 'object') {
+      parsed = {};
+    }
 
-  if (!Array.isArray(parsed.classes) || parsed.classes.length === 0) {
-    parsed.classes = DEFAULT_CLASSES;
-  } else {
-    parsed.classes = parsed.classes.map(c => {
-      const defaultClass = DEFAULT_CLASSES.find(dc => dc.id === c.id || dc.name === c.name);
-      return {
-        ...c,
-        subjects: Array.isArray(c.subjects) && c.subjects.length > 0 
-          ? c.subjects 
-          : (defaultClass?.subjects || ['Physics', 'Chemistry', 'Math', 'Computer Science', 'English', 'Urdu'])
-      };
-    });
-  }
+    if (!Array.isArray(parsed.classes) || parsed.classes.length === 0) {
+      parsed.classes = DEFAULT_CLASSES;
+    } else {
+      parsed.classes = parsed.classes.filter(Boolean).map(c => {
+        if (!c || typeof c !== 'object') return DEFAULT_CLASSES[0];
+        const defaultClass = DEFAULT_CLASSES.find(dc => dc && (dc.id === c.id || dc.name === c.name));
+        return {
+          ...c,
+          id: c.id || `cls-${Date.now()}`,
+          name: c.name || 'Class',
+          subjects: Array.isArray(c.subjects) && c.subjects.length > 0 
+            ? c.subjects 
+            : (defaultClass?.subjects || ['Physics', 'Chemistry', 'Math', 'Computer Science', 'English', 'Urdu'])
+        };
+      });
+    }
 
-  if (!Array.isArray(parsed.students) || parsed.students.length === 0) {
-    parsed.students = DEFAULT_STUDENTS;
-  }
-  if (!Array.isArray(parsed.tests)) {
-    parsed.tests = DEFAULT_TESTS;
-  }
-  if (!Array.isArray(parsed.timetable)) {
-    parsed.timetable = DEFAULT_TIMETABLE;
-  }
-  if (!Array.isArray(parsed.resources)) {
-    parsed.resources = DEFAULT_RESOURCES;
-  }
-  if (!Array.isArray(parsed.feedbacks)) {
-    parsed.feedbacks = DEFAULT_FEEDBACKS;
-  }
-  if (!Array.isArray(parsed.notices)) {
-    parsed.notices = DEFAULT_NOTICES;
-  }
-  if (!parsed.fees || typeof parsed.fees !== 'object') {
-    parsed.fees = DEFAULT_FEES;
-  }
-  if (!parsed.attendance || typeof parsed.attendance !== 'object') {
-    parsed.attendance = DEFAULT_ATTENDANCE;
-  }
+    if (!Array.isArray(parsed.students) || parsed.students.length === 0) {
+      parsed.students = DEFAULT_STUDENTS;
+    } else {
+      parsed.students = parsed.students.filter(Boolean);
+    }
 
-  return parsed;
+    if (!Array.isArray(parsed.tests)) {
+      parsed.tests = DEFAULT_TESTS;
+    } else {
+      parsed.tests = parsed.tests.filter(Boolean);
+    }
+
+    if (!Array.isArray(parsed.timetable)) {
+      parsed.timetable = DEFAULT_TIMETABLE;
+    } else {
+      parsed.timetable = parsed.timetable.filter(Boolean);
+    }
+
+    if (!Array.isArray(parsed.resources)) {
+      parsed.resources = DEFAULT_RESOURCES;
+    } else {
+      parsed.resources = parsed.resources.filter(Boolean);
+    }
+
+    if (!Array.isArray(parsed.feedbacks)) {
+      parsed.feedbacks = DEFAULT_FEEDBACKS;
+    } else {
+      parsed.feedbacks = parsed.feedbacks.filter(Boolean);
+    }
+
+    if (!Array.isArray(parsed.notices)) {
+      parsed.notices = DEFAULT_NOTICES;
+    } else {
+      parsed.notices = parsed.notices.filter(Boolean);
+    }
+
+    if (!parsed.fees || typeof parsed.fees !== 'object') {
+      parsed.fees = DEFAULT_FEES;
+    }
+
+    if (!parsed.attendance || typeof parsed.attendance !== 'object') {
+      parsed.attendance = DEFAULT_ATTENDANCE;
+    }
+
+    return parsed;
+  } catch (err) {
+    console.error('Critical Error in getInitialData fallback to default:', err);
+    return {
+      classes: DEFAULT_CLASSES,
+      students: DEFAULT_STUDENTS,
+      attendance: DEFAULT_ATTENDANCE,
+      tests: DEFAULT_TESTS,
+      timetable: DEFAULT_TIMETABLE,
+      resources: DEFAULT_RESOURCES,
+      fees: DEFAULT_FEES,
+      feedbacks: DEFAULT_FEEDBACKS,
+      notices: DEFAULT_NOTICES,
+    };
+  }
 };
 
 export const saveLocalData = (data) => {
