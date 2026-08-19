@@ -238,7 +238,7 @@ export default function CertificateModal({ scorer, month, onClose }) {
         </div>
       </div>
 
-      {/* Print Specific CSS Styles (Rich Dark & Gold Colorful A4 Landscape - 297mm x 210mm) */}
+      {/* Print Specific CSS Styles (Rich Dark & Gold Colorful A4 Landscape) */}
       <style>{`
         @media print {
           @page {
@@ -246,32 +246,19 @@ export default function CertificateModal({ scorer, month, onClose }) {
             margin: 0;
           }
           html, body {
-            width: 297mm !important;
-            height: 210mm !important;
+            width: 100% !important;
+            height: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
             background-color: #0f172a !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
-            overflow: hidden !important;
           }
           
-          /* Hide non-print containers */
-          nav, 
-          footer, 
-          header, 
-          .print-hidden, 
-          .print\\:hidden, 
-          .pointer-events-none {
-            display: none !important;
-          }
-          
-          /* Make certificate print area & all its children visible */
-          body * {
-            visibility: hidden !important;
-          }
-          
+          /* Unhide root, modal wrapper, and certificate print area */
+          #root, 
+          .certificate-modal-wrapper, 
           #certificate-print-area, 
           #certificate-print-area * {
             visibility: visible !important;
@@ -279,32 +266,36 @@ export default function CertificateModal({ scorer, month, onClose }) {
             print-color-adjust: exact !important;
           }
 
+          /* Hide non-print buttons & headers */
+          nav, 
+          footer, 
+          header, 
+          button, 
+          .print-hidden, 
+          .print\\:hidden,
+          .pointer-events-none {
+            display: none !important;
+          }
+
           .certificate-modal-wrapper {
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
-            width: 297mm !important;
-            height: 210mm !important;
-            margin: 0 !important;
-            padding: 0 !important;
+            position: static !important;
             background-color: #0f172a !important;
-            z-index: 99999999 !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
           }
           
           .certificate-print-area {
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
-            width: 297mm !important;
-            height: 210mm !important;
+            position: relative !important;
+            width: 100% !important;
+            height: 100vh !important;
             box-sizing: border-box !important;
             margin: 0 !important;
-            padding: 10mm !important;
+            padding: 2rem !important;
             background-color: #0f172a !important;
             color: #ffffff !important;
-            border: 8px double #f59e0b !important;
+            border: 10px double #f59e0b !important;
             box-shadow: none !important;
             border-radius: 0 !important;
             -webkit-print-color-adjust: exact !important;
