@@ -9,7 +9,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
   const [content, setContent] = useState('');
   const [isPinned, setIsPinned] = useState(false);
 
-  const noticesList = data.notices || [];
+  const noticesList = Array.isArray(data?.notices) ? data.notices : [];
 
   // Helper: Check if notice was created within the last 4 hours (4 * 60 * 60 * 1000 = 14,400,000 ms)
   const isNoticeRecent = (notice) => {

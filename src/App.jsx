@@ -348,7 +348,7 @@ export default function App() {
         <Navbar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-          classes={data.classes}
+          classes={data?.classes || []}
           selectedClassId={selectedClassId}
           setSelectedClassId={setSelectedClassId}
           isAdminLoggedIn={isAdminLoggedIn}

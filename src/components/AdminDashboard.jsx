@@ -47,15 +47,20 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
   const desktopCount = safeOnlineUsers.filter(u => u && typeof u.device === 'string' && u.device.includes('Desktop')).length;
   const mobileCount = safeOnlineUsers.filter(u => u && typeof u.device === 'string' && u.device.includes('Mobile')).length;
 
+  const safeData = data || {};
+  const safeStudents = Array.isArray(safeData.students) ? safeData.students : [];
+  const safeClasses = Array.isArray(safeData.classes) ? safeData.classes : [];
+  const safeTests = Array.isArray(safeData.tests) ? safeData.tests : [];
+
   // Filter Students based on selected class
   const filteredStudents = selectedClassId === 'ALL'
-    ? data.students
-    : data.students.filter(s => s.classId === selectedClassId);
+    ? safeStudents
+    : safeStudents.filter(s => s && s.classId === selectedClassId);
 
   // Filter Classes
   const filteredClasses = selectedClassId === 'ALL'
-    ? data.classes
-    : data.classes.filter(c => c.id === selectedClassId);
+    ? safeClasses
+    : safeClasses.filter(c => c && c.id === selectedClassId);
 
   // Calculate Attendance Stats
   let totalAttendanceEntries = 0;
@@ -63,8 +68,8 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
   let absentEntries = 0;
   let lateEntries = 0;
 
-  Object.values(data.attendance || {}).forEach(record => {
-    if (selectedClassId === 'ALL' || record.classId === selectedClassId) {
+  Object.values(safeData.attendance || {}).forEach(record => {
+    if (record && (selectedClassId === 'ALL' || record.classId === selectedClassId)) {
       Object.values(record.records || {}).forEach(status => {
         totalAttendanceEntries++;
         if (status === 'Present') presentEntries++;
@@ -79,7 +84,8 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
     : 100;
 
   // Calculate Monthly Test Performance (Student-wise accumulated totals)
-  const monthlyTests = data.tests.filter(t => {
+  const monthlyTests = safeTests.filter(t => {
+    if (!t) return false;
     const isClassMatch = selectedClassId === 'ALL' || t.classId === selectedClassId;
     const isMonthMatch = t.month === selectedMonth || t.date?.startsWith(selectedMonth);
     return isClassMatch && isMonthMatch;
@@ -90,7 +96,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
     let totalMaxMarks = 0;
 
     monthlyTests.forEach(test => {
-      if (test.scores && test.scores[student.id] !== undefined) {
+      if (test && test.scores && test.scores[student.id] !== undefined) {
         obtainedMarks += Number(test.scores[student.id]) || 0;
         totalMaxMarks += Number(test.maxMarks) || 0;
       }
@@ -100,7 +106,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
       ? Math.round((obtainedMarks / totalMaxMarks) * 100) 
       : 0;
 
-    const studentClass = data.classes.find(c => c.id === student.classId)?.name || 'N/A';
+    const studentClass = safeClasses.find(c => c.id === student.classId)?.name || 'N/A';
 
     return {
       id: student.id,
@@ -111,14 +117,14 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
       obtainedMarks,
       totalMaxMarks,
       percentage,
-      testsTaken: monthlyTests.filter(t => t.scores && t.scores[student.id] !== undefined).length
+      testsTaken: monthlyTests.filter(t => t && t.scores && t.scores[student.id] !== undefined).length
     };
   }).sort((a, b) => b.percentage - a.percentage);
 
   // Class-Wise Top High Scorers Calculation (Combined overall score across all subjects)
   const classTopScorers = filteredClasses.map(cls => {
-    const classStudents = data.students.filter(s => s.classId === cls.id);
-    const classTests = data.tests.filter(t => t.classId === cls.id);
+    const classStudents = safeStudents.filter(s => s && s.classId === cls.id);
+    const classTests = safeTests.filter(t => t && t.classId === cls.id);
 
     let topScorer = null;
     let maxOverallPct = -1;

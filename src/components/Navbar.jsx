@@ -167,7 +167,7 @@ export default function Navbar({
                 className="bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer w-full"
               >
                 <option value="ALL" className="bg-slate-900 text-white">All Classes</option>
-                {classes.map((c) => (
+                {(classes || []).map((c) => (
                   <option key={c.id} value={c.id} className="bg-slate-900 text-white">
                     {c.name}
                   </option>
