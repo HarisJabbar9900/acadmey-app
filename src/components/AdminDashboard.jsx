@@ -14,6 +14,15 @@ import {
   Printer,
   FileText
 } from 'lucide-react';
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  Tooltip, 
+  ResponsiveContainer, 
+  Cell 
+} from 'recharts';
 import ReportCardModal from './ReportCardModal';
 import CertificateModal from './CertificateModal';
 
