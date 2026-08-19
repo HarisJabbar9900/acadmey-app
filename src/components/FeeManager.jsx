@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
+import html2canvas from 'html2canvas';
 import { 
   CreditCard, 
   CheckCircle2, 
@@ -16,7 +18,11 @@ import {
   Clock,
   Check,
   RotateCcw,
-  Lock
+  Lock,
+  Download,
+  Loader2,
+  GraduationCap,
+  X
 } from 'lucide-react';
 
 export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onSaveFeeRecord }) {
@@ -702,80 +708,137 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
       )}
 
       {/* Modal: Printable Fee Slip Receipt */}
-      {receiptStudent && (
-        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white text-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 my-auto print:p-0">
+      {receiptStudent && createPortal(
+        <div className="fee-receipt-modal-wrapper fixed inset-0 z-[99999] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto relative">
             
-            {/* Header */}
-            <div className="text-center border-b border-slate-200 pb-3">
-              <h2 className="text-xl font-extrabold text-indigo-950 uppercase tracking-wide">Al-Zia Science Academy</h2>
-              <p className="text-xs text-slate-500 font-medium">Official Student Fee Receipt Slip</p>
-            </div>
-
-            {/* Receipt Details */}
-            <div className="space-y-2 text-xs font-mono">
-              <div className="flex justify-between py-1 border-b border-slate-100">
-                <span className="text-slate-500">Month:</span>
-                <span className="font-bold">{selectedMonth}</span>
+            {/* Action Bar (Hidden on Print) */}
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3 print-hidden print:hidden">
+              <div className="flex items-center gap-2 text-white font-bold text-sm">
+                <CreditCard className="w-5 h-5 text-emerald-400" />
+                <span>Student Fee Receipt</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-slate-100">
-                <span className="text-slate-500">Student Name:</span>
-                <span className="font-bold text-slate-900">{receiptStudent.student.name}</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-slate-100">
-                <span className="text-slate-500">Father Name:</span>
-                <span className="font-bold">{receiptStudent.student.fname || 'N/A'}</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-slate-100">
-                <span className="text-slate-500">Roll Number:</span>
-                <span className="font-bold text-indigo-700">#{receiptStudent.student.rollNo}</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-slate-100">
-                <span className="text-slate-500">Class:</span>
-                <span className="font-bold">Class {data.classes.find(c => c.id === receiptStudent.student.classId)?.name}</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-slate-100">
-                <span className="text-slate-500">Fee Status:</span>
-                <span className={`font-bold px-2 py-0.5 rounded ${receiptStudent.feeRecord?.status === 'Paid' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}`}>
-                  {receiptStudent.feeRecord?.status === 'Paid' ? 'PAID' : 'UNPAID'}
-                </span>
-              </div>
-              {receiptStudent.feeRecord?.status === 'Paid' && (
-                <>
-                  <div className="flex justify-between py-1 border-b border-slate-100">
-                    <span className="text-slate-500">Date Received:</span>
-                    <span className="font-bold">{receiptStudent.feeRecord.paidDate || 'N/A'}</span>
-                  </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100">
-                    <span className="text-slate-500">Payment Mode:</span>
-                    <span className="font-bold">{receiptStudent.feeRecord.paymentMethod || 'Cash'}</span>
-                  </div>
-                </>
-              )}
-              <div className="flex justify-between py-2 text-sm font-bold bg-slate-100 px-3 rounded-lg mt-2">
-                <span>Amount:</span>
-                <span>Rs. {(receiptStudent.feeRecord?.paidAmount || receiptStudent.monthlyFeeAmount || 2500).toLocaleString()}</span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    const reportElement = document.getElementById('fee-receipt-print-area');
+                    if (!reportElement) return;
+                    const studentName = receiptStudent.student?.name || 'Student';
+                    const fileName = `Fee_Receipt_${studentName.replace(/\s+/g, '_')}_${selectedMonth}.png`;
+                    html2canvas(reportElement, { scale: 2.5, backgroundColor: '#ffffff' }).then(canvas => {
+                      const image = canvas.toDataURL('image/png', 1.0);
+                      const link = document.createElement('a');
+                      link.download = fileName;
+                      link.href = image;
+                      link.click();
+                    });
+                  }}
+                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5" /> PNG
+                </button>
+                <button
+                  onClick={() => {
+                    const oldTitle = document.title;
+                    const studentName = receiptStudent.student?.name || 'Student';
+                    document.title = `Fee_Receipt_${studentName.replace(/\s+/g, '_')}_${selectedMonth}`;
+                    window.print();
+                    setTimeout(() => { document.title = oldTitle; }, 1000);
+                  }}
+                  className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                >
+                  <Printer className="w-3.5 h-3.5" /> Print PDF
+                </button>
+                <button
+                  onClick={() => setReceiptStudent(null)}
+                  className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-xl transition-all cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
             </div>
 
-            {/* Print & Close Buttons */}
-            <div className="flex justify-end gap-2 pt-3 border-t border-slate-200">
-              <button
-                onClick={() => window.print()}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md"
-              >
-                <Printer className="w-4 h-4" /> Print Slip
-              </button>
-              <button
-                onClick={() => setReceiptStudent(null)}
-                className="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold"
-              >
-                Close
-              </button>
+            {/* PRINTABLE RECEIPT SLIP AREA */}
+            <div 
+              id="fee-receipt-print-area"
+              className="bg-white text-slate-900 rounded-2xl p-6 shadow-xl space-y-4 mx-auto print:shadow-none print:w-full print:p-4"
+            >
+              {/* Header Banner */}
+              <div className="text-center border-b-2 border-indigo-950 pb-3 space-y-1">
+                <div className="flex items-center justify-center gap-1.5 text-indigo-950">
+                  <GraduationCap className="w-6 h-6" />
+                  <h2 className="text-lg font-black uppercase tracking-wide">Al-Zia Science Academy</h2>
+                </div>
+                <p className="text-[11px] font-bold text-slate-600 uppercase tracking-widest">
+                  Official Student Monthly Fee Payment Voucher
+                </p>
+              </div>
+
+              {/* Receipt Information Grid */}
+              <div className="space-y-2 text-xs font-mono">
+                <div className="flex justify-between py-1.5 border-b border-slate-200">
+                  <span className="text-slate-500 uppercase font-sans font-bold text-[10px]">Fee Month:</span>
+                  <span className="font-extrabold text-slate-900">{selectedMonth}</span>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-slate-200">
+                  <span className="text-slate-500 uppercase font-sans font-bold text-[10px]">Student Name:</span>
+                  <span className="font-extrabold text-indigo-950 text-sm">{receiptStudent.student.name}</span>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-slate-200">
+                  <span className="text-slate-500 uppercase font-sans font-bold text-[10px]">Father Name:</span>
+                  <span className="font-bold text-slate-800">{receiptStudent.student.fname || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-slate-200">
+                  <span className="text-slate-500 uppercase font-sans font-bold text-[10px]">Roll Number:</span>
+                  <span className="font-extrabold text-indigo-700">#{receiptStudent.student.rollNo}</span>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-slate-200">
+                  <span className="text-slate-500 uppercase font-sans font-bold text-[10px]">Class:</span>
+                  <span className="font-bold text-slate-800">Class {data.classes.find(c => c.id === receiptStudent.student.classId)?.name}</span>
+                </div>
+                <div className="flex justify-between py-1.5 border-b border-slate-200">
+                  <span className="text-slate-500 uppercase font-sans font-bold text-[10px]">Payment Status:</span>
+                  <span className={`font-extrabold px-2.5 py-0.5 rounded text-[11px] ${receiptStudent.feeRecord?.status === 'Paid' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}`}>
+                    {receiptStudent.feeRecord?.status === 'Paid' ? 'PAID' : 'UNPAID'}
+                  </span>
+                </div>
+                {receiptStudent.feeRecord?.status === 'Paid' && (
+                  <>
+                    <div className="flex justify-between py-1.5 border-b border-slate-200">
+                      <span className="text-slate-500 uppercase font-sans font-bold text-[10px]">Date Received:</span>
+                      <span className="font-bold text-slate-800">{receiptStudent.feeRecord.paidDate || 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between py-1.5 border-b border-slate-200">
+                      <span className="text-slate-500 uppercase font-sans font-bold text-[10px]">Payment Mode:</span>
+                      <span className="font-bold text-slate-800">{receiptStudent.feeRecord.paymentMethod || 'Cash'}</span>
+                    </div>
+                  </>
+                )}
+                
+                {/* Total Paid Box */}
+                <div className="flex justify-between py-2.5 text-sm font-extrabold bg-slate-100 border border-slate-200 px-4 rounded-xl mt-3 text-slate-900">
+                  <span>Amount Paid:</span>
+                  <span className="text-indigo-950 font-mono">Rs. {(receiptStudent.feeRecord?.paidAmount || receiptStudent.monthlyFeeAmount || 2500).toLocaleString()}</span>
+                </div>
+              </div>
+
+              {/* Signatures */}
+              <div className="flex items-center justify-between pt-4 border-t border-slate-200 text-[10px] font-sans font-bold text-slate-600">
+                <div className="text-center">
+                  <div className="w-24 border-b border-slate-800 mb-1" />
+                  <span>Accountant</span>
+                </div>
+                <div className="text-center">
+                  <div className="w-24 border-b border-slate-800 mb-1" />
+                  <span>Administrator</span>
+                </div>
+              </div>
+
             </div>
 
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
     </div>

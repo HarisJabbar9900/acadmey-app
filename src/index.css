@@ -32,7 +32,8 @@
 
   /* Hide main app root container ONLY when printing modal portals */
   body:has(.certificate-modal-wrapper) #root,
-  body:has(.report-modal-wrapper) #root {
+  body:has(.report-modal-wrapper) #root,
+  body:has(.fee-receipt-modal-wrapper) #root {
     display: none !important;
   }
 
@@ -125,6 +126,33 @@
     color: #0f172a !important;
     box-shadow: none !important;
     border: none !important;
+  }
+
+  /* Fee Receipt Modal Print Settings */
+  .fee-receipt-modal-wrapper {
+    display: block !important;
+    visibility: visible !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    background-color: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #fee-receipt-print-area {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    box-sizing: border-box !important;
+    margin: 0 auto !important;
+    padding: 1.5rem !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
   }
 }
 
