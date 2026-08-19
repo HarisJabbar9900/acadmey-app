@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Trophy, Award, CheckCircle2, X, Printer, Sparkles, ShieldCheck, Download, Loader2 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
@@ -29,7 +30,7 @@ export default function CertificateModal({ scorer, month, onClose }) {
     try {
       setIsDownloading(true);
       const canvas = await html2canvas(certElement, {
-        scale: 2.0,
+        scale: 2.5,
         useCORS: true,
         allowTaint: false,
         logging: false,
@@ -66,20 +67,14 @@ export default function CertificateModal({ scorer, month, onClose }) {
   const monthFormatted = getMonthTitle();
   const issueDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
-  // Generate QR verification link
-  const qrData = encodeURIComponent(
-    `AL-ZIA SCIENCE ACADEMY CERTIFICATE OF EXCELLENCE\nStudent: ${scorer.studentName}\nRoll #: ${scorer.rollNo}\nClass: ${scorer.className}\nPosition: 1st (Class Topper)\nOverall Score: ${scorer.obtainedMarks}/${scorer.maxMarks} (${scorer.percentage}%)\nMonth: ${monthFormatted}`
-  );
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${qrData}`;
-
-  return (
-    <div className="certificate-modal-wrapper fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto print:p-0 print:bg-white print:static">
+  return createPortal(
+    <div className="certificate-modal-wrapper fixed inset-0 z-[99999] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
       
       {/* Modal Container (Screen View) */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-4 sm:p-8 shadow-2xl space-y-6 my-auto max-h-[95vh] overflow-y-auto print:max-w-none print:w-full print:p-0 print:m-0 print:border-none print:shadow-none print:bg-white relative">
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-4 sm:p-8 shadow-2xl space-y-6 my-auto max-h-[95vh] overflow-y-auto relative">
         
         {/* Sticky Screen Header Controls */}
-        <div className="sticky top-0 z-20 bg-slate-900/95 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4 pt-2 print:hidden">
+        <div className="sticky top-0 z-20 bg-slate-900/95 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4 pt-2 print-hidden print:hidden">
           <div className="flex items-center gap-2.5">
             <div className="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20">
               <Award className="w-6 h-6" />
@@ -256,43 +251,44 @@ export default function CertificateModal({ scorer, month, onClose }) {
             color-adjust: exact !important;
           }
           
-          /* Unhide root, modal wrapper, and certificate print area */
-          #root, 
-          .certificate-modal-wrapper, 
-          #certificate-print-area, 
-          #certificate-print-area * {
-            visibility: visible !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
+          /* Hide EVERYTHING in body except the certificate modal wrapper */
+          body > *:not(.certificate-modal-wrapper) {
+            display: none !important;
           }
 
-          /* Hide non-print buttons & headers */
+          .print-hidden, 
+          .print\\:hidden, 
+          header, 
           nav, 
           footer, 
-          header, 
-          button, 
-          .print-hidden, 
-          .print\\:hidden,
-          .pointer-events-none {
+          button {
             display: none !important;
           }
 
           .certificate-modal-wrapper {
-            position: static !important;
-            background-color: #0f172a !important;
-            padding: 0 !important;
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
             margin: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
+            padding: 0 !important;
+            background-color: #0f172a !important;
+            z-index: 999999999 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
           }
           
           .certificate-print-area {
             position: relative !important;
             width: 100% !important;
-            height: 100vh !important;
+            height: 100% !important;
             box-sizing: border-box !important;
             margin: 0 !important;
-            padding: 2rem !important;
+            padding: 2.5rem !important;
             background-color: #0f172a !important;
             color: #ffffff !important;
             border: 10px double #f59e0b !important;
@@ -306,6 +302,7 @@ export default function CertificateModal({ scorer, month, onClose }) {
           }
         }
       `}</style>
-    </div>
+    </div>,
+    document.body
   );
 }
