@@ -122,6 +122,22 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
     };
   }).sort((a, b) => b.percentage - a.percentage);
 
+  // Compute Class-Wise Ranks (1st, 2nd, 3rd within each specific class)
+  const classGrouped = {};
+  studentPerformance.forEach(std => {
+    if (!classGrouped[std.className]) {
+      classGrouped[std.className] = [];
+    }
+    classGrouped[std.className].push(std);
+  });
+
+  Object.keys(classGrouped).forEach(clsName => {
+    classGrouped[clsName].sort((a, b) => b.percentage - a.percentage);
+    classGrouped[clsName].forEach((std, idx) => {
+      std.classRank = idx + 1;
+    });
+  });
+
   // Class-Wise Top High Scorers Calculation (Combined overall score across all subjects)
   const classTopScorers = filteredClasses.map(cls => {
     const classStudents = safeStudents.filter(s => s && s.classId === cls.id);
@@ -467,6 +483,34 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
             </span>
           </div>
 
+          {/* Class-Wise 1st Rank Toppers Grid Header */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+            {filteredClasses.map((cls) => {
+              const classTopper = studentPerformance.find(s => s.className === cls.name && s.classRank === 1 && s.totalMaxMarks > 0);
+              return (
+                <div key={cls.id} className="bg-slate-950/80 border border-amber-500/30 rounded-2xl p-3.5 flex flex-col justify-between shadow-lg relative overflow-hidden">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-extrabold uppercase text-amber-400 font-mono tracking-wider">
+                      Class {cls.name} 1st Rank
+                    </span>
+                    <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                  </div>
+                  {classTopper ? (
+                    <div className="mt-2 space-y-0.5">
+                      <p className="text-xs font-extrabold text-white truncate">{classTopper.name}</p>
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="text-slate-400 font-mono">#{classTopper.rollNo}</span>
+                        <span className="text-amber-400 font-black">{classTopper.percentage}%</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-slate-500 italic mt-2">No test data</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
@@ -482,7 +526,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
               </thead>
               <tbody className="divide-y divide-slate-800/60 text-slate-200">
                 {studentPerformance.length > 0 ? (
-                  studentPerformance.map((std, idx) => {
+                  studentPerformance.map((std) => {
                     const studentObj = data.students.find(s => s.id === std.id);
 
                     return (
@@ -491,9 +535,19 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
                         <td className="py-3.5 px-3 font-semibold text-white">
                           <div className="flex items-center gap-2">
                             <span>{std.name}</span>
-                            {idx === 0 && std.totalMaxMarks > 0 && (
-                              <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded-full border border-amber-500/30">
-                                🏆 #1 Rank
+                            {std.totalMaxMarks > 0 && std.classRank === 1 && (
+                              <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded-full border border-amber-500/30 flex items-center gap-1 shadow-sm">
+                                🥇 #1 Rank
+                              </span>
+                            )}
+                            {std.totalMaxMarks > 0 && std.classRank === 2 && (
+                              <span className="text-[10px] bg-slate-300/20 text-slate-300 font-bold px-2 py-0.5 rounded-full border border-slate-400/30 flex items-center gap-1">
+                                🥈 #2 Rank
+                              </span>
+                            )}
+                            {std.totalMaxMarks > 0 && std.classRank === 3 && (
+                              <span className="text-[10px] bg-amber-700/20 text-amber-400 font-bold px-2 py-0.5 rounded-full border border-amber-600/30 flex items-center gap-1">
+                                🥉 #3 Rank
                               </span>
                             )}
                           </div>
