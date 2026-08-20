@@ -366,3 +366,26 @@
 .light-mode .bg-slate-950\/80 {
   background-color: rgba(15, 23, 42, 0.6) !important;
 }
+
+/* Recharts Hover Tooltip High-Contrast Styling */
+.recharts-default-tooltip {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  border-radius: 12px !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4) !important;
+}
+
+.light-mode .recharts-default-tooltip {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2) !important;
+}
+
+.light-mode .recharts-tooltip-label,
+.light-mode .recharts-tooltip-item,
+.light-mode .recharts-tooltip-item-name,
+.light-mode .recharts-tooltip-item-value {
+  color: #ffffff !important;
+}

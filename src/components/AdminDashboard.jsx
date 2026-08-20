@@ -194,6 +194,8 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
   // Prepare chart data
   const chartData = studentPerformance.map(s => ({
     name: s.name.split(' ')[0],
+    fullName: s.name,
+    className: s.className,
     percentage: s.percentage,
     obtained: s.obtainedMarks,
     total: s.totalMaxMarks
@@ -453,8 +455,29 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
                   <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} />
                   <YAxis stroke="#94a3b8" fontSize={11} domain={[0, 100]} tickLine={false} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px', color: '#fff' }}
-                    formatter={(value) => [`${value}%`, 'Score Percentage']}
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        const data = payload[0].payload;
+                        return (
+                          <div className="bg-slate-900 border border-slate-700 text-white p-3 rounded-xl shadow-2xl space-y-1 text-xs font-sans">
+                            <p className="font-extrabold text-indigo-300 border-b border-slate-700 pb-1">
+                              {data.fullName} (Class {data.className})
+                            </p>
+                            <div className="flex items-center justify-between gap-4 text-[11px]">
+                              <span className="text-slate-400">Score Percentage:</span>
+                              <span className="font-extrabold font-mono text-emerald-400">{data.percentage}%</span>
+                            </div>
+                            {data.total > 0 && (
+                              <div className="flex items-center justify-between gap-4 text-[10px]">
+                                <span className="text-slate-400">Obtained Marks:</span>
+                                <span className="font-semibold text-slate-200">{data.obtained} / {data.total}</span>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
                   />
                   <Bar dataKey="percentage" radius={[8, 8, 0, 0]}>
                     {chartData.map((entry, index) => (
