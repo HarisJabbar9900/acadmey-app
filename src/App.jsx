@@ -10,6 +10,7 @@ import ClassStudentManager from './components/ClassStudentManager';
 import StudentFeedback from './components/StudentFeedback';
 import NoticeBoard from './components/NoticeBoard';
 import TestPaperGenerator from './components/TestPaperGenerator';
+import AiChatbot from './components/AiChatbot';
 import { 
   getInitialData, 
   saveLocalData, 
@@ -481,6 +482,9 @@ export default function App() {
       <footer className="app-footer-main relative z-10 border-t border-slate-800/80 bg-slate-950/60 backdrop-blur-md px-6 py-4 text-center text-slate-500 text-xs print:hidden">
         Al-Zia Science Academy • Online Management Portal
       </footer>
+
+      {/* Floating AI Assistant Chatbot Widget */}
+      <AiChatbot data={data} />
 
     </div>
   );
