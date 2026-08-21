@@ -109,49 +109,66 @@ export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty }) {
     }
 
     // 2. Faculty & Teachers Info
-    if (query.includes('teacher') || query.includes('faculty') || query.includes('sir') || query.includes('prof') || query.includes('perhata') || query.includes('parhata') || query.includes('teach') || query.includes('computer') || query.includes('physics') || query.includes('math') || query.includes('chemistry') || query.includes('biology')) {
+    if (query.includes('teacher') || query.includes('faculty') || query.includes('sir') || query.includes('prof') || query.includes('perhata') || query.includes('parhata') || query.includes('teach') || query.includes('education') || query.includes('qualification') || query.includes('deg') || query.includes('computer') || query.includes('physics') || query.includes('math') || query.includes('chemistry') || query.includes('biology')) {
       
       // Computer Science specific query
       if (query.includes('computer') || query.includes('cs') || query.includes('comp')) {
         const comp = currentFaculty.find(f => f.subject.toLowerCase().includes('computer'));
         return `💻 Computer Science Faculty:
-Computer Science is taught by ${comp ? comp.teacher : 'Sir Haris Jabbar'} for Class 9th, 10th, 11th & 12th!`;
+• Teacher: ${comp ? comp.teacher : 'Sir Haris Jabbar'}
+• Education: ${comp?.education || 'BS Computer Science (BSCS - Gold Medalist)'}
+• Experience: ${comp?.experience || '6+ Years Board Specialist'}
+• Classes: ${comp?.classes || '9th, 10th, 11th, 12th'}`;
       }
 
       // Physics specific query
       if (query.includes('physics')) {
         const phy = currentFaculty.find(f => f.subject.toLowerCase().includes('physics'));
         return `🔬 Physics Faculty:
-Physics is taught by ${phy ? phy.teacher : 'Prof. Malik Umar'}!`;
+• Teacher: ${phy ? phy.teacher : 'Prof. Malik Umar'}
+• Education: ${phy?.education || 'M.Sc Physics (Gold Medalist)'}
+• Experience: ${phy?.experience || '10+ Years Board Examiner'}`;
       }
 
       // Chemistry specific query
       if (query.includes('chemistry') || query.includes('chem')) {
         const chem = currentFaculty.find(f => f.subject.toLowerCase().includes('chemistry'));
         return `🧪 Chemistry Faculty:
-Chemistry is taught by ${chem ? chem.teacher : 'Sir Hassan Raza'}!`;
+• Teacher: ${chem ? chem.teacher : 'Sir Hassan Raza'}
+• Education: ${chem?.education || 'M.Sc Applied Chemistry'}
+• Experience: ${chem?.experience || '7+ Years Teaching'}`;
       }
 
       // Math specific query
       if (query.includes('math') || query.includes('mathematics')) {
         const math = currentFaculty.find(f => f.subject.toLowerCase().includes('math'));
         return `📐 Mathematics Faculty:
-Mathematics is taught by ${math ? math.teacher : 'Prof. Abdul Ghani'}!`;
+• Teacher: ${math ? math.teacher : 'Prof. Abdul Ghani'}
+• Education: ${math?.education || 'M.Sc Mathematics'}
+• Experience: ${math?.experience || '12+ Years Mathematics Specialist'}`;
       }
 
       // Biology specific query
       if (query.includes('bio') || query.includes('biology')) {
         const bio = currentFaculty.find(f => f.subject.toLowerCase().includes('bio'));
         return `🧬 Biology Faculty:
-Biology is taught by ${bio ? bio.teacher : 'Dr. Ghulam Hussain'}!`;
+• Teacher: ${bio ? bio.teacher : 'Dr. Ghulam Hussain'}
+• Education: ${bio?.education || 'MBBS / M.Phil Biology'}
+• Experience: ${bio?.experience || '8+ Years Medical Prep Specialist'}`;
       }
 
-      // General Faculty List
-      const facultyText = currentFaculty.map(f => `• ${f.subject}: ${f.teacher}`).join('\n');
-      return `👨‍🏫 Al-Zia Science Academy Teaching Faculty:
+      // General Faculty List with Education
+      const facultyText = currentFaculty.map(f => 
+        `• ${f.subject}: ${f.teacher}
+  🎓 Qualification: ${f.education || 'Master Degree Holder'}
+  ⭐ Experience: ${f.experience || 'Senior Subject Specialist'}`
+      ).join('\n\n');
+
+      return `👨‍🏫 Al-Zia Science Academy Teaching Faculty & Education:
+
 ${facultyText}
 
-All faculty members are highly qualified subject specialists!`;
+All faculty members are highly qualified board examiners and subject specialists!`;
     }
 
     // 3. Timings & Schedule
@@ -417,36 +434,64 @@ Or click one of the quick options below!`;
               Update subject teacher names below. When users ask AI Assistant "Who teaches Computer Science?", it will dynamically reply with your updated teacher names!
             </p>
 
-            <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
+            <div className="space-y-3 max-h-[55vh] overflow-y-auto pr-1">
               {facultyList.map(fac => (
-                <div key={fac.id} className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                  <div className="flex-1 space-y-1">
-                    <label className="text-[10px] font-bold text-amber-400 uppercase font-mono">Subject Name</label>
-                    <input
-                      type="text"
-                      value={fac.subject}
-                      onChange={(e) => handleTeacherChange(fac.id, 'subject', e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 font-bold"
-                    />
-                  </div>
-
-                  <div className="flex-1 space-y-1">
-                    <label className="text-[10px] font-bold text-emerald-400 uppercase font-mono">Teacher Name</label>
-                    <input
-                      type="text"
-                      value={fac.teacher}
-                      onChange={(e) => handleTeacherChange(fac.id, 'teacher', e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 font-bold"
-                    />
-                  </div>
-
+                <div key={fac.id} className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 space-y-2 relative">
                   <button
                     onClick={() => handleDeleteFacultyRow(fac.id)}
-                    className="p-2 text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all self-end sm:self-center cursor-pointer mt-1 sm:mt-4"
+                    className="absolute top-2 right-2 p-1.5 text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all cursor-pointer"
                     title="Delete Teacher Row"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pr-6">
+                    <div>
+                      <label className="text-[10px] font-bold text-amber-400 uppercase font-mono">Subject Name</label>
+                      <input
+                        type="text"
+                        value={fac.subject || ''}
+                        onChange={(e) => handleTeacherChange(fac.id, 'subject', e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 font-bold"
+                        placeholder="e.g. Computer Science"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[10px] font-bold text-emerald-400 uppercase font-mono">Teacher Name</label>
+                      <input
+                        type="text"
+                        value={fac.teacher || ''}
+                        onChange={(e) => handleTeacherChange(fac.id, 'teacher', e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 font-bold"
+                        placeholder="e.g. Sir Haris Jabbar"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[10px] font-bold text-indigo-300 uppercase font-mono">Qualification / Education</label>
+                      <input
+                        type="text"
+                        value={fac.education || ''}
+                        onChange={(e) => handleTeacherChange(fac.id, 'education', e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500"
+                        placeholder="e.g. BSCS (Gold Medalist)"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[10px] font-bold text-purple-300 uppercase font-mono">Experience / Bio</label>
+                      <input
+                        type="text"
+                        value={fac.experience || ''}
+                        onChange={(e) => handleTeacherChange(fac.id, 'experience', e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500"
+                        placeholder="e.g. 6+ Years Board Specialist"
+                      />
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

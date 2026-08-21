@@ -230,12 +230,12 @@ const DEFAULT_NOTICES = [
 ];
 
 const DEFAULT_FACULTY = [
-  { id: 'fac-1', subject: 'Computer Science', teacher: 'Sir Haris Jabbar', classes: '9th, 10th, 11th, 12th' },
-  { id: 'fac-2', subject: 'Physics', teacher: 'Prof. Malik Umar', classes: '9th, 10th, 11th, 12th' },
-  { id: 'fac-3', subject: 'Chemistry', teacher: 'Sir Hassan Raza', classes: '9th, 10th, 11th, 12th' },
-  { id: 'fac-4', subject: 'Mathematics', teacher: 'Prof. Abdul Ghani', classes: '9th, 10th, 11th, 12th' },
-  { id: 'fac-5', subject: 'Biology', teacher: 'Dr. Ghulam Hussain', classes: '9th, 10th, 11th, 12th' },
-  { id: 'fac-6', subject: 'English & Urdu', teacher: 'Sir Zaid Malik', classes: 'All Classes' }
+  { id: 'fac-1', subject: 'Computer Science', teacher: 'Sir Haris Jabbar', education: 'BS Computer Science (BSCS - Gold Medalist)', experience: '6+ Years Board Specialist', classes: '9th, 10th, 11th, 12th' },
+  { id: 'fac-2', subject: 'Physics', teacher: 'Prof. Malik Umar', education: 'M.Sc Physics (Gold Medalist)', experience: '10+ Years Board Examiner', classes: '9th, 10th, 11th, 12th' },
+  { id: 'fac-3', subject: 'Chemistry', teacher: 'Sir Hassan Raza', education: 'M.Sc Applied Chemistry', experience: '7+ Years Teaching', classes: '9th, 10th, 11th, 12th' },
+  { id: 'fac-4', subject: 'Mathematics', teacher: 'Prof. Abdul Ghani', education: 'M.Sc Mathematics', experience: '12+ Years Mathematics Specialist', classes: '9th, 10th, 11th, 12th' },
+  { id: 'fac-5', subject: 'Biology', teacher: 'Dr. Ghulam Hussain', education: 'MBBS / M.Phil Biology', experience: '8+ Years Medical Prep Specialist', classes: '9th, 10th, 11th, 12th' },
+  { id: 'fac-6', subject: 'English & Urdu', teacher: 'Sir Zaid Malik', education: 'M.A. English & Linguistics', experience: '5+ Years Senior Lecturer', classes: 'All Classes' }
 ];
 
 export const isFirebaseActive = () => {
