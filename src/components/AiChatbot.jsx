@@ -85,7 +85,7 @@ export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty, onUp
     {
       id: 1,
       sender: 'bot',
-      text: 'Assalamu Alaikum! Welcome to Al-Zia Science Academy AI Assistant 🎓. How can I help you today? You can ask about academy timings, admissions, courses, faculty teachers, fee structures, or type a student Roll Number to check results!',
+      text: 'Assalamu Alaikum! Welcome to Al-Zia Science Academy AI Assistant 🎓. How can I help you today? You can ask about academy timings, admissions, courses, faculty teachers, or fee structures!',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -95,8 +95,7 @@ export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty, onUp
     { label: '🕒 Timings', text: 'What are the academy timings?' },
     { label: '🎓 Courses', text: 'Which classes and subjects are offered?' },
     { label: '💳 Fee Info', text: 'What is the monthly fee structure?' },
-    { label: '📞 Contact', text: 'How can I contact admin for admission?' },
-    { label: '🔍 Check Result', text: 'How can I check student result?' }
+    { label: '📞 Contact', text: 'How can I contact admin for admission?' }
   ];
 
   const scrollToBottom = () => {
@@ -115,36 +114,6 @@ export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty, onUp
     const query = userQuery.toLowerCase().trim();
     const currentFaculty = data?.faculty || facultyList;
     const currentRules = data?.aiRules || aiRulesList;
-
-    // 1. Roll Number Search (e.g., "401", "roll 401", "result 103", "check 201")
-    const rollMatch = query.match(/\b(\d{1,4})\b/);
-    if (rollMatch) {
-      const rollNum = rollMatch[1];
-      const student = (data?.students || []).find(s => String(s.rollNo) === String(rollNum));
-
-      if (student) {
-        const cls = (data?.classes || []).find(c => c.id === student.classId);
-        
-        // Calculate latest performance
-        const studentMarks = (data?.marks || []).filter(m => m.studentId === student.id);
-        let totalObtained = 0;
-        let totalMax = 0;
-
-        studentMarks.forEach(m => {
-          totalObtained += Number(m.obtainedMarks) || 0;
-          totalMax += Number(m.totalMarks) || 100;
-        });
-
-        const percentage = totalMax > 0 ? Math.round((totalObtained / totalMax) * 100) : 0;
-
-        return `📊 Student Record Found:
-👤 Name: ${student.name}
-👨‍👦 Father: ${student.fname || 'N/A'}
-🏫 Class: ${cls?.name || 'N/A'} (Roll #${student.rollNo})
-📈 Latest Score Percentage: ${percentage}% (${totalObtained}/${totalMax} Marks)
-✅ Status: Active Student at Al-Zia Science Academy.`;
-      }
-    }
 
     // 2. Faculty & Teachers Info
     if (query.includes('teacher') || query.includes('faculty') || query.includes('sir') || query.includes('prof') || query.includes('perhata') || query.includes('parhata') || query.includes('teach') || query.includes('education') || query.includes('qualification') || query.includes('deg') || query.includes('computer') || query.includes('physics') || query.includes('math') || query.includes('chemistry') || query.includes('biology')) {
@@ -222,11 +191,11 @@ All faculty members are highly qualified board examiners and subject specialists
     // Default Fallback Response
     return `Thank you for your question! 😊 
 You can ask me about:
-• Faculty Teachers (e.g. Who teaches Computer Science?)
+• Faculty Teachers & Qualifications (e.g. Who teaches Computer Science?)
 • Academy Timings & Batches
-• Classes & Subjects (9th, 10th, 11th, 12th)
-• Fee Structure & Receipts
-• Student Roll Number Search (e.g. 401)
+• Classes & Subjects Offered (9th, 10th, 11th, 12th)
+• Fee Structure & Payment Info
+• Contact Details for Admissions
 
 Or click one of the quick options below!`;
   };
@@ -442,7 +411,7 @@ Or click one of the quick options below!`;
           >
             <input
               type="text"
-              placeholder="Ask AI or type Roll No (e.g. 401)..."
+              placeholder="Ask AI Assistant..."
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               className="flex-1 bg-slate-950 border border-slate-800 rounded-2xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 font-medium"
