@@ -74,56 +74,56 @@ export default function AiChatbot({ data }) {
 
         const percentage = totalMax > 0 ? Math.round((totalObtained / totalMax) * 100) : 0;
 
-        return `📊 **Student Record Found**:
-👤 **Name**: ${student.name}
-👨‍👦 **Father**: ${student.fname || 'N/A'}
-🏫 **Class**: ${cls?.name || 'N/A'} (Roll #${student.rollNo})
-📈 **Latest Score Percentage**: ${percentage}% (${totalObtained}/${totalMax} Marks)
-✅ **Status**: Active Student at Al-Zia Science Academy.`;
+        return `📊 Student Record Found:
+👤 Name: ${student.name}
+👨‍👦 Father: ${student.fname || 'N/A'}
+🏫 Class: ${cls?.name || 'N/A'} (Roll #${student.rollNo})
+📈 Latest Score Percentage: ${percentage}% (${totalObtained}/${totalMax} Marks)
+✅ Status: Active Student at Al-Zia Science Academy.`;
       }
     }
 
     // 2. Timings & Schedule
     if (query.includes('timing') || query.includes('time') || query.includes('schedule') || query.includes('hours') || query.includes('wakt')) {
-      return `🕒 **Al-Zia Science Academy Timings**:
-• **Evening Shift Only**: 3:00 PM – 6:30 PM
-• **Days**: Monday to Saturday (Sunday Closed).`;
+      return `🕒 Al-Zia Science Academy Timings:
+• Evening Shift Only: 3:00 PM – 6:30 PM
+• Days: Monday to Saturday (Sunday Closed).`;
     }
 
     // 3. Courses & Classes Offered
     if (query.includes('class') || query.includes('course') || query.includes('subject') || query.includes('matric') || query.includes('fsc')) {
-      return `🎓 **Classes & Subjects Offered**:
-• **Class 9th & 10th (Matric Science)**: Physics, Chemistry, Mathematics, Biology, Computer Science.
-• **Class 11th & 12th (FSc Pre-Medical / Pre-Engineering / ICS)**: Physics, Chemistry, Biology, Mathematics, Computer.
+      return `🎓 Classes & Subjects Offered:
+• Class 9th & 10th (Matric Science): Physics, Chemistry, Mathematics, Biology, Computer Science.
+• Class 11th & 12th (FSc Pre-Medical / Pre-Engineering / ICS): Physics, Chemistry, Biology, Mathematics, Computer.
 • Regular monthly test series & board examination preparation!`;
     }
 
     // 4. Fee Structure & Payments
     if (query.includes('fee') || query.includes('fees') || query.includes('dues') || query.includes('paisa') || query.includes('cost')) {
-      return `💳 **Fee Structure Information**:
-• Monthly Tuition Fee ranges between **Rs. 2,000 – Rs. 4,000** depending on Class level.
+      return `💳 Fee Structure Information:
+• Monthly Tuition Fee ranges between Rs. 2,000 – Rs. 4,000 depending on Class level.
 • Fee receipts are generated monthly and can be paid via Cash, JazzCash, EasyPaisa, or Bank Transfer.
 • Admin login gives full digital receipt download & printing.`;
     }
 
     // 5. Contact & Admissions
     if (query.includes('contact') || query.includes('admission') || query.includes('phone') || query.includes('address') || query.includes('location') || query.includes('number')) {
-      return `📞 **Admissions & Contact Details**:
-• **Academy Name**: Al-Zia Science Academy
-• **Admissions Status**: Admissions OPEN for Session 2026-2027!
-• **Visit Us**: Admin Office during Evening Shift (3:00 PM – 6:30 PM).
-• You can also submit queries in the **Feedback** tab on this portal!`;
+      return `📞 Admissions & Contact Details:
+• Academy Name: Al-Zia Science Academy
+• Admissions Status: Admissions OPEN for Session 2026-2027!
+• Visit Us: Admin Office during Evening Shift (3:00 PM – 6:30 PM).
+• You can also submit queries in the Feedback tab on this portal!`;
     }
 
     // 6. Result & Report Cards
     if (query.includes('result') || query.includes('report') || query.includes('marks') || query.includes('card') || query.includes('position')) {
-      return `📊 **Checking Student Results**:
-Simply type the **Roll Number** (e.g., \`401\` or \`103\`) directly in this chat! I will instantly fetch the student's monthly performance, total marks, and percentage for you!`;
+      return `📊 Checking Student Results:
+Simply type the Roll Number (e.g. 401 or 103) directly in this chat! I will instantly fetch the student's monthly performance, total marks, and percentage for you!`;
     }
 
     // 7. About Academy Portal
     if (query.includes('app') || query.includes('website') || query.includes('portal') || query.includes('al-zia') || query.includes('alzia')) {
-      return `✨ **About Al-Zia Academy Portal**:
+      return `✨ About Al-Zia Academy Portal:
 This is the official digital portal for Al-Zia Science Academy. It provides:
 1. 📊 Monthly Marks Accumulation Ledger & Wall of Honor Ranks
 2. 📅 Class-wise Attendance Tracker
@@ -135,10 +135,10 @@ This is the official digital portal for Al-Zia Science Academy. It provides:
     // Default Fallback Response
     return `Thank you for your question! 😊 
 You can ask me about:
-• **Academy Timings & Batches**
-• **Classes & Subjects (9th, 10th, 11th, 12th)**
-• **Fee Structure & Receipts**
-• **Student Roll Number Search (e.g. \`401\`)**
+• Academy Timings & Batches
+• Classes & Subjects (9th, 10th, 11th, 12th)
+• Fee Structure & Receipts
+• Student Roll Number Search (e.g. 401)
 
 Or click one of the quick options below!`;
   };
@@ -262,7 +262,7 @@ Or click one of the quick options below!`;
                       ? 'bg-indigo-600 text-white rounded-tr-none font-medium'
                       : 'bg-slate-800 border border-slate-700/80 text-slate-100 rounded-tl-none whitespace-pre-line'
                   }`}>
-                    {msg.text}
+                    {msg.text ? msg.text.replace(/\*\*/g, '').replace(/`/g, '') : ''}
                   </div>
                   <span className="text-[9px] text-slate-500 px-1 font-mono block">
                     {msg.timestamp}
