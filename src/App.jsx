@@ -356,6 +356,13 @@ export default function App() {
     syncWithFirestore(newData, 'faculty');
   };
 
+  const handleUpdateAiRules = (updatedRules) => {
+    const newData = { ...data, aiRules: updatedRules };
+    setData(newData);
+    saveLocalData(newData);
+    syncWithFirestore(newData, 'aiRules');
+  };
+
   return (
     <div className={`min-h-screen transition-colors duration-300 ${
       theme === 'dark' ? 'bg-slate-950 text-slate-100 dark-mode' : 'bg-slate-100 text-slate-900 light-mode'
@@ -494,7 +501,8 @@ export default function App() {
       <AiChatbot 
         data={data} 
         isAdminLoggedIn={isAdminLoggedIn} 
-        onUpdateFaculty={handleUpdateFaculty} 
+        onUpdateFaculty={handleUpdateFaculty}
+        onUpdateAiRules={handleUpdateAiRules}
       />
 
     </div>

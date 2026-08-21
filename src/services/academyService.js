@@ -238,6 +238,33 @@ const DEFAULT_FACULTY = [
   { id: 'fac-6', subject: 'English & Urdu', teacher: 'Sir Zaid Malik', education: 'M.A. English & Linguistics', experience: '5+ Years Senior Lecturer', classes: 'All Classes' }
 ];
 
+const DEFAULT_AI_RULES = [
+  {
+    id: 'rule-1',
+    category: 'Timings',
+    keywords: 'timing, time, schedule, hours, wakt',
+    response: '🕒 Al-Zia Science Academy Timings:\n• Evening Shift Only: 3:00 PM – 6:30 PM\n• Days: Monday to Saturday (Sunday Closed).'
+  },
+  {
+    id: 'rule-2',
+    category: 'Courses',
+    keywords: 'class, course, subject, matric, fsc',
+    response: '🎓 Classes & Subjects Offered:\n• Class 9th & 10th (Matric Science): Physics, Chemistry, Mathematics, Biology, Computer Science.\n• Class 11th & 12th (FSc Pre-Medical / Pre-Engineering / ICS): Physics, Chemistry, Biology, Mathematics, Computer.'
+  },
+  {
+    id: 'rule-3',
+    category: 'Fees',
+    keywords: 'fee, fees, dues, paisa, cost',
+    response: '💳 Fee Structure Information:\n• Monthly Tuition Fee ranges between Rs. 2,000 – Rs. 4,000 depending on Class level.\n• Fee receipts are generated monthly and can be paid via Cash, JazzCash, EasyPaisa, or Bank Transfer.'
+  },
+  {
+    id: 'rule-4',
+    category: 'Admissions',
+    keywords: 'contact, admission, phone, address, location, number',
+    response: '📞 Admissions & Contact Details:\n• Academy Name: Al-Zia Science Academy\n• Admissions Status: Admissions OPEN for Session 2026-2027!\n• Visit Us: Admin Office during Evening Shift (3:00 PM – 6:30 PM).'
+  }
+];
+
 export const isFirebaseActive = () => {
   return true;
 };
@@ -315,6 +342,12 @@ export const getInitialData = () => {
       parsed.faculty = DEFAULT_FACULTY;
     } else {
       parsed.faculty = parsed.faculty.filter(Boolean);
+    }
+
+    if (!Array.isArray(parsed.aiRules)) {
+      parsed.aiRules = DEFAULT_AI_RULES;
+    } else {
+      parsed.aiRules = parsed.aiRules.filter(Boolean);
     }
 
     if (!parsed.fees || typeof parsed.fees !== 'object') {

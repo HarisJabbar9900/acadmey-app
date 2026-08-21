@@ -17,32 +17,69 @@ import {
   Edit3,
   Check,
   Plus,
-  Trash2
+  Trash2,
+  Settings,
+  Sliders
 } from 'lucide-react';
 
-export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty }) {
+export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty, onUpdateAiRules }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isFacultyModalOpen, setIsFacultyModalOpen] = useState(false);
+  const [isAiRulesModalOpen, setIsAiRulesModalOpen] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [hasUnread, setHasUnread] = useState(true);
   const messagesEndRef = useRef(null);
 
   const defaultFaculty = [
-    { id: 'fac-1', subject: 'Computer Science', teacher: 'Sir Haris Jabbar', classes: '9th, 10th, 11th, 12th' },
-    { id: 'fac-2', subject: 'Physics', teacher: 'Prof. Malik Umar', classes: '9th, 10th, 11th, 12th' },
-    { id: 'fac-3', subject: 'Chemistry', teacher: 'Sir Hassan Raza', classes: '9th, 10th, 11th, 12th' },
-    { id: 'fac-4', subject: 'Mathematics', teacher: 'Prof. Abdul Ghani', classes: '9th, 10th, 11th, 12th' },
-    { id: 'fac-5', subject: 'Biology', teacher: 'Dr. Ghulam Hussain', classes: '9th, 10th, 11th, 12th' },
-    { id: 'fac-6', subject: 'English & Urdu', teacher: 'Sir Zaid Malik', classes: 'All Classes' }
+    { id: 'fac-1', subject: 'Computer Science', teacher: 'Sir Haris Jabbar', education: 'BS Computer Science (BSCS - Gold Medalist)', experience: '6+ Years Board Specialist', classes: '9th, 10th, 11th, 12th' },
+    { id: 'fac-2', subject: 'Physics', teacher: 'Prof. Malik Umar', education: 'M.Sc Physics (Gold Medalist)', experience: '10+ Years Board Examiner', classes: '9th, 10th, 11th, 12th' },
+    { id: 'fac-3', subject: 'Chemistry', teacher: 'Sir Hassan Raza', education: 'M.Sc Applied Chemistry', experience: '7+ Years Teaching', classes: '9th, 10th, 11th, 12th' },
+    { id: 'fac-4', subject: 'Mathematics', teacher: 'Prof. Abdul Ghani', education: 'M.Sc Mathematics', experience: '12+ Years Mathematics Specialist', classes: '9th, 10th, 11th, 12th' },
+    { id: 'fac-5', subject: 'Biology', teacher: 'Dr. Ghulam Hussain', education: 'MBBS / M.Phil Biology', experience: '8+ Years Medical Prep Specialist', classes: '9th, 10th, 11th, 12th' },
+    { id: 'fac-6', subject: 'English & Urdu', teacher: 'Sir Zaid Malik', education: 'M.A. English & Linguistics', experience: '5+ Years Senior Lecturer', classes: 'All Classes' }
+  ];
+
+  const defaultAiRules = [
+    {
+      id: 'rule-1',
+      category: 'Timings',
+      keywords: 'timing, time, schedule, hours, wakt',
+      response: '🕒 Al-Zia Science Academy Timings:\n• Evening Shift Only: 3:00 PM – 6:30 PM\n• Days: Monday to Saturday (Sunday Closed).'
+    },
+    {
+      id: 'rule-2',
+      category: 'Courses',
+      keywords: 'class, course, subject, matric, fsc',
+      response: '🎓 Classes & Subjects Offered:\n• Class 9th & 10th (Matric Science): Physics, Chemistry, Mathematics, Biology, Computer Science.\n• Class 11th & 12th (FSc Pre-Medical / Pre-Engineering / ICS): Physics, Chemistry, Biology, Mathematics, Computer.'
+    },
+    {
+      id: 'rule-3',
+      category: 'Fees',
+      keywords: 'fee, fees, dues, paisa, cost',
+      response: '💳 Fee Structure Information:\n• Monthly Tuition Fee ranges between Rs. 2,000 – Rs. 4,000 depending on Class level.\n• Fee receipts are generated monthly and can be paid via Cash, JazzCash, EasyPaisa, or Bank Transfer.'
+    },
+    {
+      id: 'rule-4',
+      category: 'Admissions',
+      keywords: 'contact, admission, phone, address, location, number',
+      response: '📞 Admissions & Contact Details:\n• Academy Name: Al-Zia Science Academy\n• Admissions Status: Admissions OPEN for Session 2026-2027!\n• Visit Us: Admin Office during Evening Shift (3:00 PM – 6:30 PM).'
+    }
   ];
 
   const [facultyList, setFacultyList] = useState(data?.faculty || defaultFaculty);
+  const [aiRulesList, setAiRulesList] = useState(data?.aiRules || defaultAiRules);
 
   useEffect(() => {
     if (data?.faculty && Array.isArray(data.faculty)) {
       setFacultyList(data.faculty);
     }
   }, [data?.faculty]);
+
+  useEffect(() => {
+    if (data?.aiRules && Array.isArray(data.aiRules)) {
+      setAiRulesList(data.aiRules);
+    }
+  }, [data?.aiRules]);
 
   const [messages, setMessages] = useState([
     {
@@ -77,6 +114,7 @@ export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty }) {
   const generateBotReply = (userQuery) => {
     const query = userQuery.toLowerCase().trim();
     const currentFaculty = data?.faculty || facultyList;
+    const currentRules = data?.aiRules || aiRulesList;
 
     // 1. Roll Number Search (e.g., "401", "roll 401", "result 103", "check 201")
     const rollMatch = query.match(/\b(\d{1,4})\b/);
@@ -171,42 +209,14 @@ ${facultyText}
 All faculty members are highly qualified board examiners and subject specialists!`;
     }
 
-    // 3. Timings & Schedule
-    if (query.includes('timing') || query.includes('time') || query.includes('schedule') || query.includes('hours') || query.includes('wakt')) {
-      return `🕒 Al-Zia Science Academy Timings:
-• Evening Shift Only: 3:00 PM – 6:30 PM
-• Days: Monday to Saturday (Sunday Closed).`;
-    }
-
-    // 4. Courses & Classes Offered
-    if (query.includes('class') || query.includes('course') || query.includes('subject') || query.includes('matric') || query.includes('fsc')) {
-      return `🎓 Classes & Subjects Offered:
-• Class 9th & 10th (Matric Science): Physics, Chemistry, Mathematics, Biology, Computer Science.
-• Class 11th & 12th (FSc Pre-Medical / Pre-Engineering / ICS): Physics, Chemistry, Biology, Mathematics, Computer.
-• Regular monthly test series & board examination preparation!`;
-    }
-
-    // 5. Fee Structure & Payments
-    if (query.includes('fee') || query.includes('fees') || query.includes('dues') || query.includes('paisa') || query.includes('cost')) {
-      return `💳 Fee Structure Information:
-• Monthly Tuition Fee ranges between Rs. 2,000 – Rs. 4,000 depending on Class level.
-• Fee receipts are generated monthly and can be paid via Cash, JazzCash, EasyPaisa, or Bank Transfer.
-• Admin login gives full digital receipt download & printing.`;
-    }
-
-    // 6. Contact & Admissions
-    if (query.includes('contact') || query.includes('admission') || query.includes('phone') || query.includes('address') || query.includes('location') || query.includes('number')) {
-      return `📞 Admissions & Contact Details:
-• Academy Name: Al-Zia Science Academy
-• Admissions Status: Admissions OPEN for Session 2026-2027!
-• Visit Us: Admin Office during Evening Shift (3:00 PM – 6:30 PM).
-• You can also submit queries in the Feedback tab on this portal!`;
-    }
-
-    // 7. Result & Report Cards
-    if (query.includes('result') || query.includes('report') || query.includes('marks') || query.includes('card') || query.includes('position')) {
-      return `📊 Checking Student Results:
-Simply type the Roll Number (e.g. 401 or 103) directly in this chat! I will instantly fetch the student's monthly performance, total marks, and percentage for you!`;
+    // 3. Admin Custom Q&A Rules Check
+    for (const rule of currentRules) {
+      if (!rule.keywords || !rule.response) continue;
+      const kwArray = rule.keywords.toLowerCase().split(',').map(k => k.trim()).filter(Boolean);
+      const isMatch = kwArray.some(kw => query.includes(kw));
+      if (isMatch) {
+        return rule.response;
+      }
     }
 
     // Default Fallback Response
@@ -258,6 +268,8 @@ Or click one of the quick options below!`;
       id: 'fac-' + Date.now(),
       subject: 'New Subject',
       teacher: 'Teacher Name',
+      education: 'Degree Name',
+      experience: 'Teaching Experience',
       classes: 'All Classes'
     };
     setFacultyList(prev => [...prev, newRow]);
@@ -272,6 +284,32 @@ Or click one of the quick options below!`;
       onUpdateFaculty(facultyList);
     }
     setIsFacultyModalOpen(false);
+  };
+
+  // AI Rules Edit Handlers
+  const handleRuleChange = (id, field, value) => {
+    setAiRulesList(prev => prev.map(r => r.id === id ? { ...r, [field]: value } : r));
+  };
+
+  const handleAddAiRuleRow = () => {
+    const newRule = {
+      id: 'rule-' + Date.now(),
+      category: 'General Query',
+      keywords: 'keyword1, keyword2',
+      response: 'Write your custom AI response here...'
+    };
+    setAiRulesList(prev => [...prev, newRule]);
+  };
+
+  const handleDeleteAiRuleRow = (id) => {
+    setAiRulesList(prev => prev.filter(r => r.id !== id));
+  };
+
+  const handleSaveAiRules = () => {
+    if (typeof onUpdateAiRules === 'function') {
+      onUpdateAiRules(aiRulesList);
+    }
+    setIsAiRulesModalOpen(false);
   };
 
   return (
@@ -324,15 +362,24 @@ Or click one of the quick options below!`;
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               {isAdminLoggedIn && (
-                <button
-                  onClick={() => setIsFacultyModalOpen(true)}
-                  className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-[11px] font-black flex items-center gap-1 shadow-sm transition-all cursor-pointer"
-                  title="Admin: Edit Subject Faculty & Teachers List"
-                >
-                  <Edit3 className="w-3 h-3" /> Teachers
-                </button>
+                <>
+                  <button
+                    onClick={() => setIsFacultyModalOpen(true)}
+                    className="px-2 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-[10px] font-black flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                    title="Admin: Edit Subject Faculty & Teachers List"
+                  >
+                    <Edit3 className="w-3 h-3" /> Teachers
+                  </button>
+                  <button
+                    onClick={() => setIsAiRulesModalOpen(true)}
+                    className="px-2 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-[10px] font-black flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                    title="Admin: Manage AI Assistant Q&A Rules"
+                  >
+                    <Settings className="w-3 h-3" /> Rules
+                  </button>
+                </>
               )}
               <button
                 onClick={() => setIsOpen(false)}
@@ -431,7 +478,7 @@ Or click one of the quick options below!`;
             </div>
 
             <p className="text-xs text-slate-400">
-              Update subject teacher names below. When users ask AI Assistant "Who teaches Computer Science?", it will dynamically reply with your updated teacher names!
+              Update subject teacher names, qualifications & experience below. When users ask AI Assistant, it will dynamically reply with your updated teacher records!
             </p>
 
             <div className="space-y-3 max-h-[55vh] overflow-y-auto pr-1">
@@ -502,7 +549,7 @@ Or click one of the quick options below!`;
                 onClick={handleAddFacultyRow}
                 className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
               >
-                <Plus className="w-4 h-4 text-indigo-400" /> Add Subject Teacher
+                <Plus className="w-4 h-4 text-indigo-400" /> Add Teacher
               </button>
 
               <div className="flex gap-2">
@@ -526,7 +573,108 @@ Or click one of the quick options below!`;
           </div>
         </div>
       )}
+
+      {/* Admin AI Knowledge Base Q&A Rules Modal */}
+      {isAiRulesModalOpen && (
+        <div className="fixed inset-0 z-[99999] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 text-white rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4 my-auto relative">
+            
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center gap-2 font-bold text-base text-indigo-400">
+                <Sliders className="w-5 h-5 text-indigo-400" />
+                <span>Admin: Manage AI Assistant Q&A Knowledge Rules</span>
+              </div>
+              <button
+                onClick={() => setIsAiRulesModalOpen(false)}
+                className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-xl transition-all cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-400">
+              Add or edit custom AI Q&A rules. Enter trigger keywords (comma separated). When a user's question contains any of these keywords, the AI Assistant will respond with your exact answer!
+            </p>
+
+            <div className="space-y-4 max-h-[55vh] overflow-y-auto pr-1">
+              {aiRulesList.map(rule => (
+                <div key={rule.id} className="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-2 relative">
+                  <button
+                    onClick={() => handleDeleteAiRuleRow(rule.id)}
+                    className="absolute top-2 right-2 p-1.5 text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all cursor-pointer"
+                    title="Delete AI Rule"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pr-6">
+                    <div>
+                      <label className="text-[10px] font-bold text-amber-400 uppercase font-mono">Category / Topic</label>
+                      <input
+                        type="text"
+                        value={rule.category || ''}
+                        onChange={(e) => handleRuleChange(rule.id, 'category', e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 font-bold"
+                        placeholder="e.g. Location"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[10px] font-bold text-emerald-400 uppercase font-mono">Trigger Keywords (comma separated)</label>
+                      <input
+                        type="text"
+                        value={rule.keywords || ''}
+                        onChange={(e) => handleRuleChange(rule.id, 'keywords', e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono"
+                        placeholder="e.g. location, address, pata"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-bold text-indigo-300 uppercase font-mono">AI Response Text</label>
+                    <textarea
+                      rows={3}
+                      value={rule.response || ''}
+                      onChange={(e) => handleRuleChange(rule.id, 'response', e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-indigo-500 font-sans"
+                      placeholder="Write exact response text that AI Assistant will output..."
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center justify-between pt-3 border-t border-slate-800">
+              <button
+                type="button"
+                onClick={handleAddAiRuleRow}
+                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+              >
+                <Plus className="w-4 h-4 text-indigo-400" /> Add New AI Q&A Rule
+              </button>
+
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsAiRulesModalOpen(false)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveAiRules}
+                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-lg shadow-indigo-600/30 cursor-pointer"
+                >
+                  <Check className="w-4 h-4" /> Save AI Rules
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
     </>
   );
 }
-
