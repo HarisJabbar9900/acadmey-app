@@ -12,25 +12,49 @@ import {
   Search, 
   Phone, 
   GraduationCap,
-  MessageSquare
+  MessageSquare,
+  UserCheck,
+  Edit3,
+  Check,
+  Plus,
+  Trash2
 } from 'lucide-react';
 
-export default function AiChatbot({ data }) {
+export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isFacultyModalOpen, setIsFacultyModalOpen] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [hasUnread, setHasUnread] = useState(true);
   const messagesEndRef = useRef(null);
+
+  const defaultFaculty = [
+    { id: 'fac-1', subject: 'Computer Science', teacher: 'Sir Haris Jabbar', classes: '9th, 10th, 11th, 12th' },
+    { id: 'fac-2', subject: 'Physics', teacher: 'Prof. Malik Umar', classes: '9th, 10th, 11th, 12th' },
+    { id: 'fac-3', subject: 'Chemistry', teacher: 'Sir Hassan Raza', classes: '9th, 10th, 11th, 12th' },
+    { id: 'fac-4', subject: 'Mathematics', teacher: 'Prof. Abdul Ghani', classes: '9th, 10th, 11th, 12th' },
+    { id: 'fac-5', subject: 'Biology', teacher: 'Dr. Ghulam Hussain', classes: '9th, 10th, 11th, 12th' },
+    { id: 'fac-6', subject: 'English & Urdu', teacher: 'Sir Zaid Malik', classes: 'All Classes' }
+  ];
+
+  const [facultyList, setFacultyList] = useState(data?.faculty || defaultFaculty);
+
+  useEffect(() => {
+    if (data?.faculty && Array.isArray(data.faculty)) {
+      setFacultyList(data.faculty);
+    }
+  }, [data?.faculty]);
 
   const [messages, setMessages] = useState([
     {
       id: 1,
       sender: 'bot',
-      text: 'Assalamu Alaikum! Welcome to Al-Zia Science Academy AI Assistant 🎓. How can I help you today? You can ask about academy timings, admissions, courses, fee structures, or type a student Roll Number to check results!',
+      text: 'Assalamu Alaikum! Welcome to Al-Zia Science Academy AI Assistant 🎓. How can I help you today? You can ask about academy timings, admissions, courses, faculty teachers, fee structures, or type a student Roll Number to check results!',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
 
   const quickPrompts = [
+    { label: '👨‍🏫 Teachers', text: 'Who teaches Computer Science and other subjects?' },
     { label: '🕒 Timings', text: 'What are the academy timings?' },
     { label: '🎓 Courses', text: 'Which classes and subjects are offered?' },
     { label: '💳 Fee Info', text: 'What is the monthly fee structure?' },
@@ -52,6 +76,7 @@ export default function AiChatbot({ data }) {
   // AI Knowledge Base & Response Engine
   const generateBotReply = (userQuery) => {
     const query = userQuery.toLowerCase().trim();
+    const currentFaculty = data?.faculty || facultyList;
 
     // 1. Roll Number Search (e.g., "401", "roll 401", "result 103", "check 201")
     const rollMatch = query.match(/\b(\d{1,4})\b/);
@@ -83,14 +108,60 @@ export default function AiChatbot({ data }) {
       }
     }
 
-    // 2. Timings & Schedule
+    // 2. Faculty & Teachers Info
+    if (query.includes('teacher') || query.includes('faculty') || query.includes('sir') || query.includes('prof') || query.includes('perhata') || query.includes('parhata') || query.includes('teach') || query.includes('computer') || query.includes('physics') || query.includes('math') || query.includes('chemistry') || query.includes('biology')) {
+      
+      // Computer Science specific query
+      if (query.includes('computer') || query.includes('cs') || query.includes('comp')) {
+        const comp = currentFaculty.find(f => f.subject.toLowerCase().includes('computer'));
+        return `💻 Computer Science Faculty:
+Computer Science is taught by ${comp ? comp.teacher : 'Sir Haris Jabbar'} for Class 9th, 10th, 11th & 12th!`;
+      }
+
+      // Physics specific query
+      if (query.includes('physics')) {
+        const phy = currentFaculty.find(f => f.subject.toLowerCase().includes('physics'));
+        return `🔬 Physics Faculty:
+Physics is taught by ${phy ? phy.teacher : 'Prof. Malik Umar'}!`;
+      }
+
+      // Chemistry specific query
+      if (query.includes('chemistry') || query.includes('chem')) {
+        const chem = currentFaculty.find(f => f.subject.toLowerCase().includes('chemistry'));
+        return `🧪 Chemistry Faculty:
+Chemistry is taught by ${chem ? chem.teacher : 'Sir Hassan Raza'}!`;
+      }
+
+      // Math specific query
+      if (query.includes('math') || query.includes('mathematics')) {
+        const math = currentFaculty.find(f => f.subject.toLowerCase().includes('math'));
+        return `📐 Mathematics Faculty:
+Mathematics is taught by ${math ? math.teacher : 'Prof. Abdul Ghani'}!`;
+      }
+
+      // Biology specific query
+      if (query.includes('bio') || query.includes('biology')) {
+        const bio = currentFaculty.find(f => f.subject.toLowerCase().includes('bio'));
+        return `🧬 Biology Faculty:
+Biology is taught by ${bio ? bio.teacher : 'Dr. Ghulam Hussain'}!`;
+      }
+
+      // General Faculty List
+      const facultyText = currentFaculty.map(f => `• ${f.subject}: ${f.teacher}`).join('\n');
+      return `👨‍🏫 Al-Zia Science Academy Teaching Faculty:
+${facultyText}
+
+All faculty members are highly qualified subject specialists!`;
+    }
+
+    // 3. Timings & Schedule
     if (query.includes('timing') || query.includes('time') || query.includes('schedule') || query.includes('hours') || query.includes('wakt')) {
       return `🕒 Al-Zia Science Academy Timings:
 • Evening Shift Only: 3:00 PM – 6:30 PM
 • Days: Monday to Saturday (Sunday Closed).`;
     }
 
-    // 3. Courses & Classes Offered
+    // 4. Courses & Classes Offered
     if (query.includes('class') || query.includes('course') || query.includes('subject') || query.includes('matric') || query.includes('fsc')) {
       return `🎓 Classes & Subjects Offered:
 • Class 9th & 10th (Matric Science): Physics, Chemistry, Mathematics, Biology, Computer Science.
@@ -98,7 +169,7 @@ export default function AiChatbot({ data }) {
 • Regular monthly test series & board examination preparation!`;
     }
 
-    // 4. Fee Structure & Payments
+    // 5. Fee Structure & Payments
     if (query.includes('fee') || query.includes('fees') || query.includes('dues') || query.includes('paisa') || query.includes('cost')) {
       return `💳 Fee Structure Information:
 • Monthly Tuition Fee ranges between Rs. 2,000 – Rs. 4,000 depending on Class level.
@@ -106,7 +177,7 @@ export default function AiChatbot({ data }) {
 • Admin login gives full digital receipt download & printing.`;
     }
 
-    // 5. Contact & Admissions
+    // 6. Contact & Admissions
     if (query.includes('contact') || query.includes('admission') || query.includes('phone') || query.includes('address') || query.includes('location') || query.includes('number')) {
       return `📞 Admissions & Contact Details:
 • Academy Name: Al-Zia Science Academy
@@ -115,26 +186,16 @@ export default function AiChatbot({ data }) {
 • You can also submit queries in the Feedback tab on this portal!`;
     }
 
-    // 6. Result & Report Cards
+    // 7. Result & Report Cards
     if (query.includes('result') || query.includes('report') || query.includes('marks') || query.includes('card') || query.includes('position')) {
       return `📊 Checking Student Results:
 Simply type the Roll Number (e.g. 401 or 103) directly in this chat! I will instantly fetch the student's monthly performance, total marks, and percentage for you!`;
     }
 
-    // 7. About Academy Portal
-    if (query.includes('app') || query.includes('website') || query.includes('portal') || query.includes('al-zia') || query.includes('alzia')) {
-      return `✨ About Al-Zia Academy Portal:
-This is the official digital portal for Al-Zia Science Academy. It provides:
-1. 📊 Monthly Marks Accumulation Ledger & Wall of Honor Ranks
-2. 📅 Class-wise Attendance Tracker
-3. 💳 Student Monthly Fee Manager & Receipt Generator
-4. 📜 Class Topper Certificate of Excellence Generator
-5. 📝 AI Test Paper Generator & Study Material Library!`;
-    }
-
     // Default Fallback Response
     return `Thank you for your question! 😊 
 You can ask me about:
+• Faculty Teachers (e.g. Who teaches Computer Science?)
 • Academy Timings & Batches
 • Classes & Subjects (9th, 10th, 11th, 12th)
 • Fee Structure & Receipts
@@ -168,6 +229,32 @@ Or click one of the quick options below!`;
       };
       setMessages(prev => [...prev, botMsg]);
     }, 400);
+  };
+
+  // Faculty Edit Handlers
+  const handleTeacherChange = (id, field, value) => {
+    setFacultyList(prev => prev.map(f => f.id === id ? { ...f, [field]: value } : f));
+  };
+
+  const handleAddFacultyRow = () => {
+    const newRow = {
+      id: 'fac-' + Date.now(),
+      subject: 'New Subject',
+      teacher: 'Teacher Name',
+      classes: 'All Classes'
+    };
+    setFacultyList(prev => [...prev, newRow]);
+  };
+
+  const handleDeleteFacultyRow = (id) => {
+    setFacultyList(prev => prev.filter(f => f.id !== id));
+  };
+
+  const handleSaveFaculty = () => {
+    if (typeof onUpdateFaculty === 'function') {
+      onUpdateFaculty(facultyList);
+    }
+    setIsFacultyModalOpen(false);
   };
 
   return (
@@ -220,12 +307,23 @@ Or click one of the quick options below!`;
               </div>
             </div>
 
-            <button
-              onClick={() => setIsOpen(false)}
-              className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-xl transition-all cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-2">
+              {isAdminLoggedIn && (
+                <button
+                  onClick={() => setIsFacultyModalOpen(true)}
+                  className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-[11px] font-black flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                  title="Admin: Edit Subject Faculty & Teachers List"
+                >
+                  <Edit3 className="w-3 h-3" /> Teachers
+                </button>
+              )}
+              <button
+                onClick={() => setIsOpen(false)}
+                className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-xl transition-all cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* Quick Prompts Bar */}
@@ -296,6 +394,94 @@ Or click one of the quick options below!`;
 
         </div>
       )}
+
+      {/* Admin Faculty Management Modal */}
+      {isFacultyModalOpen && (
+        <div className="fixed inset-0 z-[99999] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 text-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 my-auto relative">
+            
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center gap-2 font-bold text-base text-amber-400">
+                <UserCheck className="w-5 h-5 text-amber-400" />
+                <span>Admin: Edit Subject Faculty & Teachers</span>
+              </div>
+              <button
+                onClick={() => setIsFacultyModalOpen(false)}
+                className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-xl transition-all cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-400">
+              Update subject teacher names below. When users ask AI Assistant "Who teaches Computer Science?", it will dynamically reply with your updated teacher names!
+            </p>
+
+            <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
+              {facultyList.map(fac => (
+                <div key={fac.id} className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  <div className="flex-1 space-y-1">
+                    <label className="text-[10px] font-bold text-amber-400 uppercase font-mono">Subject Name</label>
+                    <input
+                      type="text"
+                      value={fac.subject}
+                      onChange={(e) => handleTeacherChange(fac.id, 'subject', e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 font-bold"
+                    />
+                  </div>
+
+                  <div className="flex-1 space-y-1">
+                    <label className="text-[10px] font-bold text-emerald-400 uppercase font-mono">Teacher Name</label>
+                    <input
+                      type="text"
+                      value={fac.teacher}
+                      onChange={(e) => handleTeacherChange(fac.id, 'teacher', e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 font-bold"
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => handleDeleteFacultyRow(fac.id)}
+                    className="p-2 text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all self-end sm:self-center cursor-pointer mt-1 sm:mt-4"
+                    title="Delete Teacher Row"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center justify-between pt-3 border-t border-slate-800">
+              <button
+                type="button"
+                onClick={handleAddFacultyRow}
+                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+              >
+                <Plus className="w-4 h-4 text-indigo-400" /> Add Subject Teacher
+              </button>
+
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsFacultyModalOpen(false)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveFaculty}
+                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-lg shadow-emerald-600/30 cursor-pointer"
+                >
+                  <Check className="w-4 h-4" /> Save Faculty Info
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
     </>
   );
 }
+

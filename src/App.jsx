@@ -349,6 +349,13 @@ export default function App() {
     deleteFromFirestore('notices', noticeId);
   };
 
+  const handleUpdateFaculty = (updatedFacultyList) => {
+    const newData = { ...data, faculty: updatedFacultyList };
+    setData(newData);
+    saveLocalData(newData);
+    syncWithFirestore(newData, 'faculty');
+  };
+
   return (
     <div className={`min-h-screen transition-colors duration-300 ${
       theme === 'dark' ? 'bg-slate-950 text-slate-100 dark-mode' : 'bg-slate-100 text-slate-900 light-mode'
@@ -484,7 +491,11 @@ export default function App() {
       </footer>
 
       {/* Floating AI Assistant Chatbot Widget */}
-      <AiChatbot data={data} />
+      <AiChatbot 
+        data={data} 
+        isAdminLoggedIn={isAdminLoggedIn} 
+        onUpdateFaculty={handleUpdateFaculty} 
+      />
 
     </div>
   );

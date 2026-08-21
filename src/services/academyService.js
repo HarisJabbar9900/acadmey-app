@@ -229,6 +229,15 @@ const DEFAULT_NOTICES = [
   }
 ];
 
+const DEFAULT_FACULTY = [
+  { id: 'fac-1', subject: 'Computer Science', teacher: 'Sir Haris Jabbar', classes: '9th, 10th, 11th, 12th' },
+  { id: 'fac-2', subject: 'Physics', teacher: 'Prof. Malik Umar', classes: '9th, 10th, 11th, 12th' },
+  { id: 'fac-3', subject: 'Chemistry', teacher: 'Sir Hassan Raza', classes: '9th, 10th, 11th, 12th' },
+  { id: 'fac-4', subject: 'Mathematics', teacher: 'Prof. Abdul Ghani', classes: '9th, 10th, 11th, 12th' },
+  { id: 'fac-5', subject: 'Biology', teacher: 'Dr. Ghulam Hussain', classes: '9th, 10th, 11th, 12th' },
+  { id: 'fac-6', subject: 'English & Urdu', teacher: 'Sir Zaid Malik', classes: 'All Classes' }
+];
+
 export const isFirebaseActive = () => {
   return true;
 };
@@ -300,6 +309,12 @@ export const getInitialData = () => {
       parsed.notices = DEFAULT_NOTICES;
     } else {
       parsed.notices = parsed.notices.filter(Boolean);
+    }
+
+    if (!Array.isArray(parsed.faculty)) {
+      parsed.faculty = DEFAULT_FACULTY;
+    } else {
+      parsed.faculty = parsed.faculty.filter(Boolean);
     }
 
     if (!parsed.fees || typeof parsed.fees !== 'object') {
