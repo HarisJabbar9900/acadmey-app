@@ -86,8 +86,7 @@ export default function AiChatbot({ data }) {
     // 2. Timings & Schedule
     if (query.includes('timing') || query.includes('time') || query.includes('schedule') || query.includes('hours') || query.includes('wakt')) {
       return `🕒 **Al-Zia Science Academy Timings**:
-• **Morning Batch**: 8:00 AM – 1:00 PM (Regular Classes)
-• **Evening Batch**: 3:00 PM – 7:00 PM (Coaching & Test Sessions)
+• **Evening Shift Only**: 3:00 PM – 6:30 PM
 • **Days**: Monday to Saturday (Sunday Closed).`;
     }
 
@@ -112,7 +111,7 @@ export default function AiChatbot({ data }) {
       return `📞 **Admissions & Contact Details**:
 • **Academy Name**: Al-Zia Science Academy
 • **Admissions Status**: Admissions OPEN for Session 2026-2027!
-• **Visit Us**: Admin Office during 3:00 PM – 7:00 PM.
+• **Visit Us**: Admin Office during Evening Shift (3:00 PM – 6:30 PM).
 • You can also submit queries in the **Feedback** tab on this portal!`;
     }
 
