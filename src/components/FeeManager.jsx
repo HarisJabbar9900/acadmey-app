@@ -535,13 +535,13 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                             <span className="text-xs text-slate-500 font-mono">🔒 Admin Only</span>
                           )}
 
-                          {/* Print Fee Slip */}
+                          {/* Print Fee Slip (High-Contrast Solid Gradient Button) */}
                           <button
                             onClick={() => setReceiptStudent({ student, feeRecord })}
-                            className="p-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
-                            title="Print Fee Receipt Slip"
+                            className="p-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-95 text-white rounded-xl transition-all cursor-pointer shadow-md shadow-indigo-600/30 flex items-center justify-center shrink-0"
+                            title="Print Official Fee Receipt Slip"
                           >
-                            <Printer className="w-4 h-4" />
+                            <Printer className="w-4 h-4 text-white" />
                           </button>
                         </div>
                       </td>
@@ -562,9 +562,9 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
 
         {/* Pagination Pager Controls (Max 10 per page) */}
         {filteredStudents.length > 0 && (
-          <div className="p-4 border-t border-slate-800 bg-slate-900/90 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="text-xs text-slate-400 font-medium">
-              Showing <strong className="text-white">{(currentPage - 1) * itemsPerPage + 1}</strong> to <strong className="text-white">{Math.min(currentPage * itemsPerPage, filteredStudents.length)}</strong> of <strong className="text-indigo-400">{filteredStudents.length}</strong> Fee Records
+          <div className="p-4 border-t border-slate-200/80 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-900/90 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+              Showing <strong className="text-slate-900 dark:text-white">{(currentPage - 1) * itemsPerPage + 1}</strong> to <strong className="text-slate-900 dark:text-white">{Math.min(currentPage * itemsPerPage, filteredStudents.length)}</strong> of <strong className="text-indigo-600 dark:text-indigo-400 font-bold">{filteredStudents.length}</strong> Fee Records
             </div>
 
             {totalPages > 1 && (
@@ -572,7 +572,7 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                 <button
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-xs"
                 >
                   ◀ Previous
                 </button>
@@ -583,8 +583,8 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                     onClick={() => setCurrentPage(page)}
                     className={`w-8 h-8 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       currentPage === page
-                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                        : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                        ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30'
+                        : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-xs'
                     }`}
                   >
                     {page}
@@ -594,7 +594,7 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                 <button
                   disabled={currentPage === totalPages}
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                  className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer shadow-xs"
                 >
                   Next ▶
                 </button>
@@ -606,26 +606,26 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
 
       {/* Modal: Mark Paid Form */}
       {isModalOpen && selectedStudentForFee && (
-        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 my-auto max-h-[85vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 my-auto max-h-[85vh] overflow-y-auto">
             
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
               <div>
-                <h3 className="font-bold text-white text-lg flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                <h3 className="font-extrabold text-slate-900 dark:text-white text-lg flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                   Mark Fee Paid
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   {selectedStudentForFee.name} • Roll #{selectedStudentForFee.rollNo}
                 </p>
               </div>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white">✕</button>
+              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-700 dark:hover:text-white cursor-pointer">✕</button>
             </div>
 
             <form onSubmit={handleConfirmPayment} className="space-y-4">
               
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Custom Fee Amount Received (Rs.) *
                 </label>
                 
@@ -636,10 +636,10 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                       key={amt}
                       type="button"
                       onClick={() => setFeeAmount(amt)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition-all ${
+                      className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
                         Number(feeAmount) === amt
-                          ? 'bg-indigo-600 text-white shadow-sm'
-                          : 'bg-slate-800 text-slate-400 hover:text-white'
+                          ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-sm'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white border border-slate-200 dark:border-slate-700 shadow-xs'
                       }`}
                     >
                       Rs. {amt}
@@ -655,49 +655,49 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                   placeholder="Enter custom fee amount e.g. 1500, 2000..."
                   value={feeAmount}
                   onChange={(e) => setFeeAmount(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white font-mono font-bold focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm text-slate-900 dark:text-white font-mono font-bold focus:outline-none focus:border-indigo-500 shadow-xs"
                 />
-                <p className="text-[11px] text-slate-400 mt-1">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium">
                   💡 Type any custom fee amount (e.g. discount or extra fee).
                 </p>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Date of Payment *</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Date of Payment *</label>
                 <input
                   type="date"
                   required
                   value={paymentDate}
                   onChange={(e) => setPaymentDate(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white font-mono focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm text-slate-900 dark:text-white font-mono font-bold focus:outline-none focus:border-indigo-500 shadow-xs"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Payment Method</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Payment Method</label>
                 <select
                   value={paymentMethod}
                   onChange={(e) => setPaymentMethod(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-sm text-white font-semibold focus:outline-none focus:border-indigo-500 cursor-pointer"
+                  className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm text-slate-900 dark:text-white font-bold focus:outline-none focus:border-indigo-500 cursor-pointer shadow-xs"
                 >
-                  <option value="Cash" className="bg-slate-900">Cash Deposit</option>
-                  <option value="JazzCash" className="bg-slate-900">JazzCash</option>
-                  <option value="EasyPaisa" className="bg-slate-900">EasyPaisa</option>
-                  <option value="Bank Transfer" className="bg-slate-900">Bank Transfer</option>
+                  <option value="Cash" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Cash Deposit</option>
+                  <option value="JazzCash" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">JazzCash</option>
+                  <option value="EasyPaisa" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">EasyPaisa</option>
+                  <option value="Bank Transfer" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Bank Transfer</option>
                 </select>
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold"
+                  className="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold cursor-pointer shadow-xs"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-600/30 flex items-center gap-1.5"
+                  className="px-5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-95 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-600/30 flex items-center gap-1.5 cursor-pointer"
                 >
                   <Check className="w-4 h-4" /> Save Paid Status
                 </button>
@@ -710,13 +710,13 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
 
       {/* Modal: Printable Fee Slip Receipt */}
       {receiptStudent && createPortal(
-        <div className="fee-receipt-modal-wrapper fixed inset-0 z-[99999] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto relative">
+        <div className="fee-receipt-modal-wrapper fixed inset-0 z-[99999] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto relative">
             
             {/* Action Bar (Hidden on Print) */}
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3 print-hidden print:hidden">
-              <div className="flex items-center gap-2 text-white font-bold text-sm">
-                <CreditCard className="w-5 h-5 text-emerald-400" />
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 print-hidden print:hidden">
+              <div className="flex items-center gap-2 text-slate-900 dark:text-white font-extrabold text-sm">
+                <CreditCard className="w-5 h-5 text-indigo-600 dark:text-emerald-400" />
                 <span>Student Fee Receipt</span>
               </div>
               <div className="flex items-center gap-2">
@@ -734,7 +734,7 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                       link.click();
                     });
                   }}
-                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                  className="px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-95 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-md shadow-emerald-600/25 transition-all cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5" /> PNG
                 </button>
@@ -746,13 +746,13 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                     window.print();
                     setTimeout(() => { document.title = oldTitle; }, 1000);
                   }}
-                  className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                  className="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-md shadow-indigo-600/25 transition-all cursor-pointer"
                 >
                   <Printer className="w-3.5 h-3.5" /> Print PDF
                 </button>
                 <button
                   onClick={() => setReceiptStudent(null)}
-                  className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-xl transition-all cursor-pointer"
+                  className="p-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
                 >
                   <X className="w-4 h-4" />
                 </button>
