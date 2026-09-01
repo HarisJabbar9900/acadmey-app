@@ -128,7 +128,7 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
         </div>
       </div>
 
-      {/* Class Selection Tabs (9th, 10th, 11th, 12th, Boys) */}
+      {/* Class Selection Tabs (9th, 10th, 11th, 12th) */}
       <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 flex items-center gap-2 overflow-x-auto no-scrollbar">
         <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5 mr-2 shrink-0">
           <Filter className="w-3.5 h-3.5 text-indigo-400" /> Select Class:

@@ -37,8 +37,7 @@ export default function Timetable({ timetable = [], selectedClassId, isAdminLogg
       '9th': 'Subject',
       '10th': 'Subject',
       '11th': 'Subject',
-      '12th': 'Subject',
-      'boys': 'Subject'
+      '12th': 'Subject'
     };
     setDraftRows(prev => [...prev, newRow]);
   };
@@ -95,7 +94,7 @@ export default function Timetable({ timetable = [], selectedClassId, isAdminLogg
           {!isEditing && (
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
               <span className="text-xs font-semibold text-slate-400 shrink-0">Class View:</span>
-              {['ALL', '9th', '10th', '11th', '12th', 'boys'].map(clsKey => (
+              {['ALL', '9th', '10th', '11th', '12th'].map(clsKey => (
                 <button
                   key={clsKey}
                   onClick={() => setFilterClass(clsKey)}
@@ -105,7 +104,7 @@ export default function Timetable({ timetable = [], selectedClassId, isAdminLogg
                       : 'bg-slate-800 text-slate-400 hover:text-white'
                   }`}
                 >
-                  {clsKey === 'ALL' ? 'All Classes' : clsKey === '11th' ? '11th (1st Year)' : clsKey === '12th' ? '12th (2nd Year)' : clsKey === 'boys' ? 'Boys' : `Class ${clsKey}`}
+                  {clsKey === 'ALL' ? 'All Classes' : clsKey === '11th' ? '11th (1st Year)' : clsKey === '12th' ? '12th (2nd Year)' : `Class ${clsKey}`}
                 </button>
               ))}
             </div>
@@ -194,9 +193,6 @@ export default function Timetable({ timetable = [], selectedClassId, isAdminLogg
                 {(isEditing || filterClass === 'ALL' || filterClass === '12th') && (
                   <th className="py-4 px-4 text-center border-r border-slate-800 text-indigo-300">12th (2nd Year)</th>
                 )}
-                {(isEditing || filterClass === 'ALL' || filterClass === 'boys') && (
-                  <th className="py-4 px-4 text-center text-indigo-300">Boys Batch</th>
-                )}
                 {isEditing && (
                   <th className="py-4 px-2 text-center text-rose-400 w-12">Action</th>
                 )}
@@ -279,7 +275,7 @@ export default function Timetable({ timetable = [], selectedClassId, isAdminLogg
 
                   {/* 12th Class Cell */}
                   {(isEditing || filterClass === 'ALL' || filterClass === '12th') && (
-                    <td className="py-3 px-3 text-center border-r border-slate-800/60">
+                    <td className={`py-3 px-3 text-center ${isEditing ? 'border-r border-slate-800/60' : ''}`}>
                       {isEditing ? (
                         <input
                           type="text"
@@ -290,24 +286,6 @@ export default function Timetable({ timetable = [], selectedClassId, isAdminLogg
                       ) : (
                         <span className={`inline-block px-3 py-1.5 rounded-xl text-xs border font-medium ${getSubjectBadgeStyle(row['12th'])}`}>
                           {row['12th']}
-                        </span>
-                      )}
-                    </td>
-                  )}
-
-                  {/* Boys Class Cell */}
-                  {(isEditing || filterClass === 'ALL' || filterClass === 'boys') && (
-                    <td className="py-3 px-3 text-center">
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={row['boys'] || ''}
-                          onChange={(e) => handleCellChange(idx, 'boys', e.target.value)}
-                          className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-white text-xs focus:outline-none focus:border-indigo-500 text-center"
-                        />
-                      ) : (
-                        <span className={`inline-block px-3 py-1.5 rounded-xl text-xs border font-medium ${getSubjectBadgeStyle(row['boys'])}`}>
-                          {row['boys']}
                         </span>
                       )}
                     </td>

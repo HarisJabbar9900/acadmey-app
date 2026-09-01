@@ -28,13 +28,7 @@ const DEFAULT_CLASSES = [
     name: '12th', 
     subject: 'Class 12th Computer Science',
     subjects: ['Physics', 'Chemistry', 'Math', 'Computer Science', 'Biology', 'English', 'Urdu', 'Pak Studies']
-  },
-  { 
-    id: 'cls-boys', 
-    name: 'Boys', 
-    subject: 'Boys Special Batch',
-    subjects: ['Physics', 'Chemistry', 'Math', 'Computer Science', 'English', 'Urdu']
-  },
+  }
 ];
 
 const DEFAULT_STUDENTS = [
@@ -54,11 +48,10 @@ const DEFAULT_STUDENTS = [
   { id: 'std-9', classId: 'cls-11th', rollNo: '302', name: 'Mariam Tariq', fname: 'Tariq Mehmood', fatherNumber: '+92 345 7890123' },
   { id: 'std-10', classId: 'cls-11th', rollNo: '303', name: 'Hassan Ali', fname: 'Liaquat Ali', fatherNumber: '+92 306 1122334' },
 
-  // Class 12th & Boys (4 Students)
+  // Class 12th (3 Students)
   { id: 'std-11', classId: 'cls-12th', rollNo: '401', name: 'Zaid Malik', fname: 'Malik Umar', fatherNumber: '+92 304 5678901' },
   { id: 'std-12', classId: 'cls-12th', rollNo: '402', name: 'Noor Fatima', fname: 'Rashid Ahmed', fatherNumber: '+92 307 2233445' },
-  { id: 'std-13', classId: 'cls-12th', rollNo: '403', name: 'Shahzaib Khan', fname: 'Jahangir Khan', fatherNumber: '+92 313 5566778' },
-  { id: 'std-14', classId: 'cls-boys', rollNo: '501', name: 'Saad Rashid', fname: 'Rashid Mahmood', fatherNumber: '+92 305 6789012' },
+  { id: 'std-13', classId: 'cls-12th', rollNo: '403', name: 'Shahzaib Khan', fname: 'Jahangir Khan', fatherNumber: '+92 313 5566778' }
 ];
 
 const DEFAULT_ATTENDANCE = {
@@ -128,12 +121,12 @@ const DEFAULT_TESTS = [
 ];
 
 const DEFAULT_TIMETABLE = [
-  { id: 'tt-1', time: '3:00 - 3:35', '9th': 'Bio/Comp (Combined 9th & 10th)', '10th': 'Bio/Comp (Combined 9th & 10th)', '11th': 'English', '12th': 'Math', 'boys': 'Urdu' },
-  { id: 'tt-2', time: '3:35 - 4:10', '9th': 'Urdu', '10th': 'English', '11th': 'Math', '12th': 'Bio/Comp', 'boys': 'Physics' },
-  { id: 'tt-3', time: '4:10 - 4:45', '9th': 'English', '10th': 'Urdu', '11th': 'Bio/Comp', '12th': 'Physics', 'boys': 'Math' },
-  { id: 'tt-4', time: '4:45 - 5:20', '9th': 'Math', '10th': 'Physics', '11th': 'Urdu', '12th': 'English', 'boys': 'Bio/Comp' },
-  { id: 'tt-5', time: '5:20 - 5:55', '9th': 'Chemistry', '10th': 'Math', '11th': 'Physics', '12th': 'Urdu', 'boys': 'English' },
-  { id: 'tt-6', time: '5:55 - 6:30', '9th': 'Physics', '10th': 'Chemistry', '11th': 'Quran Pak', '12th': 'Chemistry', 'boys': 'Chemistry' }
+  { id: 'tt-1', time: '3:00 - 3:35', '9th': 'Bio/Comp (Combined 9th & 10th)', '10th': 'Bio/Comp (Combined 9th & 10th)', '11th': 'English', '12th': 'Math' },
+  { id: 'tt-2', time: '3:35 - 4:10', '9th': 'Urdu', '10th': 'English', '11th': 'Math', '12th': 'Bio/Comp' },
+  { id: 'tt-3', time: '4:10 - 4:45', '9th': 'English', '10th': 'Urdu', '11th': 'Bio/Comp', '12th': 'Physics' },
+  { id: 'tt-4', time: '4:45 - 5:20', '9th': 'Math', '10th': 'Physics', '11th': 'Urdu', '12th': 'English' },
+  { id: 'tt-5', time: '5:20 - 5:55', '9th': 'Chemistry', '10th': 'Math', '11th': 'Physics', '12th': 'Urdu' },
+  { id: 'tt-6', time: '5:55 - 6:30', '9th': 'Physics', '10th': 'Chemistry', '11th': 'Quran Pak', '12th': 'Chemistry' }
 ];
 
 const DEFAULT_RESOURCES = [
@@ -288,24 +281,26 @@ export const getInitialData = () => {
     if (!Array.isArray(parsed.classes) || parsed.classes.length === 0) {
       parsed.classes = DEFAULT_CLASSES;
     } else {
-      parsed.classes = parsed.classes.filter(Boolean).map(c => {
-        if (!c || typeof c !== 'object') return DEFAULT_CLASSES[0];
-        const defaultClass = DEFAULT_CLASSES.find(dc => dc && (dc.id === c.id || dc.name === c.name));
-        return {
-          ...c,
-          id: c.id || `cls-${Date.now()}`,
-          name: c.name || 'Class',
-          subjects: Array.isArray(c.subjects) && c.subjects.length > 0 
-            ? c.subjects 
-            : (defaultClass?.subjects || ['Physics', 'Chemistry', 'Math', 'Computer Science', 'English', 'Urdu'])
-        };
-      });
+      parsed.classes = parsed.classes
+        .filter(c => c && c.id !== 'cls-boys' && c.name?.trim().toLowerCase() !== 'boys')
+        .map(c => {
+          if (!c || typeof c !== 'object') return DEFAULT_CLASSES[0];
+          const defaultClass = DEFAULT_CLASSES.find(dc => dc && (dc.id === c.id || dc.name === c.name));
+          return {
+            ...c,
+            id: c.id || `cls-${Date.now()}`,
+            name: c.name || 'Class',
+            subjects: Array.isArray(c.subjects) && c.subjects.length > 0 
+              ? c.subjects 
+              : (defaultClass?.subjects || ['Physics', 'Chemistry', 'Math', 'Computer Science', 'English', 'Urdu'])
+          };
+        });
     }
 
     if (!Array.isArray(parsed.students) || parsed.students.length === 0) {
       parsed.students = DEFAULT_STUDENTS;
     } else {
-      parsed.students = parsed.students.filter(Boolean);
+      parsed.students = parsed.students.filter(s => s && s.classId !== 'cls-boys');
     }
 
     if (!Array.isArray(parsed.tests)) {

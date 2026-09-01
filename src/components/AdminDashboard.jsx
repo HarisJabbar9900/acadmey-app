@@ -138,8 +138,10 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
     });
   });
 
-  // Class-Wise Top High Scorers Calculation (Combined overall score across all subjects)
-  const classTopScorers = filteredClasses.map(cls => {
+  // Class-Wise Top High Scorers Calculation (Combined overall score across all subjects - 4 Main Classes 9th-12th)
+  const classTopScorers = filteredClasses
+    .filter(cls => cls && cls.id !== 'cls-boys' && cls.name?.trim().toLowerCase() !== 'boys')
+    .map(cls => {
     const classStudents = safeStudents.filter(s => s && s.classId === cls.id);
     const classTests = safeTests.filter(t => t && t.classId === cls.id);
 
