@@ -452,16 +452,16 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
       )}
 
       {/* 4. 📋 Monthly Student Scores Accumulation Ledger (Full Width - 100% Space) */}
-      <div className="glass-panel glow-accent-indigo rounded-2xl p-6 shadow-xl w-full overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800/80 mb-4 gap-2">
+      <div className="glass-panel glow-accent-indigo rounded-2xl p-6 sm:p-7 shadow-xl w-full overflow-hidden mt-8 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-200/80 dark:border-slate-800/80 gap-2">
           <div>
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Award className="w-5 h-5 text-indigo-400" />
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Award className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
               Monthly Marks Accumulation Ledger
             </h3>
-            <p className="text-xs text-slate-400">Total obtained marks vs max available marks for {formattedMonthName}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Total obtained marks vs max available marks for {formattedMonthName}</p>
           </div>
-          <span className="text-xs font-semibold px-3.5 py-1 bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 rounded-full w-fit shadow-sm">
+          <span className="text-xs font-semibold px-3.5 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/20 rounded-full w-fit shadow-sm">
             {monthlyTests.length} Subject Test(s) Evaluated
           </span>
         </div>
@@ -473,21 +473,21 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
             return (
               <div key={cls.id} className="glass-card border-amber-500/30 hover:border-amber-500/60 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm relative overflow-hidden">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-extrabold uppercase text-amber-400 font-mono tracking-wider">
+                  <span className="text-[10px] font-extrabold uppercase text-amber-500 dark:text-amber-400 font-mono tracking-wider">
                     Class {cls.name} 1st Rank
                   </span>
-                  <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                  <Trophy className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
                 </div>
                 {classTopper ? (
                   <div className="mt-2 space-y-0.5">
-                    <p className="text-xs font-extrabold text-white truncate">{classTopper.name}</p>
+                    <p className="text-xs font-extrabold text-slate-900 dark:text-white truncate">{classTopper.name}</p>
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="text-slate-400 font-mono">#{classTopper.rollNo}</span>
-                      <span className="text-amber-400 font-black">{classTopper.percentage}%</span>
+                      <span className="text-slate-500 dark:text-slate-400 font-mono">#{classTopper.rollNo}</span>
+                      <span className="text-amber-500 dark:text-amber-400 font-black">{classTopper.percentage}%</span>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-[11px] text-slate-500 italic mt-2">No test data</p>
+                  <p className="text-[11px] text-slate-400 dark:text-slate-500 italic mt-2">No test data</p>
                 )}
               </div>
             );
@@ -505,7 +505,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
                 <th className="pb-3 px-3 whitespace-nowrap min-w-[80px]">Class</th>
                 <th className="pb-3 px-3 text-center whitespace-nowrap min-w-[150px]">Marks Obtained / Max</th>
                 <th className="pb-3 px-3 text-right whitespace-nowrap min-w-[150px]">Percentage</th>
-                {isAdminLoggedIn && <th className="pb-3 px-3 text-center whitespace-nowrap min-w-[130px]">Report Card</th>}
+                <th className="pb-3 px-3 text-center whitespace-nowrap min-w-[130px]">Report Card</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200/60 dark:divide-slate-800/60 text-slate-900 dark:text-slate-200">
@@ -564,24 +564,22 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
                           </span>
                         </div>
                       </td>
-                      {isAdminLoggedIn && (
-                        <td className="py-3.5 px-3 text-center whitespace-nowrap">
-                          <button
-                            onClick={() => setSelectedReportStudent(studentObj)}
-                            className="px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-md shadow-indigo-600/25 transition-all cursor-pointer whitespace-nowrap"
-                            title="Print Student Monthly Report Card"
-                          >
-                            <Printer className="w-3.5 h-3.5" />
-                            <span>Report Card</span>
-                          </button>
-                        </td>
-                      )}
+                      <td className="py-3.5 px-3 text-center whitespace-nowrap">
+                        <button
+                          onClick={() => setSelectedReportStudent(studentObj)}
+                          className="px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-md shadow-indigo-600/30 transition-all cursor-pointer whitespace-nowrap"
+                          title="Print Student Monthly Report Card"
+                        >
+                          <Printer className="w-3.5 h-3.5" />
+                          <span>Report Card</span>
+                        </button>
+                      </td>
                     </tr>
                   );
                 })
               ) : (
                 <tr>
-                  <td colSpan={isAdminLoggedIn ? 7 : 6} className="py-8 text-center text-slate-500 italic">
+                  <td colSpan={7} className="py-8 text-center text-slate-500 italic">
                     No students found for the selected filter.
                   </td>
                 </tr>
