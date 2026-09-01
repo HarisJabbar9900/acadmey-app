@@ -314,20 +314,11 @@ html.light-mode .glass-card:hover {
   color: #0f172a !important;
 }
 
-/* Force ALL gradient containers to clean crisp white in light mode */
-.light-mode [class*="bg-gradient-to"] {
-  background-image: none !important;
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border-color: #e2e8f0 !important;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 8px -1px rgba(0, 0, 0, 0.03) !important;
-}
-
-/* Main Dashboard Cards, Panels & Wall of Honor in Light Mode */
-.light-mode .bg-slate-900,
-.light-mode .bg-slate-950,
-.light-mode [class*="bg-slate-900"],
-.light-mode [class*="bg-slate-950"] {
+/* Main Dashboard Cards, Panels & Containers in Light Mode (Only containers, NOT buttons) */
+.light-mode div.bg-slate-900:not(button):not(button *),
+.light-mode div.bg-slate-950:not(button):not(button *),
+.light-mode section.bg-slate-900,
+.light-mode section.bg-slate-950 {
   background-color: #ffffff !important;
   color: #0f172a !important;
   border-color: #e2e8f0 !important;
@@ -335,94 +326,45 @@ html.light-mode .glass-card:hover {
 }
 
 /* Sub-containers & Inner Score Boxes in Light Mode */
-.light-mode .bg-slate-800,
-.light-mode [class*="bg-slate-800"] {
+.light-mode div.bg-slate-800:not(button):not(button *),
+.light-mode div.bg-slate-850:not(button):not(button *) {
   background-color: #f8fafc !important;
   color: #0f172a !important;
   border-color: #e2e8f0 !important;
 }
 
-/* Amber Tints (Topper Badges & Cards) in Light Mode */
-.light-mode .bg-amber-500\/10,
-.light-mode .bg-amber-500\/20 {
-  background-color: #fffbeb !important;
-  border-color: #fde68a !important;
+/* Ensure ALL buttons and interactive pills keep their solid vibrant backgrounds and gradients */
+.light-mode button[class*="bg-gradient"],
+.light-mode a[class*="bg-gradient"],
+.light-mode span[class*="bg-gradient"],
+.light-mode [class*="bg-gradient-to"] {
+  /* Do not strip gradient images! */
 }
 
-/* Indigo Tints in Light Mode */
-.light-mode .bg-indigo-500\/10,
-.light-mode .bg-indigo-500\/20,
-.light-mode .bg-indigo-950 {
-  background-color: #eff6ff !important;
-  border-color: #bfdbfe !important;
+/* Ensure text inside dark/colored buttons stays crisp white in Light Mode */
+.light-mode button.text-white,
+.light-mode button .text-white,
+.light-mode a.text-white,
+.light-mode a .text-white,
+.light-mode span.text-white,
+.light-mode [class*="bg-indigo-600"] {
+  color: #ffffff;
 }
 
-/* Emerald Tints in Light Mode */
-.light-mode .bg-emerald-500\/10,
-.light-mode .bg-emerald-500\/20 {
-  background-color: #ecfdf5 !important;
-  border-color: #a7f3d0 !important;
+.light-mode button[class*="from-amber"],
+.light-mode button[class*="bg-amber-500"],
+.light-mode a[class*="from-amber"] {
+  color: #020617 !important;
 }
 
-/* All Headings, Titles & Bold Text */
-.light-mode h1,
-.light-mode h2,
-.light-mode h3,
-.light-mode h4,
-.light-mode h5,
-.light-mode h6,
-.light-mode .text-white,
-.light-mode .text-slate-100,
-.light-mode .text-slate-200 {
-  color: #0f172a !important;
-}
-
-/* Paragraphs, Subtitles & Labels */
-.light-mode p,
-.light-mode label,
-.light-mode .text-slate-300,
-.light-mode .text-slate-400 {
-  color: #334155 !important;
-}
-
-/* Muted / Date Text */
-.light-mode .text-slate-500 {
-  color: #64748b !important;
-}
-
-/* Accent Text Colors for Light Mode */
-.light-mode .text-indigo-400,
-.light-mode .text-indigo-300 {
-  color: #4338ca !important;
-}
-
-.light-mode .text-amber-400,
-.light-mode .text-amber-300 {
-  color: #d97706 !important;
-}
-
-.light-mode .text-emerald-400,
-.light-mode .text-emerald-300 {
-  color: #047857 !important;
-}
-
-.light-mode .text-amber-400,
-.light-mode .text-amber-300 {
-  color: #b45309 !important;
-}
-
-.light-mode .text-emerald-400,
-.light-mode .text-emerald-300 {
-  color: #047857 !important;
-}
-
-.light-mode .text-rose-400,
-.light-mode .text-rose-300 {
-  color: #be123c !important;
+/* Paragraphs, Subtitles & Labels outside buttons */
+.light-mode p:not(button *),
+.light-mode label:not(button *) {
+  color: #334155;
 }
 
 /* Inputs, Selects, Options & Textareas */
-.light-mode input,
+.light-mode input:not([type="checkbox"]):not([type="radio"]),
 .light-mode select,
 .light-mode option,
 .light-mode textarea {
@@ -459,55 +401,6 @@ html.light-mode .glass-card:hover {
 
 .light-mode tr:hover {
   background-color: #f8fafc !important;
-}
-
-/* Active & Inactive Class Filter Pill Badges in Light Mode */
-.light-mode button.bg-indigo-600 {
-  background-color: #4338ca !important;
-  color: #ffffff !important;
-  box-shadow: 0 4px 14px 0 rgba(67, 56, 202, 0.35) !important;
-}
-
-.light-mode button.bg-indigo-600 span {
-  background-color: rgba(255, 255, 255, 0.25) !important;
-  color: #ffffff !important;
-}
-
-.light-mode button:not(.bg-indigo-600) span.rounded-full {
-  background-color: #cbd5e1 !important;
-  color: #0f172a !important;
-  font-weight: 700 !important;
-}
-
-/* Accent Badges in Light Mode */
-.light-mode .bg-indigo-600 {
-  background-color: #4338ca !important;
-  color: #ffffff !important;
-}
-
-.light-mode .bg-indigo-500\/10,
-.light-mode .bg-indigo-600\/15,
-.light-mode .bg-indigo-500\/20 {
-  background-color: #e0e0ff !important;
-  color: #3730a3 !important;
-}
-
-.light-mode .bg-emerald-500\/10,
-.light-mode .bg-emerald-500\/20 {
-  background-color: #d1fae5 !important;
-  color: #065f46 !important;
-}
-
-.light-mode .bg-amber-500\/10,
-.light-mode .bg-amber-500\/20 {
-  background-color: #fef3c7 !important;
-  color: #92400e !important;
-}
-
-.light-mode .bg-rose-500\/10,
-.light-mode .bg-rose-500\/20 {
-  background-color: #ffe4e6 !important;
-  color: #9f1239 !important;
 }
 
 /* Modals backdrop & container in Light Mode */
