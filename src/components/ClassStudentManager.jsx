@@ -150,52 +150,71 @@ export default function ClassStudentManager({
 
   // Subject Handlers
   const handleAddSubjectToClass = (e, classObj) => {
-    e.preventDefault();
-    if (!newSubjectName.trim()) return;
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+    const rawInput = (newSubjectName || '').trim();
+    if (!rawInput || !classObj) return;
 
-    const existingSubjects = classObj.subjects || ['Physics', 'Chemistry', 'Math', 'Computer Science', 'English', 'Urdu'];
-    if (existingSubjects.includes(newSubjectName.trim())) {
-      setNotification(`Subject "${newSubjectName.trim()}" already exists in Class ${classObj.name}!`);
+    // Get current subjects array safely
+    const currentSubjects = Array.isArray(classObj.subjects) 
+      ? [...classObj.subjects] 
+      : ['Physics', 'Chemistry', 'Math', 'Computer Science', 'Biology', 'Urdu'];
+
+    // Check if subject already exists (case-insensitive)
+    const alreadyExists = currentSubjects.some(
+      s => s.trim().toLowerCase() === rawInput.toLowerCase()
+    );
+
+    if (alreadyExists) {
+      setNotification(`Subject "${rawInput}" already exists in Class ${classObj.name}!`);
       setTimeout(() => setNotification(null), 3000);
       return;
     }
 
-    const updatedSubjects = [...existingSubjects, newSubjectName.trim()];
+    const updatedSubjects = [...currentSubjects, rawInput];
     const updatedClass = { ...classObj, subjects: updatedSubjects };
 
-    if (onUpdateClass) {
+    if (typeof onUpdateClass === 'function') {
       onUpdateClass(updatedClass);
     }
     setNewSubjectName('');
-    setNotification(`Subject "${newSubjectName.trim()}" added to Class ${classObj.name}!`);
+    setNotification(`Subject "${rawInput}" added successfully to Class ${classObj.name}!`);
     setTimeout(() => setNotification(null), 4000);
   };
 
   const handleRenameSubject = (classObj, index, newName) => {
-    if (!newName.trim()) {
+    const trimmed = (newName || '').trim();
+    if (!trimmed || !classObj) {
       setEditingSubjectIndex(null);
+      setEditingSubjectText('');
       return;
     }
-    const existingSubjects = [...(classObj.subjects || [])];
-    const oldName = existingSubjects[index];
-    existingSubjects[index] = newName.trim();
+    const currentSubjects = Array.isArray(classObj.subjects) 
+      ? [...classObj.subjects] 
+      : ['Physics', 'Chemistry', 'Math', 'Computer Science', 'Biology', 'Urdu'];
 
-    const updatedClass = { ...classObj, subjects: existingSubjects };
-    if (onUpdateClass) {
+    const oldName = currentSubjects[index];
+    currentSubjects[index] = trimmed;
+
+    const updatedClass = { ...classObj, subjects: currentSubjects };
+    if (typeof onUpdateClass === 'function') {
       onUpdateClass(updatedClass);
     }
     setEditingSubjectIndex(null);
     setEditingSubjectText('');
-    setNotification(`Subject renamed from "${oldName}" to "${newName.trim()}" in Class ${classObj.name}!`);
+    setNotification(`Subject renamed from "${oldName}" to "${trimmed}" in Class ${classObj.name}!`);
     setTimeout(() => setNotification(null), 4000);
   };
 
   const handleDeleteSubjectFromClass = (classObj, subjectToDelete) => {
-    const existingSubjects = classObj.subjects || [];
-    const updatedSubjects = existingSubjects.filter(s => s !== subjectToDelete);
+    if (!classObj) return;
+    const currentSubjects = Array.isArray(classObj.subjects) 
+      ? [...classObj.subjects] 
+      : ['Physics', 'Chemistry', 'Math', 'Computer Science', 'Biology', 'Urdu'];
+
+    const updatedSubjects = currentSubjects.filter(s => s !== subjectToDelete);
     const updatedClass = { ...classObj, subjects: updatedSubjects };
 
-    if (onUpdateClass) {
+    if (typeof onUpdateClass === 'function') {
       onUpdateClass(updatedClass);
     }
     setNotification(`Subject "${subjectToDelete}" removed from Class ${classObj.name}.`);
@@ -410,17 +429,21 @@ export default function ClassStudentManager({
           </div>
 
           {isAdminLoggedIn && selectedClassObj && (
-            <form onSubmit={(e) => handleAddSubjectToClass(e, selectedClassObj)} className="flex items-center gap-2 shrink-0">
+            <form 
+              onSubmit={(e) => handleAddSubjectToClass(e, selectedClassObj)} 
+              className="flex items-center gap-2 shrink-0"
+            >
               <input
                 type="text"
-                placeholder="New Subject Name (e.g. Bio-Tech)"
+                placeholder="New Subject Name (e.g. English)"
                 value={newSubjectName}
                 onChange={(e) => setNewSubjectName(e.target.value)}
-                className="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                className="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 w-44 sm:w-56"
               />
               <button
                 type="submit"
-                className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shrink-0 flex items-center gap-1 shadow-md shadow-indigo-600/30"
+                onClick={(e) => handleAddSubjectToClass(e, selectedClassObj)}
+                className="px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-xs font-bold shrink-0 flex items-center gap-1 shadow-md shadow-indigo-600/30 transition-all cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" /> Add Subject
               </button>
@@ -432,7 +455,7 @@ export default function ClassStudentManager({
         {selectedClassObj ? (
           <>
             <div className="flex flex-wrap items-center gap-2">
-              {(selectedClassObj.subjects || ['Physics', 'Chemistry', 'Math', 'Computer Science', 'English', 'Urdu']).map((sub, idx) => {
+              {(Array.isArray(selectedClassObj.subjects) ? selectedClassObj.subjects : ['Physics', 'Chemistry', 'Math', 'Computer Science', 'Biology', 'Urdu']).map((sub, idx) => {
                 const isEditingThis = editingSubjectIndex === `${selectedClassObj.id}-${idx}`;
 
                 return (

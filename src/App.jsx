@@ -211,10 +211,14 @@ export default function App() {
 
   // Handler: Update Class (Subjects, description)
   const handleUpdateClass = (updatedClass) => {
-    setData(prev => ({
-      ...prev,
-      classes: prev.classes.map(c => c.id === updatedClass.id ? updatedClass : c)
-    }));
+    setData(prev => {
+      const updatedClasses = (prev.classes || []).map(c => 
+        c.id === updatedClass.id ? { ...c, ...updatedClass, subjects: [...(updatedClass.subjects || [])] } : c
+      );
+      const nextData = { ...prev, classes: updatedClasses };
+      saveLocalData(nextData);
+      return nextData;
+    });
 
     syncWithFirestore('classes', updatedClass.id, updatedClass);
   };
