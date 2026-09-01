@@ -11,7 +11,6 @@ import StudentFeedback from './components/StudentFeedback';
 import NoticeBoard from './components/NoticeBoard';
 import AiChatbot from './components/AiChatbot';
 import CommandPalette from './components/CommandPalette';
-import { Search } from 'lucide-react';
 import { 
   getInitialData, 
   saveLocalData, 
@@ -464,20 +463,6 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Quick Search Ctrl+K Button */}
-            <button
-              onClick={() => setIsCommandPaletteOpen(true)}
-              className="flex items-center gap-2.5 px-3.5 py-1.5 bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/80 hover:border-indigo-500/50 rounded-xl text-xs font-medium transition-all shadow-sm group cursor-pointer"
-              title="Global Search Student, Roll #, Fees, Marks (Ctrl + K)"
-            >
-              <Search className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform" />
-              <span className="hidden xl:inline">Search student, roll #, fees...</span>
-              <span className="xl:hidden">Search...</span>
-              <kbd className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 text-[10px] font-mono rounded text-slate-300 shadow-inner">
-                Ctrl K
-              </kbd>
-            </button>
-
             {/* Real-time Date Indicator */}
             <div className="px-3.5 py-1.5 bg-slate-900/80 border border-slate-800 rounded-xl text-xs flex items-center gap-2 shadow-sm">
               <span className="flex h-2 w-2 relative">
