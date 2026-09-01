@@ -342,202 +342,206 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
         </div>
       )}
 
-      {/* 3. 📈 Monthly Performance Visual Chart & Marks Summary Ledger (SHOWN PROMINENTLY AT TOP) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Visual Bar Chart */}
-        <div className="lg:col-span-1 bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 flex flex-col justify-between">
+      {/* 3. 📋 Monthly Student Scores Accumulation Ledger (Full Width - 100% Space) */}
+      <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 shadow-xl w-full">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 mb-4 gap-2">
           <div>
-            <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-2">
-              <TrendingUp className="w-5 h-5 text-indigo-400" />
-              Performance Chart
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Award className="w-5 h-5 text-indigo-400" />
+              Monthly Marks Accumulation Ledger
             </h3>
-            <p className="text-xs text-slate-400 mb-6">
+            <p className="text-xs text-slate-400">Total obtained marks vs max available marks for {formattedMonthName}</p>
+          </div>
+          <span className="text-xs font-semibold px-3.5 py-1 bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 rounded-full w-fit">
+            {monthlyTests.length} Subject Test(s) Evaluated
+          </span>
+        </div>
+
+        {/* Class-Wise 1st Rank Toppers Grid Header */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-5">
+          {filteredClasses.map((cls) => {
+            const classTopper = studentPerformance.find(s => s.className === cls.name && s.classRank === 1 && s.totalMaxMarks > 0);
+            return (
+              <div key={cls.id} className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm relative overflow-hidden">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-extrabold uppercase text-amber-400 font-mono tracking-wider">
+                    Class {cls.name} 1st Rank
+                  </span>
+                  <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                </div>
+                {classTopper ? (
+                  <div className="mt-2 space-y-0.5">
+                    <p className="text-xs font-extrabold text-white truncate">{classTopper.name}</p>
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-slate-400 font-mono">#{classTopper.rollNo}</span>
+                      <span className="text-amber-400 font-black">{classTopper.percentage}%</span>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-[11px] text-slate-500 italic mt-2">No test data</p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Full-Width Marks Ledger Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr className="border-b border-slate-800 text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                <th className="pb-3 px-3">Roll #</th>
+                <th className="pb-3 px-3">Student Name</th>
+                <th className="pb-3 px-3">Father Name</th>
+                <th className="pb-3 px-3">Class</th>
+                <th className="pb-3 px-3 text-center">Marks Obtained / Max</th>
+                <th className="pb-3 px-3 text-right">Percentage</th>
+                {isAdminLoggedIn && <th className="pb-3 px-3 text-center">Report Card</th>}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800/60 text-slate-200">
+              {studentPerformance.length > 0 ? (
+                studentPerformance.map((std) => {
+                  const studentObj = data.students.find(s => s.id === std.id);
+
+                  return (
+                    <tr key={std.id} className="hover:bg-slate-800/40 transition-colors">
+                      <td className="py-3.5 px-3 font-mono text-xs text-indigo-400 font-bold">#{std.rollNo}</td>
+                      <td className="py-3.5 px-3 font-semibold text-white">
+                        <div className="flex items-center gap-2">
+                          <span>{std.name}</span>
+                          {std.totalMaxMarks > 0 && std.classRank === 1 && (
+                            <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded-full border border-amber-500/30 flex items-center gap-1 shadow-sm">
+                              🥇 #1 Rank
+                            </span>
+                          )}
+                          {std.totalMaxMarks > 0 && std.classRank === 2 && (
+                            <span className="text-[10px] bg-slate-300/20 text-slate-300 font-bold px-2 py-0.5 rounded-full border border-slate-400/30 flex items-center gap-1">
+                              🥈 #2 Rank
+                            </span>
+                          )}
+                          {std.totalMaxMarks > 0 && std.classRank === 3 && (
+                            <span className="text-[10px] bg-amber-700/20 text-amber-400 font-bold px-2 py-0.5 rounded-full border border-amber-600/30 flex items-center gap-1">
+                              🥉 #3 Rank
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-3 text-xs text-slate-300">{std.fname}</td>
+                      <td className="py-3.5 px-3 text-xs text-slate-400 font-semibold">{std.className}</td>
+                      <td className="py-3.5 px-3 text-center font-mono">
+                        <span className="text-indigo-400 font-bold">{std.obtainedMarks}</span>
+                        <span className="text-slate-500"> / {std.totalMaxMarks}</span>
+                      </td>
+                      <td className="py-3.5 px-3 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <div className="w-20 bg-slate-800 h-2 rounded-full overflow-hidden hidden sm:block">
+                            <div 
+                              className={`h-full rounded-full ${
+                                std.percentage >= 80 ? 'bg-emerald-400' :
+                                std.percentage >= 60 ? 'bg-indigo-400' :
+                                std.percentage >= 40 ? 'bg-amber-400' : 'bg-rose-400'
+                              }`}
+                              style={{ width: `${std.percentage}%` }}
+                            />
+                          </div>
+                          <span className={`font-bold text-xs px-2.5 py-0.5 rounded-lg ${
+                            std.percentage >= 80 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                            std.percentage >= 60 ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' :
+                            std.percentage >= 40 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+                            'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                          }`}>
+                            {std.percentage}%
+                          </span>
+                        </div>
+                      </td>
+                      {isAdminLoggedIn && (
+                        <td className="py-3.5 px-3 text-center">
+                          <button
+                            onClick={() => setSelectedReportStudent(studentObj)}
+                            className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold inline-flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                            title="Print Student Monthly Report Card"
+                          >
+                            <Printer className="w-3.5 h-3.5" /> Report Card
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={isAdminLoggedIn ? 7 : 6} className="py-8 text-center text-slate-500 italic">
+                    No students found for the selected filter.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* 4. 📈 Performance Bar Chart (Full Width Below Ledger) */}
+      <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 shadow-xl w-full">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 mb-6 gap-2">
+          <div>
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-indigo-400" />
+              Performance Chart Overview
+            </h3>
+            <p className="text-xs text-slate-400">
               Cumulative score percentages for {formattedMonthName}
             </p>
           </div>
-
-          {chartData.length > 0 ? (
-            <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height={240} minWidth={0}>
-                <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} tickLine={false} />
-                  <YAxis stroke="#94a3b8" fontSize={11} domain={[0, 100]} tickLine={false} />
-                  <Tooltip 
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        const data = payload[0].payload;
-                        return (
-                          <div className="bg-slate-900 border border-slate-700 text-white p-3 rounded-xl shadow-2xl space-y-1 text-xs font-sans">
-                            <p className="font-extrabold text-indigo-300 border-b border-slate-700 pb-1">
-                              {data.fullName} (Class {data.className})
-                            </p>
-                            <div className="flex items-center justify-between gap-4 text-[11px]">
-                              <span className="text-slate-400">Score Percentage:</span>
-                              <span className="font-extrabold font-mono text-emerald-400">{data.percentage}%</span>
-                            </div>
-                            {data.total > 0 && (
-                              <div className="flex items-center justify-between gap-4 text-[10px]">
-                                <span className="text-slate-400">Obtained Marks:</span>
-                                <span className="font-semibold text-slate-200">{data.obtained} / {data.total}</span>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      }
-                      return null;
-                    }}
-                  />
-                  <Bar dataKey="percentage" radius={[8, 8, 0, 0]}>
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          ) : (
-            <div className="h-64 flex items-center justify-center text-slate-500 text-sm italic">
-              No test data for this month.
-            </div>
-          )}
+          <span className="text-xs font-semibold px-3 py-1 bg-slate-800 text-slate-300 border border-slate-700 rounded-full w-fit">
+            {chartData.length} Student(s) Visualized
+          </span>
         </div>
 
-        {/* Monthly Student Scores Accumulation Table */}
-        <div className="lg:col-span-2 bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 mb-4 gap-2">
-            <div>
-              <h3 className="text-lg font-bold text-white">Monthly Marks Accumulation Ledger</h3>
-              <p className="text-xs text-slate-400">Total obtained marks vs max available marks for {formattedMonthName}</p>
-            </div>
-            <span className="text-xs font-medium px-3 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-full w-fit">
-              {monthlyTests.length} Subject Test(s) Evaluated
-            </span>
-          </div>
-
-          {/* Class-Wise 1st Rank Toppers Grid Header */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
-            {filteredClasses.map((cls) => {
-              const classTopper = studentPerformance.find(s => s.className === cls.name && s.classRank === 1 && s.totalMaxMarks > 0);
-              return (
-                <div key={cls.id} className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm relative overflow-hidden">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-extrabold uppercase text-amber-400 font-mono tracking-wider">
-                      Class {cls.name} 1st Rank
-                    </span>
-                    <Trophy className="w-3.5 h-3.5 text-amber-400" />
-                  </div>
-                  {classTopper ? (
-                    <div className="mt-2 space-y-0.5">
-                      <p className="text-xs font-extrabold text-white truncate">{classTopper.name}</p>
-                      <div className="flex items-center justify-between text-[11px]">
-                        <span className="text-slate-400 font-mono">#{classTopper.rollNo}</span>
-                        <span className="text-amber-400 font-black">{classTopper.percentage}%</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <p className="text-[11px] text-slate-500 italic mt-2">No test data</p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-slate-800 text-slate-400 text-xs font-semibold uppercase tracking-wider">
-                  <th className="pb-3 px-3">Roll #</th>
-                  <th className="pb-3 px-3">Student Name</th>
-                  <th className="pb-3 px-3">Father Name</th>
-                  <th className="pb-3 px-3">Class</th>
-                  <th className="pb-3 px-3 text-center">Marks Obtained / Max</th>
-                  <th className="pb-3 px-3 text-right">Percentage</th>
-                  {isAdminLoggedIn && <th className="pb-3 px-3 text-center">Report Card</th>}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60 text-slate-200">
-                {studentPerformance.length > 0 ? (
-                  studentPerformance.map((std) => {
-                    const studentObj = data.students.find(s => s.id === std.id);
-
-                    return (
-                      <tr key={std.id} className="hover:bg-slate-800/40 transition-colors">
-                        <td className="py-3.5 px-3 font-mono text-xs text-indigo-400 font-bold">#{std.rollNo}</td>
-                        <td className="py-3.5 px-3 font-semibold text-white">
-                          <div className="flex items-center gap-2">
-                            <span>{std.name}</span>
-                            {std.totalMaxMarks > 0 && std.classRank === 1 && (
-                              <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded-full border border-amber-500/30 flex items-center gap-1 shadow-sm">
-                                🥇 #1 Rank
-                              </span>
-                            )}
-                            {std.totalMaxMarks > 0 && std.classRank === 2 && (
-                              <span className="text-[10px] bg-slate-300/20 text-slate-300 font-bold px-2 py-0.5 rounded-full border border-slate-400/30 flex items-center gap-1">
-                                🥈 #2 Rank
-                              </span>
-                            )}
-                            {std.totalMaxMarks > 0 && std.classRank === 3 && (
-                              <span className="text-[10px] bg-amber-700/20 text-amber-400 font-bold px-2 py-0.5 rounded-full border border-amber-600/30 flex items-center gap-1">
-                                🥉 #3 Rank
-                              </span>
-                            )}
+        {chartData.length > 0 ? (
+          <div className="h-72 w-full">
+            <ResponsiveContainer width="100%" height={270} minWidth={0}>
+              <BarChart data={chartData} margin={{ top: 10, right: 15, left: -15, bottom: 5 }}>
+                <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} />
+                <YAxis stroke="#94a3b8" fontSize={12} domain={[0, 100]} tickLine={false} />
+                <Tooltip 
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0].payload;
+                      return (
+                        <div className="bg-slate-900 border border-slate-700 text-white p-3 rounded-xl shadow-2xl space-y-1 text-xs font-sans">
+                          <p className="font-extrabold text-indigo-300 border-b border-slate-700 pb-1">
+                            {data.fullName} (Class {data.className})
+                          </p>
+                          <div className="flex items-center justify-between gap-4 text-[11px]">
+                            <span className="text-slate-400">Score Percentage:</span>
+                            <span className="font-extrabold font-mono text-emerald-400">{data.percentage}%</span>
                           </div>
-                        </td>
-                        <td className="py-3.5 px-3 text-xs text-slate-300">{std.fname}</td>
-                        <td className="py-3.5 px-3 text-xs text-slate-400 font-semibold">{std.className}</td>
-                        <td className="py-3.5 px-3 text-center font-mono">
-                          <span className="text-indigo-400 font-bold">{std.obtainedMarks}</span>
-                          <span className="text-slate-500"> / {std.totalMaxMarks}</span>
-                        </td>
-                        <td className="py-3.5 px-3 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <div className="w-16 bg-slate-800 h-2 rounded-full overflow-hidden hidden sm:block">
-                              <div 
-                                className={`h-full rounded-full ${
-                                  std.percentage >= 80 ? 'bg-emerald-400' :
-                                  std.percentage >= 60 ? 'bg-indigo-400' :
-                                  std.percentage >= 40 ? 'bg-amber-400' : 'bg-rose-400'
-                                }`}
-                                style={{ width: `${std.percentage}%` }}
-                              />
+                          {data.total > 0 && (
+                            <div className="flex items-center justify-between gap-4 text-[10px]">
+                              <span className="text-slate-400">Obtained Marks:</span>
+                              <span className="font-semibold text-slate-200">{data.obtained} / {data.total}</span>
                             </div>
-                            <span className={`font-bold text-xs px-2 py-0.5 rounded-lg ${
-                              std.percentage >= 80 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                              std.percentage >= 60 ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' :
-                              std.percentage >= 40 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
-                              'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                            }`}>
-                              {std.percentage}%
-                            </span>
-                          </div>
-                        </td>
-                        {isAdminLoggedIn && (
-                          <td className="py-3.5 px-3 text-center">
-                            <button
-                              onClick={() => setSelectedReportStudent(studentObj)}
-                              className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold inline-flex items-center gap-1 shadow-sm transition-all cursor-pointer"
-                              title="Print Student Monthly Report Card"
-                            >
-                              <Printer className="w-3.5 h-3.5" /> Report Card
-                            </button>
-                          </td>
-                        )}
-                      </tr>
-                    );
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan={isAdminLoggedIn ? 7 : 6} className="py-8 text-center text-slate-500 italic">
-                      No students found for the selected filter.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                          )}
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Bar dataKey="percentage" radius={[8, 8, 0, 0]}>
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-        </div>
-
+        ) : (
+          <div className="h-64 flex items-center justify-center text-slate-500 text-sm italic">
+            No test data for this month.
+          </div>
+        )}
       </div>
 
       {/* 4. 🏆 Class-Wise Top High Scorers (Wall of Honor) */}
