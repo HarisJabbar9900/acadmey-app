@@ -243,14 +243,14 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
           </span>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-4">
+        <div className="flex flex-nowrap justify-center items-stretch gap-4 overflow-x-auto no-scrollbar pb-1">
           {classTopScorers.map(c => {
             const scorer = c.topScorer;
 
             return (
               <div
                 key={c.classId}
-                className="w-full sm:w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.7rem)] lg:w-[calc(25%-0.75rem)] max-w-[280px] min-w-[220px] flex-1 bg-slate-900/90 border border-slate-800 hover:border-amber-500/40 p-4 rounded-2xl shadow-lg flex flex-col justify-between transition-all group"
+                className="flex-1 min-w-[210px] max-w-[270px] bg-slate-900/90 border border-slate-800 hover:border-amber-500/40 p-4 rounded-2xl shadow-lg flex flex-col justify-between transition-all group shrink-0 sm:shrink"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2">
