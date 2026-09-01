@@ -26,7 +26,8 @@ import {
   ChevronRight,
   School,
   ExternalLink,
-  Laptop
+  Laptop,
+  Search
 } from 'lucide-react';
 import { isFirebaseActive } from '../services/academyService';
 
@@ -42,7 +43,8 @@ export default function Sidebar({
   toggleTheme, 
   adminPin, 
   onUpdateAdminPin, 
-  onlineUsers = [] 
+  onlineUsers = [],
+  onOpenCommandPalette
 }) {
   const firebaseConnected = isFirebaseActive();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -233,6 +235,25 @@ export default function Sidebar({
             </span>
           </div>
         </div>
+
+        {/* Quick Search Trigger Pill */}
+        <div className="px-3 pt-2">
+          <button
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              if (typeof onOpenCommandPalette === 'function') onOpenCommandPalette();
+            }}
+            className="w-full flex items-center justify-between px-3 py-2 bg-slate-900/80 hover:bg-slate-800 border border-slate-800/90 hover:border-indigo-500/40 rounded-xl text-xs text-slate-400 hover:text-slate-200 transition-all shadow-sm group cursor-pointer"
+          >
+            <div className="flex items-center gap-2">
+              <Search className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform" />
+              <span className="font-medium">Quick Search...</span>
+            </div>
+            <kbd className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 text-[10px] font-mono rounded text-slate-300">
+              Ctrl K
+            </kbd>
+          </button>
+        </div>
       </div>
 
       {/* 2. Navigation Menus (Flexible Scrollable Area) */}
@@ -410,6 +431,14 @@ export default function Sidebar({
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={onOpenCommandPalette}
+            className="p-2 bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-indigo-400 rounded-xl text-xs transition-colors"
+            title="Search Portal (Ctrl + K)"
+          >
+            <Search className="w-4 h-4 text-indigo-400" />
+          </button>
+
           <button
             onClick={toggleTheme}
             className="p-2 bg-slate-800 text-slate-300 rounded-xl text-xs"

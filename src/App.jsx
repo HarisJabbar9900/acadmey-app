@@ -10,6 +10,8 @@ import ClassStudentManager from './components/ClassStudentManager';
 import StudentFeedback from './components/StudentFeedback';
 import NoticeBoard from './components/NoticeBoard';
 import AiChatbot from './components/AiChatbot';
+import CommandPalette from './components/CommandPalette';
+import { Search } from 'lucide-react';
 import { 
   getInitialData, 
   saveLocalData, 
@@ -31,6 +33,19 @@ export default function App() {
   const [selectedClassId, setSelectedClassId] = useState('ALL');
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
+  // Global Keyboard Shortcut for Command Palette (Ctrl + K / Cmd + K)
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
 
   // Real-time Active Presence Tracker
   useEffect(() => {
@@ -423,6 +438,7 @@ export default function App() {
           adminPin={adminPin}
           onUpdateAdminPin={handleUpdateAdminPin}
           onlineUsers={onlineUsers}
+          onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
         />
       </div>
 
@@ -448,6 +464,20 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Quick Search Ctrl+K Button */}
+            <button
+              onClick={() => setIsCommandPaletteOpen(true)}
+              className="flex items-center gap-2.5 px-3.5 py-1.5 bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/80 hover:border-indigo-500/50 rounded-xl text-xs font-medium transition-all shadow-sm group cursor-pointer"
+              title="Global Search Student, Roll #, Fees, Marks (Ctrl + K)"
+            >
+              <Search className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform" />
+              <span className="hidden xl:inline">Search student, roll #, fees...</span>
+              <span className="xl:hidden">Search...</span>
+              <kbd className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 text-[10px] font-mono rounded text-slate-300 shadow-inner">
+                Ctrl K
+              </kbd>
+            </button>
+
             {/* Real-time Date Indicator */}
             <div className="px-3.5 py-1.5 bg-slate-900/80 border border-slate-800 rounded-xl text-xs flex items-center gap-2 shadow-sm">
               <span className="flex h-2 w-2 relative">
@@ -573,6 +603,19 @@ export default function App() {
         </footer>
 
       </div>
+
+      {/* Global Quick Command Palette (Ctrl + K / Search Modal) */}
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        data={data}
+        onNavigateTab={(tab) => {
+          setActiveTab(tab);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onSelectClass={(classId) => setSelectedClassId(classId)}
+        isAdminLoggedIn={isAdminLoggedIn}
+      />
 
       {/* Floating AI Assistant Chatbot Widget */}
       <AiChatbot 
