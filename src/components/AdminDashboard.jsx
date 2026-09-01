@@ -353,86 +353,120 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
 
       {/* 3. KPI Metric Cards (Visible ONLY to Logged-in Admin) */}
       {isAdminLoggedIn && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           
           {/* Card 1: Total Students */}
-          <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 hover:border-slate-700 transition-all">
+          <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm hover:shadow-xl hover:border-indigo-500/40 dark:hover:border-indigo-500/40 transition-all duration-300 transform hover:-translate-y-1 group">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 to-indigo-600"></div>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-slate-400 text-xs font-medium uppercase tracking-wider">Total Students</span>
-              <div className="p-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl">
-                <Users className="w-5 h-5" />
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Total Students
+              </span>
+              <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-500/20 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                <Users className="w-4.5 h-4.5" />
               </div>
             </div>
-            <div className="text-3xl font-extrabold text-white">{filteredStudents.length}</div>
-            <p className="text-xs text-slate-500 mt-1">Enrolled across {filteredClasses.length} class(es)</p>
+            <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+              {filteredStudents.length}
+            </div>
+            <div className="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+              <span className="text-slate-500 dark:text-slate-400">Total Enrolled</span>
+              <span className="font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-md text-[11px]">
+                {filteredClasses.length} Classes
+              </span>
+            </div>
           </div>
 
           {/* Card 2: Attendance Rate */}
-          <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 hover:border-slate-700 transition-all">
+          <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm hover:shadow-xl hover:border-emerald-500/40 dark:hover:border-emerald-500/40 transition-all duration-300 transform hover:-translate-y-1 group">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500"></div>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-slate-400 text-xs font-medium uppercase tracking-wider">Avg Attendance</span>
-              <div className="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl">
-                <CheckCircle className="w-5 h-5" />
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Avg Attendance
+              </span>
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                <CheckCircle className="w-4.5 h-4.5" />
               </div>
             </div>
-            <div className="text-3xl font-extrabold text-white">{attendancePercentage}%</div>
-            <div className="flex items-center gap-2 text-xs text-slate-400 mt-1">
-              <span className="text-emerald-400 font-semibold">{presentEntries} Present</span>
-              <span>•</span>
-              <span className="text-rose-400 font-semibold">{absentEntries} Absent</span>
+            <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-baseline gap-1.5">
+              <span>{attendancePercentage}%</span>
+            </div>
+            <div className="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1 text-[11px]">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> {presentEntries} Present
+              </span>
+              <span className="text-rose-500 dark:text-rose-400 font-semibold flex items-center gap-1 text-[11px]">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> {absentEntries} Absent
+              </span>
             </div>
           </div>
 
           {/* Card 3: Fee Revenue */}
-          <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 hover:border-slate-700 transition-all">
+          <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm hover:shadow-xl hover:border-emerald-500/40 dark:hover:border-emerald-500/40 transition-all duration-300 transform hover:-translate-y-1 group">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-emerald-600"></div>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-slate-400 text-xs font-medium uppercase tracking-wider">Fee Revenue ({selectedMonth})</span>
-              <div className="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl">
-                <TrendingUp className="w-5 h-5" />
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Fee Revenue
+              </span>
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                <TrendingUp className="w-4.5 h-4.5" />
               </div>
             </div>
-            <div className="text-3xl font-extrabold text-emerald-400">Rs. {monthlyTotalCollectedFee.toLocaleString()}</div>
-            <p className="text-xs text-slate-400 mt-1 font-mono">
-              Rs. {monthlyTotalPendingFee.toLocaleString()} pending
-            </p>
+            <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">
+              Rs. {monthlyTotalCollectedFee.toLocaleString()}
+            </div>
+            <div className="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-mono">
+              <span className="text-slate-400 text-[11px]">Pending:</span>
+              <span className="font-semibold text-rose-500 dark:text-rose-400 text-[11px]">
+                Rs. {monthlyTotalPendingFee.toLocaleString()}
+              </span>
+            </div>
           </div>
 
-          {/* Card 4: Top Performer Avg */}
-          <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 hover:border-slate-700 transition-all">
+          {/* Card 4: Top Performer */}
+          <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm hover:shadow-xl hover:border-amber-500/40 dark:hover:border-amber-500/40 transition-all duration-300 transform hover:-translate-y-1 group">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-amber-600"></div>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-slate-400 text-xs font-medium uppercase tracking-wider">Highest Monthly Score</span>
-              <div className="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl">
-                <Award className="w-5 h-5" />
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Top Score
+              </span>
+              <div className="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-500/20 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                <Award className="w-4.5 h-4.5" />
               </div>
             </div>
-            <div className="text-3xl font-extrabold text-amber-400">
+            <div className="text-3xl font-black text-amber-500 dark:text-amber-400 tracking-tight">
               {studentPerformance[0] ? `${studentPerformance[0].percentage}%` : 'N/A'}
             </div>
-            <p className="text-xs text-slate-400 mt-1 truncate">
-              {studentPerformance[0] ? `${studentPerformance[0].name} (${studentPerformance[0].className})` : 'No marks recorded'}
-            </p>
+            <div className="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 text-xs">
+              <p className="font-semibold text-slate-700 dark:text-slate-200 truncate text-[11px]">
+                {studentPerformance[0] ? `${studentPerformance[0].name} (${studentPerformance[0].className})` : 'No marks recorded'}
+              </p>
+            </div>
           </div>
 
           {/* Card 5: Real-Time Active Online Visitors */}
-          <div className="bg-slate-900/60 border border-emerald-500/30 rounded-2xl p-5 hover:border-emerald-500/50 transition-all relative overflow-hidden">
+          <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm hover:shadow-xl hover:border-emerald-500/40 dark:hover:border-emerald-500/40 transition-all duration-300 transform hover:-translate-y-1 group">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-emerald-400 text-xs font-extrabold uppercase tracking-wider flex items-center gap-1.5">
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
                 Active Visitors
               </span>
-              <div className="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
-                <Users className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                <Users className="w-4.5 h-4.5" />
               </div>
             </div>
-            <div className="text-3xl font-black text-emerald-400 font-mono flex items-baseline gap-2">
-              {onlineCount} <span className="text-xs font-sans font-bold text-slate-400">Online Now</span>
+            <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-baseline gap-2 font-mono">
+              <span className="text-emerald-600 dark:text-emerald-400">{onlineCount}</span>
+              <span className="text-xs font-sans font-bold text-slate-400">Online</span>
             </div>
-            <p className="text-xs text-slate-400 mt-1 font-mono">
-              {desktopCount} PC • {mobileCount} Mobile
-            </p>
+            <div className="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-mono">
+              <span className="text-slate-500 dark:text-slate-400 text-[11px]">{desktopCount} PC</span>
+              <span className="text-slate-500 dark:text-slate-400 text-[11px]">{mobileCount} Mobile</span>
+            </div>
           </div>
 
         </div>
