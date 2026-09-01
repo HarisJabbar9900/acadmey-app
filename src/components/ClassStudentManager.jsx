@@ -512,8 +512,8 @@ export default function ClassStudentManager({
       </div>
 
       {/* Student List Table */}
-      <div className="bg-slate-900/60 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-slate-800 bg-slate-900/90 flex items-center justify-between">
+      <div className="glass-panel glow-accent-indigo rounded-2xl overflow-hidden shadow-xl">
+        <div className="p-4 border-b border-slate-800/80 bg-slate-900/90 flex items-center justify-between">
           <div>
             <h3 className="font-bold text-white text-base flex items-center gap-2">
               <GraduationCap className="w-5 h-5 text-indigo-400" />
@@ -527,12 +527,12 @@ export default function ClassStudentManager({
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-slate-800 text-slate-400 text-xs uppercase font-semibold tracking-wider">
-                <th className="py-3.5 px-4">Roll #</th>
-                <th className="py-3.5 px-4">Student Name</th>
-                <th className="py-3.5 px-4">Father Name (FNAME)</th>
-                <th className="py-3.5 px-4">Father Number</th>
-                <th className="py-3.5 px-4">Class</th>
-                <th className="py-3.5 px-4 text-center">Actions</th>
+                <th className="py-3.5 px-4 whitespace-nowrap">Roll #</th>
+                <th className="py-3.5 px-4 whitespace-nowrap">Student Name</th>
+                <th className="py-3.5 px-4 whitespace-nowrap">Father Name (FNAME)</th>
+                <th className="py-3.5 px-4 whitespace-nowrap">Father Number</th>
+                <th className="py-3.5 px-4 whitespace-nowrap min-w-[110px]">Class</th>
+                <th className="py-3.5 px-4 text-center whitespace-nowrap min-w-[210px]">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60 text-slate-200">
@@ -543,10 +543,10 @@ export default function ClassStudentManager({
 
                   return (
                     <tr key={student.id} className="hover:bg-slate-800/30 transition-colors">
-                      <td className="py-3.5 px-4 font-mono text-xs text-indigo-400 font-bold">#{student.rollNo}</td>
-                      <td className="py-3.5 px-4 font-bold text-white">{student.name}</td>
-                      <td className="py-3.5 px-4 text-xs text-slate-300 font-medium">{student.fname || 'N/A'}</td>
-                      <td className="py-3.5 px-4 text-xs font-mono text-slate-300">
+                      <td className="py-3.5 px-4 font-mono text-xs text-indigo-400 font-bold whitespace-nowrap">#{student.rollNo}</td>
+                      <td className="py-3.5 px-4 font-bold text-white whitespace-nowrap">{student.name}</td>
+                      <td className="py-3.5 px-4 text-xs text-slate-300 font-medium whitespace-nowrap">{student.fname || 'N/A'}</td>
+                      <td className="py-3.5 px-4 text-xs font-mono text-slate-300 whitespace-nowrap">
                         {isAdminLoggedIn ? (
                           <div className="flex items-center gap-1.5">
                             <Phone className="w-3.5 h-3.5 text-slate-500" />
@@ -556,18 +556,18 @@ export default function ClassStudentManager({
                           <span className="text-slate-500 font-mono text-[11px] italic">🔒 Admin Only</span>
                         )}
                       </td>
-                      <td className="py-3.5 px-4">
-                        <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 text-indigo-300 border border-slate-700">
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 whitespace-nowrap shadow-sm">
                           Class {classNameDisplay}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 text-center">
+                      <td className="py-3.5 px-4 text-center whitespace-nowrap">
                         {isAdminLoggedIn ? (
                           <div className="flex items-center justify-center gap-2">
                             {/* Student ID Card Button (Admin Only) */}
                             <button
                               onClick={() => setSelectedIdCardStudent(student)}
-                              className="px-2.5 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-bold inline-flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                              className="px-3 py-1.5 bg-amber-500/15 hover:bg-amber-500/25 active:scale-95 text-amber-300 hover:text-amber-200 border border-amber-500/30 hover:border-amber-500/50 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition-all whitespace-nowrap cursor-pointer"
                               title="Generate Student Identity Card"
                             >
                               <Contact className="w-3.5 h-3.5" /> ID Card
@@ -576,7 +576,7 @@ export default function ClassStudentManager({
                             {/* Report Card Button (Admin Only) */}
                             <button
                               onClick={() => setSelectedReportStudent(student)}
-                              className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold inline-flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                              className="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-md shadow-indigo-600/25 transition-all whitespace-nowrap cursor-pointer"
                               title="Print Student Monthly Progress Report Card"
                             >
                               <Printer className="w-3.5 h-3.5" /> Report
@@ -584,7 +584,7 @@ export default function ClassStudentManager({
 
                             <button
                               onClick={() => handleOpenEdit(student)}
-                              className="p-1.5 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors"
+                              className="p-1.5 text-slate-400 hover:text-indigo-300 hover:bg-indigo-500/10 rounded-xl transition-all cursor-pointer"
                               title="Edit Student"
                             >
                               <Edit3 className="w-4 h-4" />
@@ -595,7 +595,7 @@ export default function ClassStudentManager({
                                 setNotification(`Student "${student.name}" deleted.`);
                                 setTimeout(() => setNotification(null), 4000);
                               }}
-                              className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
+                              className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all cursor-pointer"
                               title="Delete Student"
                             >
                               <Trash2 className="w-4 h-4" />
