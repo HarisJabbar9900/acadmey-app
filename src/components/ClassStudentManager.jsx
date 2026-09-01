@@ -327,19 +327,6 @@ export default function ClassStudentManager({
             <Trash2 className="w-4 h-4 text-rose-400" />
             ⚙️ Edit / Delete Classes
           </button>
-
-          <button
-            onClick={() => {
-              if (data.classes.length > 0 && !targetClassId) {
-                setTargetClassId(data.classes[0].id);
-              }
-              setIsAddStudentModalOpen(true);
-            }}
-            className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition-colors cursor-pointer"
-          >
-            <UserPlus className="w-4 h-4" />
-            + Add New Student
-          </button>
         </div>
       </div>
 
@@ -562,7 +549,7 @@ export default function ClassStudentManager({
 
       {/* Student List Table */}
       <div className="glass-panel glow-accent-indigo rounded-2xl overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-slate-800/80 bg-slate-900/90 flex items-center justify-between">
+        <div className="p-4 border-b border-slate-800/80 bg-slate-900/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h3 className="font-bold text-white text-base flex items-center gap-2">
               <GraduationCap className="w-5 h-5 text-indigo-400" />
@@ -570,6 +557,21 @@ export default function ClassStudentManager({
             </h3>
             <p className="text-xs text-slate-400">Showing {filteredStudents.length} student record(s)</p>
           </div>
+
+          {isAdminLoggedIn && (
+            <button
+              onClick={() => {
+                if (data.classes.length > 0 && !targetClassId) {
+                  setTargetClassId(filterClassId !== 'ALL' ? filterClassId : data.classes[0].id);
+                }
+                setIsAddStudentModalOpen(true);
+              }}
+              className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/30 active:scale-95 transition-all cursor-pointer shrink-0"
+            >
+              <UserPlus className="w-4 h-4" />
+              + Add New Student
+            </button>
+          )}
         </div>
 
         <div className="overflow-x-auto">
