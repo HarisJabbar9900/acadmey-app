@@ -353,7 +353,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
 
       {/* 3. KPI Metric Cards (Visible ONLY to Logged-in Admin) */}
       {isAdminLoggedIn && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           
           {/* Card 1: Total Students */}
           <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm hover:shadow-xl hover:border-indigo-500/40 dark:hover:border-indigo-500/40 transition-all duration-300 transform hover:-translate-y-1 group">
@@ -423,28 +423,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
             </div>
           </div>
 
-          {/* Card 4: Top Performer */}
-          <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm hover:shadow-xl hover:border-amber-500/40 dark:hover:border-amber-500/40 transition-all duration-300 transform hover:-translate-y-1 group">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-amber-600"></div>
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Top Score
-              </span>
-              <div className="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-500/20 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                <Award className="w-4.5 h-4.5" />
-              </div>
-            </div>
-            <div className="text-3xl font-black text-amber-500 dark:text-amber-400 tracking-tight">
-              {studentPerformance[0] ? `${studentPerformance[0].percentage}%` : 'N/A'}
-            </div>
-            <div className="mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 text-xs">
-              <p className="font-semibold text-slate-700 dark:text-slate-200 truncate text-[11px]">
-                {studentPerformance[0] ? `${studentPerformance[0].name} (${studentPerformance[0].className})` : 'No marks recorded'}
-              </p>
-            </div>
-          </div>
-
-          {/* Card 5: Real-Time Active Online Visitors */}
+          {/* Card 4: Real-Time Active Online Visitors */}
           <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm hover:shadow-xl hover:border-emerald-500/40 dark:hover:border-emerald-500/40 transition-all duration-300 transform hover:-translate-y-1 group">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
             <div className="flex items-center justify-between mb-3">
