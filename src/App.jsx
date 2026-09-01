@@ -153,6 +153,17 @@ export default function App() {
     return localStorage.getItem('academy_theme') || 'dark';
   });
 
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark', 'dark-mode');
+      root.classList.remove('light', 'light-mode');
+    } else {
+      root.classList.add('light', 'light-mode');
+      root.classList.remove('dark', 'dark-mode');
+    }
+  }, [theme]);
+
   const toggleTheme = () => {
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(nextTheme);
