@@ -243,22 +243,22 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="flex flex-wrap justify-center gap-4">
           {classTopScorers.map(c => {
             const scorer = c.topScorer;
 
             return (
               <div
                 key={c.classId}
-                className="bg-slate-900/90 border border-slate-800 hover:border-amber-500/40 p-4 rounded-xl shadow-lg flex flex-col justify-between transition-all group"
+                className="w-full sm:w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.7rem)] lg:w-[calc(25%-0.75rem)] max-w-[280px] min-w-[220px] flex-1 bg-slate-900/90 border border-slate-800 hover:border-amber-500/40 p-4 rounded-2xl shadow-lg flex flex-col justify-between transition-all group"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-indigo-600 text-white shadow-sm">
+                    <span className="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-indigo-600 text-white shadow-sm">
                       Class {c.className}
                     </span>
                     {scorer && (
-                      <span className="text-[11px] font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                      <span className="text-[11px] font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20">
                         🏆 #{scorer.rollNo}
                       </span>
                     )}
@@ -273,7 +273,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
                         {scorer.fname}
                       </p>
 
-                      <div className="bg-indigo-500/10 p-2.5 rounded-lg border border-indigo-500/20 space-y-1">
+                      <div className="bg-indigo-500/10 p-2.5 rounded-xl border border-indigo-500/20 space-y-1">
                         <div className="text-[11px] font-bold text-indigo-300 flex items-center justify-between">
                           <span>Overall Score:</span>
                           <span className="text-emerald-400 font-bold font-mono">{scorer.obtainedMarks} / {scorer.maxMarks}</span>
@@ -292,21 +292,23 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
                 </div>
 
                 {scorer && (
-                  <div className="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
+                  <div className="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between gap-2 text-xs">
                     {isAdminLoggedIn ? (
                       <button
                         onClick={() => setSelectedCertificateScorer(scorer)}
-                        className="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-[11px] font-extrabold inline-flex items-center gap-1 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+                        className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all cursor-pointer hover:shadow-amber-500/30"
                         title="Generate & Print Official Class Topper Certificate of Excellence"
                       >
-                        📜 Certificate
+                        <Award className="w-3.5 h-3.5 text-slate-950 shrink-0" />
+                        <span>Certificate</span>
                       </button>
                     ) : (
-                      <span className="text-[10px] font-mono text-amber-400 font-bold flex items-center gap-1">
-                        🏆 1st Position
+                      <span className="text-xs font-mono text-amber-400 font-bold flex items-center gap-1">
+                        <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                        <span>1st Position</span>
                       </span>
                     )}
-                    <span className="font-mono font-extrabold text-emerald-400 text-sm bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                    <span className="font-mono font-extrabold text-emerald-400 text-xs bg-emerald-500/10 px-2.5 py-1 rounded-xl border border-emerald-500/20 flex items-center">
                       {scorer.percentage}%
                     </span>
                   </div>
