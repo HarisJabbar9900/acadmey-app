@@ -413,17 +413,17 @@ export default function ClassStudentManager({
             <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => setIsClassModalOpen(true)}
-                className="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer whitespace-nowrap"
+                className="px-3.5 py-1.5 bg-purple-50 hover:bg-purple-600 dark:bg-purple-950/40 dark:hover:bg-purple-600 text-purple-700 hover:text-white dark:text-purple-300 dark:hover:text-white border border-purple-200 hover:border-purple-600 dark:border-purple-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer whitespace-nowrap"
               >
-                <FolderPlus className="w-3.5 h-3.5 text-purple-500 dark:text-purple-400" />
+                <FolderPlus className="w-3.5 h-3.5" />
                 + Add Class
               </button>
 
               <button
                 onClick={() => setIsManageClassesModalOpen(true)}
-                className="px-3.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-600 dark:text-rose-300 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer whitespace-nowrap"
+                className="px-3.5 py-1.5 bg-rose-50 hover:bg-rose-600 dark:bg-rose-950/40 dark:hover:bg-rose-600 text-rose-700 hover:text-white dark:text-rose-300 dark:hover:text-white border border-rose-200 hover:border-rose-600 dark:border-rose-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer whitespace-nowrap"
               >
-                <Trash2 className="w-3.5 h-3.5 text-rose-500 dark:text-rose-400" />
+                <Trash2 className="w-3.5 h-3.5" />
                 ⚙️ Edit / Delete Classes
               </button>
             </div>
@@ -435,13 +435,13 @@ export default function ClassStudentManager({
 
       {/* Class Subjects Manager Section */}
       <div className="glass-panel rounded-2xl p-5 shadow-xl space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
           <div>
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-indigo-400" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
               Class Subjects Management {selectedClassObj ? `(Class ${selectedClassObj.name})` : '(Select a class to add/edit subjects)'}
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Customize subjects for each class. (e.g. 9th has Pak Studies, 10th has Quran Pak, First Year has Computer Science).
             </p>
           </div>
@@ -456,7 +456,7 @@ export default function ClassStudentManager({
                 placeholder="New Subject Name (e.g. English)"
                 value={newSubjectName}
                 onChange={(e) => setNewSubjectName(e.target.value)}
-                className="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 w-44 sm:w-56"
+                className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 w-44 sm:w-56"
               />
               <button
                 type="submit"
@@ -469,15 +469,15 @@ export default function ClassStudentManager({
           )}
         </div>
 
-        {/* Render Subject Chips */}
+        {/* Subjects Badges Pills List */}
         {selectedClassObj ? (
           <>
-            <div className="flex flex-wrap items-center gap-2">
-              {(Array.isArray(selectedClassObj.subjects) ? selectedClassObj.subjects : ['Physics', 'Chemistry', 'Math', 'Computer Science', 'Biology', 'Urdu']).map((sub, idx) => {
+            <div className="flex flex-wrap gap-2 pt-1">
+              {(selectedClassObj.subjects || []).map((sub, idx) => {
                 const isEditingThis = editingSubjectIndex === `${selectedClassObj.id}-${idx}`;
 
                 return (
-                  <div key={idx} className="bg-slate-800/90 border border-slate-700/80 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-200 flex items-center gap-2 group hover:border-indigo-500/50 transition-all">
+                  <div key={idx} className="bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 group hover:border-indigo-500/50 transition-all shadow-sm">
                     {isEditingThis ? (
                       <input
                         type="text"
@@ -487,7 +487,7 @@ export default function ClassStudentManager({
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') handleRenameSubject(selectedClassObj, idx, e.currentTarget.value);
                         }}
-                        className="bg-slate-950 px-2 py-0.5 rounded text-white text-xs font-bold border border-indigo-500 focus:outline-none w-28"
+                        className="bg-white dark:bg-slate-950 px-2 py-0.5 rounded text-slate-900 dark:text-white text-xs font-bold border border-indigo-500 focus:outline-none w-28"
                       />
                     ) : (
                       <span>{sub}</span>
@@ -501,7 +501,7 @@ export default function ClassStudentManager({
                             setEditingSubjectIndex(`${selectedClassObj.id}-${idx}`);
                             setEditingSubjectText(sub);
                           }}
-                          className="text-slate-400 hover:text-indigo-300 p-0.5"
+                          className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 p-0.5 cursor-pointer"
                           title="Rename Subject"
                         >
                           <Edit2 className="w-3 h-3" />
@@ -509,7 +509,7 @@ export default function ClassStudentManager({
                         <button
                           type="button"
                           onClick={() => handleDeleteSubjectFromClass(selectedClassObj, sub)}
-                          className="text-slate-500 hover:text-rose-400 p-0.5"
+                          className="text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 p-0.5 cursor-pointer"
                           title="Delete Subject"
                         >
                           <X className="w-3 h-3" />
@@ -546,21 +546,24 @@ export default function ClassStudentManager({
             )}
           </>
         ) : (
-          <div className="text-xs text-slate-400 italic bg-slate-950/40 p-3 rounded-xl border border-slate-800/80">
-            💡 Select any specific Class filter above (e.g. <strong className="text-indigo-400">Class 9th</strong> or <strong className="text-indigo-400">Class 10th</strong>) to add, rename or delete subjects for that class!
+          <div className="text-xs text-slate-500 dark:text-slate-400 italic bg-slate-100/70 dark:bg-slate-950/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800/80">
+            💡 Select any specific Class filter above (e.g. <strong className="text-indigo-600 dark:text-indigo-400 font-bold">Class 9th</strong> or <strong className="text-indigo-600 dark:text-indigo-400 font-bold">Class 10th</strong>) to add, rename or delete subjects for that class!
           </div>
         )}
       </div>
 
       {/* Student List Table */}
-      <div className="glass-panel glow-accent-indigo rounded-2xl overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-slate-800/80 bg-slate-900/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="glass-panel rounded-2xl p-5 shadow-xl space-y-4">
+        
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
           <div>
-            <h3 className="font-bold text-white text-base flex items-center gap-2">
-              <GraduationCap className="w-5 h-5 text-indigo-400" />
-              {filterClassId === 'ALL' ? 'All Students List' : `Class ${data.classes.find(c => c.id === filterClassId)?.name || ''} Student List`}
+            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Users className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+              All Students List
             </h3>
-            <p className="text-xs text-slate-400">Showing {filteredStudents.length} student record(s)</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Showing {paginatedStudents.length} of {filteredStudents.length} enrolled students
+            </p>
           </div>
 
           {isAdminLoggedIn && (
@@ -582,7 +585,7 @@ export default function ClassStudentManager({
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-800 text-slate-400 text-xs uppercase font-semibold tracking-wider">
+              <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-800/50 text-slate-700 dark:text-slate-400 text-xs uppercase font-bold tracking-wider">
                 <th className="py-3.5 px-4 whitespace-nowrap">Roll #</th>
                 <th className="py-3.5 px-4 whitespace-nowrap">Student Name</th>
                 <th className="py-3.5 px-4 whitespace-nowrap">Father Name</th>
@@ -591,21 +594,21 @@ export default function ClassStudentManager({
                 <th className="py-3.5 px-4 text-center whitespace-nowrap min-w-[210px]">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 text-slate-200">
+            <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800/60 text-slate-900 dark:text-slate-200">
               {paginatedStudents.length > 0 ? (
                 paginatedStudents.map(student => {
                   const studentClassObj = data.classes.find(c => c.id === student.classId);
                   const classNameDisplay = studentClassObj ? studentClassObj.name : 'Unassigned';
 
                   return (
-                    <tr key={student.id} className="hover:bg-slate-800/30 transition-colors">
-                      <td className="py-3.5 px-4 font-mono text-xs text-indigo-400 font-bold whitespace-nowrap">#{student.rollNo}</td>
-                      <td className="py-3.5 px-4 font-bold text-white whitespace-nowrap">{student.name}</td>
-                      <td className="py-3.5 px-4 text-xs text-slate-300 font-medium whitespace-nowrap">{student.fname || 'N/A'}</td>
-                      <td className="py-3.5 px-4 text-xs font-mono text-slate-300 whitespace-nowrap">
+                    <tr key={student.id} className="hover:bg-indigo-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                      <td className="py-3.5 px-4 font-mono text-xs text-indigo-700 dark:text-indigo-400 font-extrabold whitespace-nowrap">#{student.rollNo}</td>
+                      <td className="py-3.5 px-4 font-bold text-slate-900 dark:text-white whitespace-nowrap">{student.name}</td>
+                      <td className="py-3.5 px-4 text-xs text-slate-700 dark:text-slate-300 font-medium whitespace-nowrap">{student.fname || 'N/A'}</td>
+                      <td className="py-3.5 px-4 text-xs font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap">
                         {isAdminLoggedIn ? (
                           <div className="flex items-center gap-1.5">
-                            <Phone className="w-3.5 h-3.5 text-slate-500" />
+                            <Phone className="w-3.5 h-3.5 text-slate-400" />
                             <span>{student.fatherNumber || 'N/A'}</span>
                           </div>
                         ) : (
@@ -613,7 +616,7 @@ export default function ClassStudentManager({
                         )}
                       </td>
                       <td className="py-3.5 px-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 whitespace-nowrap shadow-sm">
+                        <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/20 whitespace-nowrap shadow-sm">
                           Class {classNameDisplay}
                         </span>
                       </td>
@@ -623,7 +626,7 @@ export default function ClassStudentManager({
                             {/* Student ID Card Button (Admin Only) */}
                             <button
                               onClick={() => setSelectedIdCardStudent(student)}
-                              className="px-3 py-1.5 bg-amber-500/15 hover:bg-amber-500/25 active:scale-95 text-amber-300 hover:text-amber-200 border border-amber-500/30 hover:border-amber-500/50 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition-all whitespace-nowrap cursor-pointer"
+                              className="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-500 dark:bg-amber-500/15 dark:hover:bg-amber-500/25 active:scale-95 text-amber-800 hover:text-slate-950 dark:text-amber-300 dark:hover:text-amber-200 border border-amber-200 hover:border-amber-400 dark:border-amber-500/30 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition-all whitespace-nowrap cursor-pointer"
                               title="Generate Student Identity Card"
                             >
                               <Contact className="w-3.5 h-3.5" /> ID Card
@@ -632,7 +635,7 @@ export default function ClassStudentManager({
                             {/* Report Card Button (Admin Only) */}
                             <button
                               onClick={() => setSelectedReportStudent(student)}
-                              className="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-md shadow-indigo-600/25 transition-all whitespace-nowrap cursor-pointer"
+                              className="px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-md shadow-indigo-600/25 transition-all whitespace-nowrap cursor-pointer"
                               title="Print Student Monthly Progress Report Card"
                             >
                               <Printer className="w-3.5 h-3.5" /> Report
@@ -640,7 +643,7 @@ export default function ClassStudentManager({
 
                             <button
                               onClick={() => handleOpenEdit(student)}
-                              className="p-1.5 text-slate-400 hover:text-indigo-300 hover:bg-indigo-500/10 rounded-xl transition-all cursor-pointer"
+                              className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-xl transition-all cursor-pointer"
                               title="Edit Student"
                             >
                               <Edit3 className="w-4 h-4" />
@@ -648,17 +651,15 @@ export default function ClassStudentManager({
                             <button
                               onClick={() => {
                                 onDeleteStudent(student.id);
-                                setNotification(`Student "${student.name}" deleted.`);
-                                setTimeout(() => setNotification(null), 4000);
                               }}
-                              className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all cursor-pointer"
+                              className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-all cursor-pointer"
                               title="Delete Student"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
                         ) : (
-                          <span className="text-slate-500 font-mono text-[11px] italic">🔒 Admin Only</span>
+                          <span className="text-xs text-slate-500 font-mono">🔒 Admin Only</span>
                         )}
                       </td>
                     </tr>
@@ -666,8 +667,8 @@ export default function ClassStudentManager({
                 })
               ) : (
                 <tr>
-                  <td colSpan="6" className="py-12 text-center text-slate-500 font-medium">
-                    No student records matching filter.
+                  <td colSpan="6" className="py-12 text-center text-slate-500 italic">
+                    No students found matching your criteria.
                   </td>
                 </tr>
               )}

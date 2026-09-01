@@ -424,16 +424,16 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-800 text-slate-400 text-xs uppercase font-semibold tracking-wider">
-                <th className="py-3.5 px-4">Roll #</th>
-                <th className="py-3.5 px-4">Student Name</th>
-                <th className="py-3.5 px-4">Father Name & Contact</th>
+              <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-800/50 text-slate-700 dark:text-slate-400 text-xs uppercase font-bold tracking-wider">
+                <th className="py-3.5 px-4 whitespace-nowrap">Roll #</th>
+                <th className="py-3.5 px-4 whitespace-nowrap">Student Name</th>
+                <th className="py-3.5 px-4 whitespace-nowrap">Father Name & Contact</th>
                 <th className="py-3.5 px-4 whitespace-nowrap min-w-[110px]">Class</th>
-                <th className="py-3.5 px-4 text-center">Status & Date</th>
-                <th className="py-3.5 px-4 text-center">Actions</th>
+                <th className="py-3.5 px-4 text-center whitespace-nowrap">Status & Date</th>
+                <th className="py-3.5 px-4 text-center whitespace-nowrap">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 text-slate-200">
+            <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800/60 text-slate-900 dark:text-slate-200">
               {paginatedStudents.length > 0 ? (
                 paginatedStudents.map(student => {
                   const studentClassObj = data.classes.find(c => c.id === student.classId);
@@ -442,22 +442,22 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                   const isPaid = feeRecord?.status === 'Paid';
 
                   return (
-                    <tr key={student.id} className="hover:bg-slate-800/30 transition-colors">
-                      <td className="py-3.5 px-4 font-mono text-xs text-indigo-400 font-bold">#{student.rollNo}</td>
+                    <tr key={student.id} className="hover:bg-indigo-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                      <td className="py-3.5 px-4 font-mono text-xs text-indigo-700 dark:text-indigo-400 font-extrabold whitespace-nowrap">#{student.rollNo}</td>
                       
-                      <td className="py-3.5 px-4 font-bold text-white whitespace-nowrap">
+                      <td className="py-3.5 px-4 font-bold text-slate-900 dark:text-white whitespace-nowrap">
                         <div>{student.name}</div>
                       </td>
 
                       <td className="py-3.5 px-4 text-xs whitespace-nowrap">
-                        <div className="text-slate-300 font-medium">{student.fname || 'N/A'}</div>
+                        <div className="text-slate-700 dark:text-slate-300 font-medium">{student.fname || 'N/A'}</div>
                         <div className="text-slate-500 font-mono flex items-center gap-1 mt-0.5">
-                          <Phone className="w-3 h-3" /> {student.fatherNumber || 'N/A'}
+                          <Phone className="w-3 h-3 text-slate-400" /> {student.fatherNumber || 'N/A'}
                         </div>
                       </td>
 
                       <td className="py-3.5 px-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 whitespace-nowrap shadow-sm">
+                        <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/20 whitespace-nowrap shadow-sm">
                           Class {studentClassObj?.name || 'Unassigned'}
                         </span>
                       </td>
@@ -466,16 +466,16 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                       <td className="py-3.5 px-4 text-center whitespace-nowrap">
                         {isPaid ? (
                           <div className="flex flex-col items-center">
-                            <span className="px-3 py-1 rounded-xl text-xs font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5 shadow-sm">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> PAID
+                            <span className="px-3 py-1 rounded-xl text-xs font-extrabold bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/40 flex items-center gap-1.5 shadow-sm">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> PAID
                             </span>
-                            <span className="text-[10px] text-slate-400 font-mono mt-1">
+                            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono mt-1">
                               Date: {feeRecord.paidDate || 'N/A'} • {feeRecord.paymentMethod || 'Cash'}
                             </span>
                           </div>
                         ) : (
-                          <span className="px-3 py-1 rounded-xl text-xs font-extrabold bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center justify-center gap-1.5 w-fit mx-auto">
-                            <XCircle className="w-3.5 h-3.5 text-rose-400" /> UNPAID
+                          <span className="px-3 py-1 rounded-xl text-xs font-extrabold bg-rose-100 dark:bg-rose-500/20 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-500/40 flex items-center justify-center gap-1.5 w-fit mx-auto shadow-sm">
+                            <XCircle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" /> UNPAID
                           </span>
                         )}
                       </td>
@@ -488,7 +488,7 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                               {isPaid ? (
                                 <button
                                   onClick={() => handleMarkUnpaid(student)}
-                                  className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700/80 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer hover:border-amber-500/30"
+                                  className="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-500 dark:bg-slate-800 dark:hover:bg-slate-700 text-amber-800 hover:text-slate-950 dark:text-amber-400 border border-amber-200 hover:border-amber-400 dark:border-slate-700/80 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
                                   title="Mark as Unpaid"
                                 >
                                   <RotateCcw className="w-3.5 h-3.5" /> Mark Unpaid
@@ -523,7 +523,7 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                                       const msg = `Respected Parent, Monthly fee for *${student.name}* (Roll #${student.rollNo}, Class ${studentClassObj?.name}) for the month of *${monthName}* is PENDING. Kindly deposit at your earliest convenience. - Al-Zia Science Academy`;
                                       window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                                     }}
-                                    className="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 hover:border-emerald-500/50 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
+                                    className="px-3.5 py-1.5 bg-emerald-50 hover:bg-emerald-600 dark:bg-emerald-500/10 dark:hover:bg-emerald-500/20 text-emerald-700 hover:text-white dark:text-emerald-400 dark:hover:text-emerald-300 border border-emerald-200 hover:border-emerald-600 dark:border-emerald-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
                                     title="Send WhatsApp Fee Pending Reminder to Parent"
                                   >
                                     <MessageCircle className="w-3.5 h-3.5" /> WA Reminder
@@ -532,13 +532,13 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                               )}
                             </>
                           ) : (
-                            <span className="text-xs text-slate-600 font-mono">🔒 Admin Only</span>
+                            <span className="text-xs text-slate-500 font-mono">🔒 Admin Only</span>
                           )}
 
                           {/* Print Fee Slip */}
                           <button
                             onClick={() => setReceiptStudent({ student, feeRecord })}
-                            className="p-1.5 text-slate-400 hover:text-indigo-300 hover:bg-indigo-500/10 rounded-xl transition-colors"
+                            className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-xl transition-colors cursor-pointer"
                             title="Print Fee Receipt Slip"
                           >
                             <Printer className="w-4 h-4" />

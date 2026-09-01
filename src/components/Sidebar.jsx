@@ -243,13 +243,13 @@ export default function Sidebar({
               setIsMobileMenuOpen(false);
               if (typeof onOpenCommandPalette === 'function') onOpenCommandPalette();
             }}
-            className="w-full flex items-center justify-between px-3 py-2 bg-slate-900/80 hover:bg-slate-800 border border-slate-800/90 hover:border-indigo-500/40 rounded-xl text-xs text-slate-400 hover:text-slate-200 transition-all shadow-sm group cursor-pointer"
+            className="w-full flex items-center justify-between px-3 py-2 bg-slate-100 dark:bg-slate-900/80 hover:bg-indigo-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800/90 hover:border-indigo-300 dark:hover:border-indigo-500/40 rounded-xl text-xs text-slate-600 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-slate-200 transition-all shadow-sm group cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <Search className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform" />
-              <span className="font-medium">Quick Search...</span>
+              <Search className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400 group-hover:scale-110 transition-transform" />
+              <span className="font-semibold">Quick Search...</span>
             </div>
-            <kbd className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 text-[10px] font-mono rounded text-slate-300">
+            <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-mono rounded text-slate-600 dark:text-slate-300 shadow-xs">
               Ctrl K
             </kbd>
           </button>
@@ -260,7 +260,7 @@ export default function Sidebar({
       <nav className="flex-1 min-h-0 overflow-y-auto px-3 py-2 space-y-4 no-scrollbar">
         {navSections.map((section, idx) => (
           <div key={idx} className="space-y-1">
-            <div className="px-2.5 pb-1 text-[10px] font-bold tracking-wider uppercase text-slate-400">
+            <div className="px-2.5 pb-1 text-[10px] font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400">
               {section.title}
             </div>
             {section.items.map((tab) => {
@@ -270,17 +270,17 @@ export default function Sidebar({
                 <button
                   key={tab.id}
                   onClick={() => handleTabClick(tab.id)}
-                  className={`w-full group relative flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                  className={`w-full group relative flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
                     isActive
                       ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-indigo-700 dark:hover:text-white hover:bg-indigo-50/80 dark:hover:bg-slate-800/60'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
                     <div className={`p-1.5 rounded-lg transition-colors ${
                       isActive 
                         ? 'bg-white/20 text-white' 
-                        : 'bg-slate-800/80 text-slate-400 group-hover:text-indigo-400 group-hover:bg-indigo-500/10'
+                        : 'bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-500/10'
                     }`}>
                       <Icon className="w-3.5 h-3.5" />
                     </div>
@@ -292,10 +292,10 @@ export default function Sidebar({
                       isActive
                         ? 'bg-white/20 text-white'
                         : tab.isSpecial 
-                          ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-pink-300 border border-pink-500/30'
+                          ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-pink-700 dark:text-pink-300 border border-pink-300 dark:border-pink-500/30'
                           : tab.badge === 'Admin'
-                            ? 'bg-amber-500/10 text-amber-300 border border-amber-500/20'
-                            : 'bg-slate-800 text-slate-400'
+                            ? 'bg-amber-100 dark:bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-500/20'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
                     }`}>
                       {tab.badge}
                     </span>
@@ -312,19 +312,19 @@ export default function Sidebar({
       </nav>
 
       {/* 3. Bottom User & Control Center (Fixed Shrink-0 Anchored at Bottom) */}
-      <div className="shrink-0 p-3 border-t border-slate-800/80 bg-slate-900/60 space-y-2.5">
+      <div className="shrink-0 p-3 border-t border-slate-200/80 dark:border-slate-800/80 bg-slate-100/70 dark:bg-slate-900/60 space-y-2.5">
         
         {/* Admin Status Card */}
         {isAdminLoggedIn ? (
-          <div className="p-2.5 bg-gradient-to-br from-emerald-950/40 to-slate-900 border border-emerald-500/30 rounded-xl space-y-1.5">
+          <div className="p-2.5 bg-white dark:bg-slate-900 border border-emerald-500/40 rounded-xl space-y-1.5 shadow-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="p-1 bg-emerald-500/20 text-emerald-400 rounded-lg">
+                <div className="p-1 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 rounded-lg">
                   <ShieldCheck className="w-3.5 h-3.5" />
                 </div>
                 <div>
-                  <p className="text-[11px] font-bold text-emerald-400 leading-tight">Admin Mode Active</p>
-                  <p className="text-[9px] text-slate-400">Full Edit Permissions</p>
+                  <p className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 leading-tight">Admin Mode Active</p>
+                  <p className="text-[9px] text-slate-500 dark:text-slate-400">Full Edit Permissions</p>
                 </div>
               </div>
               <span className="flex h-2 w-2 relative">
@@ -336,34 +336,34 @@ export default function Sidebar({
             <div className="flex gap-2 pt-0.5">
               <button
                 onClick={() => setIsChangePinModalOpen(true)}
-                className="flex-1 py-1 px-2 bg-slate-800/90 hover:bg-slate-750 text-slate-300 rounded-lg text-[10px] font-medium flex items-center justify-center gap-1 border border-slate-700 transition-colors cursor-pointer"
+                className="flex-1 py-1.5 px-2 bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800/90 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer shadow-sm"
                 title="Change Admin Security PIN"
               >
-                <Settings className="w-3 h-3 text-indigo-400" />
+                <Settings className="w-3 h-3 text-indigo-500 dark:text-indigo-400" />
                 PIN
               </button>
               <button
                 onClick={handleLogout}
-                className="flex-1 py-1 px-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 rounded-lg text-[10px] font-medium flex items-center justify-center gap-1 border border-rose-500/30 transition-colors cursor-pointer"
+                className="flex-1 py-1.5 px-2 bg-rose-50 hover:bg-rose-600 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-700 hover:text-white dark:text-rose-300 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 border border-rose-200 hover:border-rose-600 dark:border-rose-500/30 transition-colors cursor-pointer shadow-sm"
               >
                 Logout
               </button>
             </div>
           </div>
         ) : (
-          <div className="p-2.5 bg-slate-900/80 border border-slate-800 rounded-xl flex items-center justify-between">
+          <div className="p-2.5 bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-2">
-              <div className="p-1 bg-indigo-500/10 text-indigo-400 rounded-lg">
+              <div className="p-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg">
                 <Lock className="w-3.5 h-3.5" />
               </div>
               <div>
-                <p className="text-[11px] font-bold text-slate-200">Admin Controls</p>
-                <p className="text-[9px] text-slate-400">Staff Authentication</p>
+                <p className="text-[11px] font-bold text-slate-800 dark:text-slate-200">Admin Controls</p>
+                <p className="text-[9px] text-slate-500 dark:text-slate-400">Staff Authentication</p>
               </div>
             </div>
             <button
               onClick={() => setIsLoginModalOpen(true)}
-              className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-[10px] font-bold shadow-md shadow-indigo-600/30 transition-all hover:scale-105 cursor-pointer"
+              className="px-3 py-1 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-[11px] font-bold shadow-md shadow-indigo-600/30 transition-all hover:scale-105 cursor-pointer"
             >
               Login
             </button>
@@ -374,7 +374,7 @@ export default function Sidebar({
         <div className="flex items-center justify-between gap-2">
           <button
             onClick={toggleTheme}
-            className="flex-1 py-1.5 px-2 bg-slate-800/80 hover:bg-slate-750 border border-slate-700/60 rounded-xl text-slate-300 hover:text-white transition-all text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer"
+            className="flex-1 py-1.5 px-2 bg-white dark:bg-slate-800/80 hover:bg-indigo-50 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700/60 rounded-xl text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white transition-all text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
             title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
           >
             {theme === 'dark' ? (
@@ -384,7 +384,7 @@ export default function Sidebar({
               </>
             ) : (
               <>
-                <Moon className="w-3.5 h-3.5 text-indigo-400" />
+                <Moon className="w-3.5 h-3.5 text-indigo-500" />
                 <span className="text-[11px]">Dark Mode</span>
               </>
             )}
