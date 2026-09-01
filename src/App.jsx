@@ -453,8 +453,9 @@ export default function App() {
       
       {/* Background Subtle Gradients */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 print:hidden">
-        <div className={`absolute -top-40 -left-40 w-96 h-96 ${theme === 'dark' ? 'bg-indigo-600/10' : 'bg-indigo-500/5'} rounded-full blur-3xl`} />
-        <div className={`absolute top-1/3 -right-40 w-96 h-96 ${theme === 'dark' ? 'bg-purple-600/10' : 'bg-purple-500/5'} rounded-full blur-3xl`} />
+        <div className={`absolute -top-40 -left-40 w-[36rem] h-[36rem] ${theme === 'dark' ? 'bg-indigo-600/10' : 'bg-indigo-500/15'} rounded-full blur-3xl`} />
+        <div className={`absolute top-1/3 -right-40 w-[36rem] h-[36rem] ${theme === 'dark' ? 'bg-purple-600/10' : 'bg-purple-500/15'} rounded-full blur-3xl`} />
+        <div className={`absolute -bottom-40 left-1/3 w-[32rem] h-[32rem] ${theme === 'dark' ? 'bg-amber-500/5' : 'bg-amber-400/10'} rounded-full blur-3xl`} />
       </div>
 
       {/* Left Sidebar Navigation (Desktop Left Sidebar + Mobile Responsive Drawer) */}

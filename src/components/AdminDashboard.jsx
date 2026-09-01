@@ -498,46 +498,50 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">
-                <th className="pb-3 px-3 whitespace-nowrap">Roll #</th>
-                <th className="pb-3 px-3 whitespace-nowrap min-w-[200px]">Student Name</th>
-                <th className="pb-3 px-3 whitespace-nowrap min-w-[140px]">Father Name</th>
-                <th className="pb-3 px-3 whitespace-nowrap min-w-[80px]">Class</th>
-                <th className="pb-3 px-3 text-center whitespace-nowrap min-w-[150px]">Marks Obtained / Max</th>
-                <th className="pb-3 px-3 text-right whitespace-nowrap min-w-[150px]">Percentage</th>
-                <th className="pb-3 px-3 text-center whitespace-nowrap min-w-[130px]">Report Card</th>
+              <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-800/50 text-slate-700 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+                <th className="py-3 px-3.5 whitespace-nowrap">Roll #</th>
+                <th className="py-3 px-3.5 whitespace-nowrap min-w-[200px]">Student Name</th>
+                <th className="py-3 px-3.5 whitespace-nowrap min-w-[140px]">Father Name</th>
+                <th className="py-3 px-3.5 whitespace-nowrap min-w-[80px]">Class</th>
+                <th className="py-3 px-3.5 text-center whitespace-nowrap min-w-[150px]">Marks Obtained / Max</th>
+                <th className="py-3 px-3.5 text-right whitespace-nowrap min-w-[150px]">Percentage</th>
+                <th className="py-3 px-3.5 text-center whitespace-nowrap min-w-[130px]">Report Card</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200/60 dark:divide-slate-800/60 text-slate-900 dark:text-slate-200">
+            <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800/60 text-slate-900 dark:text-slate-200">
               {studentPerformance.length > 0 ? (
                 studentPerformance.map((std) => {
                   const studentObj = data.students.find(s => s.id === std.id);
 
                   return (
-                    <tr key={std.id} className="hover:bg-slate-100/60 dark:hover:bg-slate-800/40 transition-colors">
-                      <td className="py-3.5 px-3 font-mono text-xs text-indigo-600 dark:text-indigo-400 font-bold whitespace-nowrap">#{std.rollNo}</td>
-                      <td className="py-3.5 px-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">
+                    <tr key={std.id} className="hover:bg-indigo-50/50 dark:hover:bg-slate-800/40 transition-colors">
+                      <td className="py-3.5 px-3.5 font-mono text-xs text-indigo-700 dark:text-indigo-400 font-extrabold whitespace-nowrap">#{std.rollNo}</td>
+                      <td className="py-3.5 px-3.5 font-bold text-slate-900 dark:text-white whitespace-nowrap">
                         <div className="flex items-center gap-2 whitespace-nowrap">
-                          <span className="font-bold">{std.name}</span>
+                          <span>{std.name}</span>
                           {std.totalMaxMarks > 0 && std.classRank === 1 && (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/30 whitespace-nowrap shrink-0 shadow-sm">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-extrabold bg-amber-100 dark:bg-amber-500/15 text-amber-900 dark:text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-300 dark:border-amber-500/30 whitespace-nowrap shrink-0 shadow-sm">
                               🥇 #1 Rank
                             </span>
                           )}
                           {std.totalMaxMarks > 0 && std.classRank === 2 && (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-bold bg-slate-200 dark:bg-slate-700/60 text-slate-700 dark:text-slate-200 px-2.5 py-0.5 rounded-full border border-slate-300 dark:border-slate-600 whitespace-nowrap shrink-0 shadow-sm">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-extrabold bg-sky-100 dark:bg-slate-700/60 text-sky-900 dark:text-slate-200 px-2.5 py-0.5 rounded-full border border-sky-300 dark:border-slate-600 whitespace-nowrap shrink-0 shadow-sm">
                               🥈 #2 Rank
                             </span>
                           )}
                           {std.totalMaxMarks > 0 && std.classRank === 3 && (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-bold bg-amber-700/15 text-amber-800 dark:text-amber-400 px-2.5 py-0.5 rounded-full border border-amber-600/30 whitespace-nowrap shrink-0 shadow-sm">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-extrabold bg-orange-100 dark:bg-amber-700/15 text-orange-900 dark:text-amber-400 px-2.5 py-0.5 rounded-full border border-orange-300 dark:border-amber-600/30 whitespace-nowrap shrink-0 shadow-sm">
                               🥉 #3 Rank
                             </span>
                           )}
                         </div>
                       </td>
-                      <td className="py-3.5 px-3 text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap">{std.fname}</td>
-                      <td className="py-3.5 px-3 text-xs text-slate-500 dark:text-slate-400 font-semibold whitespace-nowrap">{std.className}</td>
+                      <td className="py-3.5 px-3.5 text-xs text-slate-700 dark:text-slate-300 font-medium whitespace-nowrap">{std.fname}</td>
+                      <td className="py-3.5 px-3.5 text-xs text-slate-600 dark:text-slate-400 font-bold whitespace-nowrap">
+                        <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                          {std.className}
+                        </span>
+                      </td>
                       <td className="py-3.5 px-3 text-center font-mono whitespace-nowrap">
                         <span className="text-indigo-600 dark:text-indigo-400 font-bold">{std.obtainedMarks}</span>
                         <span className="text-slate-400 dark:text-slate-500"> / {std.totalMaxMarks}</span>
