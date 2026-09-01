@@ -91,13 +91,6 @@ export default function Sidebar({
           label: 'Study Material', 
           icon: BookOpen,
           badge: 'Free'
-        },
-        { 
-          id: 'paper', 
-          label: 'AI Test Generator', 
-          icon: FileText,
-          badge: 'AI Smart',
-          isSpecial: true
         }
       ]
     },

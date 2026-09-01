@@ -9,7 +9,6 @@ import MarksLedger from './components/MarksLedger';
 import ClassStudentManager from './components/ClassStudentManager';
 import StudentFeedback from './components/StudentFeedback';
 import NoticeBoard from './components/NoticeBoard';
-import TestPaperGenerator from './components/TestPaperGenerator';
 import AiChatbot from './components/AiChatbot';
 import { 
   getInitialData, 
@@ -380,10 +379,6 @@ export default function App() {
       title: 'Digital Study Material & Notes', 
       subtitle: 'Downloadable PDF course books, past papers, assignments & syllabus' 
     },
-    paper: { 
-      title: 'AI Examination Paper Generator', 
-      subtitle: 'Generate high-standard customized test papers and quizzes with AI' 
-    },
     attendance: { 
       title: 'Daily Attendance Register', 
       subtitle: 'Class-wise student daily attendance marking, history and print reports' 
@@ -524,10 +519,6 @@ export default function App() {
               onUpdateResource={handleUpdateResource}
               onDeleteResource={handleDeleteResource}
             />
-          )}
-
-          {activeTab === 'paper' && (
-            <TestPaperGenerator classes={data.classes || []} />
           )}
 
           {activeTab === 'attendance' && (
