@@ -585,7 +585,7 @@ export default function ClassStudentManager({
               <tr className="border-b border-slate-800 text-slate-400 text-xs uppercase font-semibold tracking-wider">
                 <th className="py-3.5 px-4 whitespace-nowrap">Roll #</th>
                 <th className="py-3.5 px-4 whitespace-nowrap">Student Name</th>
-                <th className="py-3.5 px-4 whitespace-nowrap">Father Name (FNAME)</th>
+                <th className="py-3.5 px-4 whitespace-nowrap">Father Name</th>
                 <th className="py-3.5 px-4 whitespace-nowrap">Father Number</th>
                 <th className="py-3.5 px-4 whitespace-nowrap min-w-[110px]">Class</th>
                 <th className="py-3.5 px-4 text-center whitespace-nowrap min-w-[210px]">Actions</th>
@@ -944,7 +944,7 @@ export default function ClassStudentManager({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Father Name (FNAME) *</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Father Name *</label>
                   <input
                     type="text"
                     required
@@ -1042,7 +1042,7 @@ export default function ClassStudentManager({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Father Name (FNAME) *</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Father Name *</label>
                   <input
                     type="text"
                     required
