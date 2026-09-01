@@ -498,80 +498,81 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-800 text-slate-400 text-xs font-semibold uppercase tracking-wider">
-                <th className="pb-3 px-3">Roll #</th>
-                <th className="pb-3 px-3">Student Name</th>
-                <th className="pb-3 px-3">Father Name</th>
-                <th className="pb-3 px-3">Class</th>
-                <th className="pb-3 px-3 text-center">Marks Obtained / Max</th>
-                <th className="pb-3 px-3 text-right">Percentage</th>
-                {isAdminLoggedIn && <th className="pb-3 px-3 text-center">Report Card</th>}
+              <tr className="border-b border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">
+                <th className="pb-3 px-3 whitespace-nowrap">Roll #</th>
+                <th className="pb-3 px-3 whitespace-nowrap min-w-[200px]">Student Name</th>
+                <th className="pb-3 px-3 whitespace-nowrap min-w-[140px]">Father Name</th>
+                <th className="pb-3 px-3 whitespace-nowrap min-w-[80px]">Class</th>
+                <th className="pb-3 px-3 text-center whitespace-nowrap min-w-[150px]">Marks Obtained / Max</th>
+                <th className="pb-3 px-3 text-right whitespace-nowrap min-w-[150px]">Percentage</th>
+                {isAdminLoggedIn && <th className="pb-3 px-3 text-center whitespace-nowrap min-w-[130px]">Report Card</th>}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 text-slate-200">
+            <tbody className="divide-y divide-slate-200/60 dark:divide-slate-800/60 text-slate-900 dark:text-slate-200">
               {studentPerformance.length > 0 ? (
                 studentPerformance.map((std) => {
                   const studentObj = data.students.find(s => s.id === std.id);
 
                   return (
-                    <tr key={std.id} className="hover:bg-slate-800/40 transition-colors">
-                      <td className="py-3.5 px-3 font-mono text-xs text-indigo-400 font-bold">#{std.rollNo}</td>
-                      <td className="py-3.5 px-3 font-semibold text-white">
-                        <div className="flex items-center gap-2">
-                          <span>{std.name}</span>
+                    <tr key={std.id} className="hover:bg-slate-100/60 dark:hover:bg-slate-800/40 transition-colors">
+                      <td className="py-3.5 px-3 font-mono text-xs text-indigo-600 dark:text-indigo-400 font-bold whitespace-nowrap">#{std.rollNo}</td>
+                      <td className="py-3.5 px-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">
+                        <div className="flex items-center gap-2 whitespace-nowrap">
+                          <span className="font-bold">{std.name}</span>
                           {std.totalMaxMarks > 0 && std.classRank === 1 && (
-                            <span className="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded-full border border-amber-500/30 flex items-center gap-1 shadow-sm">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/30 whitespace-nowrap shrink-0 shadow-sm">
                               🥇 #1 Rank
                             </span>
                           )}
                           {std.totalMaxMarks > 0 && std.classRank === 2 && (
-                            <span className="text-[10px] bg-slate-300/20 text-slate-300 font-bold px-2 py-0.5 rounded-full border border-slate-400/30 flex items-center gap-1">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-bold bg-slate-200 dark:bg-slate-700/60 text-slate-700 dark:text-slate-200 px-2.5 py-0.5 rounded-full border border-slate-300 dark:border-slate-600 whitespace-nowrap shrink-0 shadow-sm">
                               🥈 #2 Rank
                             </span>
                           )}
                           {std.totalMaxMarks > 0 && std.classRank === 3 && (
-                            <span className="text-[10px] bg-amber-700/20 text-amber-400 font-bold px-2 py-0.5 rounded-full border border-amber-600/30 flex items-center gap-1">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-bold bg-amber-700/15 text-amber-800 dark:text-amber-400 px-2.5 py-0.5 rounded-full border border-amber-600/30 whitespace-nowrap shrink-0 shadow-sm">
                               🥉 #3 Rank
                             </span>
                           )}
                         </div>
                       </td>
-                      <td className="py-3.5 px-3 text-xs text-slate-300">{std.fname}</td>
-                      <td className="py-3.5 px-3 text-xs text-slate-400 font-semibold">{std.className}</td>
-                      <td className="py-3.5 px-3 text-center font-mono">
-                        <span className="text-indigo-400 font-bold">{std.obtainedMarks}</span>
-                        <span className="text-slate-500"> / {std.totalMaxMarks}</span>
+                      <td className="py-3.5 px-3 text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap">{std.fname}</td>
+                      <td className="py-3.5 px-3 text-xs text-slate-500 dark:text-slate-400 font-semibold whitespace-nowrap">{std.className}</td>
+                      <td className="py-3.5 px-3 text-center font-mono whitespace-nowrap">
+                        <span className="text-indigo-600 dark:text-indigo-400 font-bold">{std.obtainedMarks}</span>
+                        <span className="text-slate-400 dark:text-slate-500"> / {std.totalMaxMarks}</span>
                       </td>
-                      <td className="py-3.5 px-3 text-right">
+                      <td className="py-3.5 px-3 text-right whitespace-nowrap">
                         <div className="flex items-center justify-end gap-2">
-                          <div className="w-20 bg-slate-800 h-2 rounded-full overflow-hidden hidden sm:block">
+                          <div className="w-20 bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden hidden sm:block">
                             <div 
                               className={`h-full rounded-full ${
-                                std.percentage >= 80 ? 'bg-emerald-400' :
-                                std.percentage >= 60 ? 'bg-indigo-400' :
-                                std.percentage >= 40 ? 'bg-amber-400' : 'bg-rose-400'
+                                std.percentage >= 80 ? 'bg-emerald-500' :
+                                std.percentage >= 60 ? 'bg-indigo-500' :
+                                std.percentage >= 40 ? 'bg-amber-500' : 'bg-rose-500'
                               }`}
                               style={{ width: `${std.percentage}%` }}
                             />
                           </div>
-                          <span className={`font-bold text-xs px-2.5 py-0.5 rounded-lg ${
-                            std.percentage >= 80 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                            std.percentage >= 60 ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' :
-                            std.percentage >= 40 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
-                            'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                          <span className={`font-bold text-xs px-2.5 py-0.5 rounded-lg whitespace-nowrap ${
+                            std.percentage >= 80 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' :
+                            std.percentage >= 60 ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20' :
+                            std.percentage >= 40 ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20' :
+                            'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
                           }`}>
                             {std.percentage}%
                           </span>
                         </div>
                       </td>
                       {isAdminLoggedIn && (
-                        <td className="py-3.5 px-3 text-center">
+                        <td className="py-3.5 px-3 text-center whitespace-nowrap">
                           <button
                             onClick={() => setSelectedReportStudent(studentObj)}
-                            className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold inline-flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                            className="px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-md shadow-indigo-600/25 transition-all cursor-pointer whitespace-nowrap"
                             title="Print Student Monthly Report Card"
                           >
-                            <Printer className="w-3.5 h-3.5" /> Report Card
+                            <Printer className="w-3.5 h-3.5" />
+                            <span>Report Card</span>
                           </button>
                         </td>
                       )}
