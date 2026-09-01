@@ -191,26 +191,26 @@ export default function Sidebar({
 
   // Sidebar content (Shared between Desktop Fixed Sidebar and Mobile Drawer)
   const renderSidebarContent = () => (
-    <div className="flex flex-col h-full justify-between select-none">
+    <div className="flex flex-col h-full max-h-screen justify-between select-none overflow-hidden">
       
-      {/* Top Brand Section */}
-      <div>
-        <div className="p-5 border-b border-slate-800/80 flex items-center justify-between">
+      {/* 1. Top Brand Section (Fixed Header) */}
+      <div className="shrink-0">
+        <div className="p-4 border-b border-slate-800/80 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25">
                 <GraduationCap className="w-5 h-5" />
               </div>
-              <span className="absolute -bottom-1 -right-1 flex h-3 w-3">
+              <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border-2 border-slate-900"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border-2 border-slate-900"></span>
               </span>
             </div>
             <div>
-              <h1 className="font-extrabold text-base tracking-tight text-white leading-tight bg-gradient-to-r from-white via-indigo-100 to-indigo-300 bg-clip-text text-transparent">
+              <h1 className="font-extrabold text-sm tracking-tight text-white leading-tight bg-gradient-to-r from-white via-indigo-100 to-indigo-300 bg-clip-text text-transparent">
                 Al-Zia Academy
               </h1>
-              <p className="text-[11px] font-medium text-slate-400 flex items-center gap-1.5 mt-0.5">
+              <p className="text-[10px] font-medium text-slate-400 flex items-center gap-1.5 mt-0.5">
                 <span>Science Portal</span>
                 <span className="w-1 h-1 rounded-full bg-slate-600 inline-block"></span>
                 <span className="text-indigo-400 font-semibold">Pro v2.5</span>
@@ -223,13 +223,13 @@ export default function Sidebar({
             onClick={() => setIsMobileMenuOpen(false)}
             className="lg:hidden p-1.5 text-slate-400 hover:text-white bg-slate-800/80 rounded-lg"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Cloud Status Pill */}
-        <div className="px-5 pt-3 pb-1">
-          <div className="flex items-center justify-between px-3 py-1.5 bg-slate-900/60 border border-slate-800 rounded-xl text-[11px]">
+        <div className="px-4 pt-2.5 pb-1">
+          <div className="flex items-center justify-between px-3 py-1 bg-slate-900/60 border border-slate-800 rounded-xl text-[11px]">
             <span className="flex items-center gap-1.5 text-slate-400 font-medium">
               <Database className="w-3.5 h-3.5 text-emerald-400" />
               <span>Cloud Sync</span>
@@ -240,77 +240,77 @@ export default function Sidebar({
             </span>
           </div>
         </div>
-
-        {/* Navigation Menus with Sections */}
-        <nav className="p-3 space-y-6 overflow-y-auto max-h-[calc(100vh-280px)] no-scrollbar">
-          {navSections.map((section, idx) => (
-            <div key={idx} className="space-y-1">
-              <div className="px-3 pb-1 text-[10px] font-bold tracking-wider uppercase text-slate-400">
-                {section.title}
-              </div>
-              {section.items.map((tab) => {
-                const Icon = tab.icon;
-                const isActive = activeTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => handleTabClick(tab.id)}
-                    className={`w-full group relative flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
-                      isActive
-                        ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30'
-                        : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`p-1.5 rounded-lg transition-colors ${
-                        isActive 
-                          ? 'bg-white/20 text-white' 
-                          : 'bg-slate-800/80 text-slate-400 group-hover:text-indigo-400 group-hover:bg-indigo-500/10'
-                      }`}>
-                        <Icon className="w-4 h-4" />
-                      </div>
-                      <span className="tracking-wide">{tab.label}</span>
-                    </div>
-
-                    {tab.badge && (
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
-                        isActive
-                          ? 'bg-white/20 text-white'
-                          : tab.isSpecial 
-                            ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-pink-300 border border-pink-500/30'
-                            : tab.badge === 'Admin'
-                              ? 'bg-amber-500/10 text-amber-300 border border-amber-500/20'
-                              : 'bg-slate-800 text-slate-400'
-                      }`}>
-                        {tab.badge}
-                      </span>
-                    )}
-
-                    {isActive && (
-                      <span className="absolute left-0 top-2 bottom-2 w-1 bg-white rounded-r-full"></span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          ))}
-        </nav>
       </div>
 
-      {/* Bottom User & Control Center */}
-      <div className="p-4 border-t border-slate-800/80 bg-slate-900/40 space-y-3">
+      {/* 2. Navigation Menus (Flexible Scrollable Area) */}
+      <nav className="flex-1 min-h-0 overflow-y-auto px-3 py-2 space-y-4 no-scrollbar">
+        {navSections.map((section, idx) => (
+          <div key={idx} className="space-y-1">
+            <div className="px-2.5 pb-1 text-[10px] font-bold tracking-wider uppercase text-slate-400">
+              {section.title}
+            </div>
+            {section.items.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabClick(tab.id)}
+                  className={`w-full group relative flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className={`p-1.5 rounded-lg transition-colors ${
+                      isActive 
+                        ? 'bg-white/20 text-white' 
+                        : 'bg-slate-800/80 text-slate-400 group-hover:text-indigo-400 group-hover:bg-indigo-500/10'
+                    }`}>
+                      <Icon className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="tracking-wide truncate">{tab.label}</span>
+                  </div>
+
+                  {tab.badge && (
+                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                      isActive
+                        ? 'bg-white/20 text-white'
+                        : tab.isSpecial 
+                          ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-pink-300 border border-pink-500/30'
+                          : tab.badge === 'Admin'
+                            ? 'bg-amber-500/10 text-amber-300 border border-amber-500/20'
+                            : 'bg-slate-800 text-slate-400'
+                    }`}>
+                      {tab.badge}
+                    </span>
+                  )}
+
+                  {isActive && (
+                    <span className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-white rounded-r-full"></span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        ))}
+      </nav>
+
+      {/* 3. Bottom User & Control Center (Fixed Shrink-0 Anchored at Bottom) */}
+      <div className="shrink-0 p-3 border-t border-slate-800/80 bg-slate-900/60 space-y-2.5">
         
         {/* Admin Status Card */}
         {isAdminLoggedIn ? (
-          <div className="p-3 bg-gradient-to-br from-emerald-950/40 to-slate-900 border border-emerald-500/30 rounded-xl space-y-2">
+          <div className="p-2.5 bg-gradient-to-br from-emerald-950/40 to-slate-900 border border-emerald-500/30 rounded-xl space-y-1.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-emerald-500/20 text-emerald-400 rounded-lg">
-                  <ShieldCheck className="w-4 h-4" />
+                <div className="p-1 bg-emerald-500/20 text-emerald-400 rounded-lg">
+                  <ShieldCheck className="w-3.5 h-3.5" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-emerald-400 leading-tight">Admin Mode Active</p>
-                  <p className="text-[10px] text-slate-400">Full Edit Permissions</p>
+                  <p className="text-[11px] font-bold text-emerald-400 leading-tight">Admin Mode Active</p>
+                  <p className="text-[9px] text-slate-400">Full Edit Permissions</p>
                 </div>
               </div>
               <span className="flex h-2 w-2 relative">
@@ -319,10 +319,10 @@ export default function Sidebar({
               </span>
             </div>
 
-            <div className="flex gap-2 pt-1">
+            <div className="flex gap-2 pt-0.5">
               <button
                 onClick={() => setIsChangePinModalOpen(true)}
-                className="flex-1 py-1.5 px-2 bg-slate-800/90 hover:bg-slate-750 text-slate-300 rounded-lg text-[11px] font-medium flex items-center justify-center gap-1 border border-slate-700 transition-colors"
+                className="flex-1 py-1 px-2 bg-slate-800/90 hover:bg-slate-750 text-slate-300 rounded-lg text-[10px] font-medium flex items-center justify-center gap-1 border border-slate-700 transition-colors cursor-pointer"
                 title="Change Admin Security PIN"
               >
                 <Settings className="w-3 h-3 text-indigo-400" />
@@ -330,26 +330,26 @@ export default function Sidebar({
               </button>
               <button
                 onClick={handleLogout}
-                className="flex-1 py-1.5 px-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 rounded-lg text-[11px] font-medium flex items-center justify-center gap-1 border border-rose-500/30 transition-colors"
+                className="flex-1 py-1 px-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 rounded-lg text-[10px] font-medium flex items-center justify-center gap-1 border border-rose-500/30 transition-colors cursor-pointer"
               >
                 Logout
               </button>
             </div>
           </div>
         ) : (
-          <div className="p-3 bg-slate-900/80 border border-slate-800 rounded-xl flex items-center justify-between">
+          <div className="p-2.5 bg-slate-900/80 border border-slate-800 rounded-xl flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-indigo-500/10 text-indigo-400 rounded-lg">
-                <Lock className="w-4 h-4" />
+              <div className="p-1 bg-indigo-500/10 text-indigo-400 rounded-lg">
+                <Lock className="w-3.5 h-3.5" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-200">Admin Controls</p>
-                <p className="text-[10px] text-slate-400">Staff Authentication</p>
+                <p className="text-[11px] font-bold text-slate-200">Admin Controls</p>
+                <p className="text-[9px] text-slate-400">Staff Authentication</p>
               </div>
             </div>
             <button
               onClick={() => setIsLoginModalOpen(true)}
-              className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-[11px] font-bold shadow-md shadow-indigo-600/30 transition-all hover:scale-105"
+              className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-[10px] font-bold shadow-md shadow-indigo-600/30 transition-all hover:scale-105 cursor-pointer"
             >
               Login
             </button>
@@ -357,10 +357,10 @@ export default function Sidebar({
         )}
 
         {/* Quick Toolbar (Theme Switcher + Online Users Counter) */}
-        <div className="flex items-center justify-between gap-2 pt-1">
+        <div className="flex items-center justify-between gap-2">
           <button
             onClick={toggleTheme}
-            className="flex-1 py-1.5 px-2.5 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 rounded-xl text-slate-300 hover:text-white transition-all text-xs font-medium flex items-center justify-center gap-1.5"
+            className="flex-1 py-1.5 px-2 bg-slate-800/80 hover:bg-slate-750 border border-slate-700/60 rounded-xl text-slate-300 hover:text-white transition-all text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer"
             title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
           >
             {theme === 'dark' ? (
@@ -378,7 +378,7 @@ export default function Sidebar({
 
           {isAdminLoggedIn && (
             <div 
-              className="px-2.5 py-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-[11px] font-bold flex items-center gap-1.5"
+              className="px-2 py-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-[10px] font-bold flex items-center gap-1.5 shrink-0"
               title={`Active: ${desktopCount} PC, ${mobileCount} Mobile`}
             >
               <span className="relative flex h-2 w-2">
@@ -450,14 +450,14 @@ export default function Sidebar({
             onClick={() => setIsMobileMenuOpen(false)}
             className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"
           />
-          <div className="relative w-72 max-w-[80vw] h-full bg-slate-950 border-r border-slate-800 shadow-2xl z-10 flex flex-col">
+          <div className="relative w-72 max-w-[80vw] h-full max-h-screen bg-slate-950 border-r border-slate-800 shadow-2xl z-10 flex flex-col overflow-hidden">
             {renderSidebarContent()}
           </div>
         </div>
       )}
 
       {/* 💻 Desktop Left Fixed/Sticky Sidebar */}
-      <aside className="hidden lg:flex flex-col w-72 shrink-0 h-screen sticky top-0 bg-slate-950/95 backdrop-blur-xl border-r border-slate-800/80 shadow-xl z-20 overflow-hidden">
+      <aside className="hidden lg:flex flex-col w-72 shrink-0 h-screen max-h-screen sticky top-0 bg-slate-950/95 backdrop-blur-xl border-r border-slate-800/80 shadow-xl z-20 overflow-hidden">
         {renderSidebarContent()}
       </aside>
 
