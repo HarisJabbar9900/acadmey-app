@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
 import AdminDashboard from './components/AdminDashboard';
 import Timetable from './components/Timetable';
 import FeeManager from './components/FeeManager';
@@ -363,20 +363,59 @@ export default function App() {
     syncWithFirestore(newData, 'aiRules');
   };
 
+  const tabDetails = {
+    dashboard: { 
+      title: isAdminLoggedIn ? 'Admin Management Dashboard' : 'Student & Academy Portal', 
+      subtitle: 'Complete overview of academy metrics, announcements, student attendance & honors' 
+    },
+    timetable: { 
+      title: 'Class Routine & Timetable', 
+      subtitle: 'Daily lecture schedules, class timings, teachers and subject routines' 
+    },
+    fees: { 
+      title: 'Tuition Fee Management', 
+      subtitle: 'Student fee collection records, monthly dues tracking & printable receipts' 
+    },
+    library: { 
+      title: 'Digital Study Material & Notes', 
+      subtitle: 'Downloadable PDF course books, past papers, assignments & syllabus' 
+    },
+    paper: { 
+      title: 'AI Examination Paper Generator', 
+      subtitle: 'Generate high-standard customized test papers and quizzes with AI' 
+    },
+    attendance: { 
+      title: 'Daily Attendance Register', 
+      subtitle: 'Class-wise student daily attendance marking, history and print reports' 
+    },
+    marks: { 
+      title: 'Tests & Marks Ledger', 
+      subtitle: 'Record test scores, generate student performance report cards & analytics' 
+    },
+    students: { 
+      title: 'Classes & Student Directory', 
+      subtitle: 'Manage classes, student enrollments, roll numbers and printable ID cards' 
+    },
+    feedback: { 
+      title: 'Feedback & Student Inquiries', 
+      subtitle: 'Parent and student questions, feedback messages, reviews and replies' 
+    }
+  };
+
   return (
     <div className={`min-h-screen transition-colors duration-300 ${
       theme === 'dark' ? 'bg-slate-950 text-slate-100 dark-mode' : 'bg-slate-100 text-slate-900 light-mode'
-    } flex flex-col font-sans selection:bg-indigo-500 selection:text-white`}>
+    } flex flex-col lg:flex-row font-sans selection:bg-indigo-500 selection:text-white`}>
       
       {/* Background Subtle Gradients */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 print:hidden">
-        <div className={`absolute -top-40 -left-40 w-96 h-96 ${theme === 'dark' ? 'bg-indigo-600/15' : 'bg-indigo-500/10'} rounded-full blur-3xl`} />
-        <div className={`absolute top-1/3 -right-40 w-96 h-96 ${theme === 'dark' ? 'bg-purple-600/15' : 'bg-purple-500/10'} rounded-full blur-3xl`} />
+        <div className={`absolute -top-40 -left-40 w-96 h-96 ${theme === 'dark' ? 'bg-indigo-600/10' : 'bg-indigo-500/10'} rounded-full blur-3xl`} />
+        <div className={`absolute top-1/3 -right-40 w-96 h-96 ${theme === 'dark' ? 'bg-purple-600/10' : 'bg-purple-500/10'} rounded-full blur-3xl`} />
       </div>
 
-      {/* Top Navbar */}
-      <div className="app-navbar-main print:hidden">
-        <Navbar
+      {/* Left Sidebar Navigation (Desktop Left Sidebar + Mobile Responsive Drawer) */}
+      <div className="print:hidden">
+        <Sidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           classes={data?.classes || []}
@@ -392,110 +431,155 @@ export default function App() {
         />
       </div>
 
-      {/* Main Content Area */}
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
-        {activeTab === 'dashboard' && (
-          <>
-            {/* Public Notice Board & Announcement Banner */}
-            <div className="print:hidden">
-              <NoticeBoard
-                data={data}
-                isAdminLoggedIn={isAdminLoggedIn}
-                onAddNotice={handleAddNotice}
-                onDeleteNotice={handleDeleteNotice}
-              />
+      {/* Main Content Column */}
+      <div className="flex-1 flex flex-col min-w-0 z-10 relative">
+
+        {/* 💻 Desktop Sleek Top Header Bar */}
+        <header className="hidden lg:flex items-center justify-between px-8 py-4 bg-slate-950/60 backdrop-blur-md border-b border-slate-800/80 print:hidden">
+          <div>
+            <div className="flex items-center gap-2 text-[11px] font-bold text-indigo-400 uppercase tracking-wider">
+              <span>Portal</span>
+              <span className="text-slate-600">/</span>
+              <span>{tabDetails[activeTab]?.title || 'Overview'}</span>
+            </div>
+            <h2 className="text-xl font-extrabold text-white tracking-tight mt-0.5">
+              {tabDetails[activeTab]?.title || 'Dashboard'}
+            </h2>
+            <p className="text-xs text-slate-400">
+              {tabDetails[activeTab]?.subtitle || 'Al-Zia Science Academy Online Management'}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* Real-time Date Indicator */}
+            <div className="px-3.5 py-1.5 bg-slate-900/80 border border-slate-800 rounded-xl text-xs flex items-center gap-2 shadow-sm">
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="text-slate-300 font-medium">
+                {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
+              </span>
             </div>
 
-            <AdminDashboard
+            {isAdminLoggedIn ? (
+              <span className="px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">
+                🛡️ Admin Session Active
+              </span>
+            ) : (
+              <span className="px-3 py-1.5 bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 rounded-xl text-xs font-semibold">
+                🎓 Student & Guest View
+              </span>
+            )}
+          </div>
+        </header>
+
+        {/* Main Content Body */}
+        <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+          {activeTab === 'dashboard' && (
+            <>
+              {/* Public Notice Board & Announcement Banner */}
+              <div className="print:hidden">
+                <NoticeBoard
+                  data={data}
+                  isAdminLoggedIn={isAdminLoggedIn}
+                  onAddNotice={handleAddNotice}
+                  onDeleteNotice={handleDeleteNotice}
+                />
+              </div>
+
+              <AdminDashboard
+                data={data}
+                selectedClassId={selectedClassId}
+                isAdminLoggedIn={isAdminLoggedIn}
+                onlineUsers={onlineUsers}
+              />
+            </>
+          )}
+
+          {activeTab === 'timetable' && (
+            <Timetable
+              timetable={data.timetable || []}
+              selectedClassId={selectedClassId}
+              isAdminLoggedIn={isAdminLoggedIn}
+              onSaveTimetable={handleSaveTimetable}
+            />
+          )}
+
+          {activeTab === 'fees' && (
+            <FeeManager
               data={data}
               selectedClassId={selectedClassId}
               isAdminLoggedIn={isAdminLoggedIn}
-              onlineUsers={onlineUsers}
+              onSaveFeeRecord={handleSaveFeeRecord}
             />
-          </>
-        )}
+          )}
 
-        {activeTab === 'timetable' && (
-          <Timetable
-            timetable={data.timetable || []}
-            selectedClassId={selectedClassId}
-            isAdminLoggedIn={isAdminLoggedIn}
-            onSaveTimetable={handleSaveTimetable}
-          />
-        )}
+          {activeTab === 'library' && (
+            <StudyMaterial
+              data={data}
+              selectedClassId={selectedClassId}
+              isAdminLoggedIn={isAdminLoggedIn}
+              onAddResource={handleAddResource}
+              onUpdateResource={handleUpdateResource}
+              onDeleteResource={handleDeleteResource}
+            />
+          )}
 
-        {activeTab === 'fees' && (
-          <FeeManager
-            data={data}
-            selectedClassId={selectedClassId}
-            isAdminLoggedIn={isAdminLoggedIn}
-            onSaveFeeRecord={handleSaveFeeRecord}
-          />
-        )}
+          {activeTab === 'paper' && (
+            <TestPaperGenerator classes={data.classes || []} />
+          )}
 
-        {activeTab === 'library' && (
-          <StudyMaterial
-            data={data}
-            selectedClassId={selectedClassId}
-            isAdminLoggedIn={isAdminLoggedIn}
-            onAddResource={handleAddResource}
-            onUpdateResource={handleUpdateResource}
-            onDeleteResource={handleDeleteResource}
-          />
-        )}
+          {activeTab === 'attendance' && (
+            <AttendanceSheet
+              data={data}
+              selectedClassId={selectedClassId}
+              isAdminLoggedIn={isAdminLoggedIn}
+              onSaveAttendance={handleSaveAttendance}
+            />
+          )}
 
-        {activeTab === 'paper' && (
-          <TestPaperGenerator classes={data.classes || []} />
-        )}
+          {activeTab === 'marks' && (
+            <MarksLedger
+              data={data}
+              selectedClassId={selectedClassId}
+              isAdminLoggedIn={isAdminLoggedIn}
+              onAddTest={handleAddTest}
+              onDeleteTest={handleDeleteTest}
+            />
+          )}
 
-        {activeTab === 'attendance' && (
-          <AttendanceSheet
-            data={data}
-            selectedClassId={selectedClassId}
-            isAdminLoggedIn={isAdminLoggedIn}
-            onSaveAttendance={handleSaveAttendance}
-          />
-        )}
+          {activeTab === 'students' && (
+            <ClassStudentManager
+              data={data}
+              selectedClassId={selectedClassId}
+              isAdminLoggedIn={isAdminLoggedIn}
+              onAddClass={handleAddClass}
+              onUpdateClass={handleUpdateClass}
+              onDeleteClass={handleDeleteClass}
+              onAddStudent={handleAddStudent}
+              onUpdateStudent={handleUpdateStudent}
+              onDeleteStudent={handleDeleteStudent}
+            />
+          )}
 
-        {activeTab === 'marks' && (
-          <MarksLedger
-            data={data}
-            selectedClassId={selectedClassId}
-            isAdminLoggedIn={isAdminLoggedIn}
-            onAddTest={handleAddTest}
-            onDeleteTest={handleDeleteTest}
-          />
-        )}
+          {activeTab === 'feedback' && (
+            <StudentFeedback
+              data={data}
+              isAdminLoggedIn={isAdminLoggedIn}
+              onAddFeedback={handleAddFeedback}
+              onDeleteFeedback={handleDeleteFeedback}
+              onToggleFeedbackStatus={handleToggleFeedbackStatus}
+            />
+          )}
+        </main>
 
-        {activeTab === 'students' && (
-          <ClassStudentManager
-            data={data}
-            selectedClassId={selectedClassId}
-            isAdminLoggedIn={isAdminLoggedIn}
-            onAddClass={handleAddClass}
-            onUpdateClass={handleUpdateClass}
-            onDeleteClass={handleDeleteClass}
-            onAddStudent={handleAddStudent}
-            onUpdateStudent={handleUpdateStudent}
-            onDeleteStudent={handleDeleteStudent}
-          />
-        )}
+        {/* Footer */}
+        <footer className="app-footer-main relative border-t border-slate-800/80 bg-slate-950/60 backdrop-blur-md px-6 py-4 text-center text-slate-500 text-xs print:hidden">
+          Al-Zia Science Academy • Online Management Portal
+        </footer>
 
-        {activeTab === 'feedback' && (
-          <StudentFeedback
-            data={data}
-            isAdminLoggedIn={isAdminLoggedIn}
-            onAddFeedback={handleAddFeedback}
-            onDeleteFeedback={handleDeleteFeedback}
-            onToggleFeedbackStatus={handleToggleFeedbackStatus}
-          />
-        )}
-      </main>
-
-      {/* Footer */}
-      <footer className="app-footer-main relative z-10 border-t border-slate-800/80 bg-slate-950/60 backdrop-blur-md px-6 py-4 text-center text-slate-500 text-xs print:hidden">
-        Al-Zia Science Academy • Online Management Portal
-      </footer>
+      </div>
 
       {/* Floating AI Assistant Chatbot Widget */}
       <AiChatbot 
