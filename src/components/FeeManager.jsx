@@ -22,6 +22,7 @@ import {
   Download,
   Loader2,
   GraduationCap,
+  MessageCircle,
   X
 } from 'lucide-react';
 
@@ -427,7 +428,7 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                 <th className="py-3.5 px-4">Roll #</th>
                 <th className="py-3.5 px-4">Student Name</th>
                 <th className="py-3.5 px-4">Father Name & Contact</th>
-                <th className="py-3.5 px-4">Class</th>
+                <th className="py-3.5 px-4 whitespace-nowrap min-w-[110px]">Class</th>
                 <th className="py-3.5 px-4 text-center">Status & Date</th>
                 <th className="py-3.5 px-4 text-center">Actions</th>
               </tr>
@@ -444,25 +445,25 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                     <tr key={student.id} className="hover:bg-slate-800/30 transition-colors">
                       <td className="py-3.5 px-4 font-mono text-xs text-indigo-400 font-bold">#{student.rollNo}</td>
                       
-                      <td className="py-3.5 px-4 font-bold text-white">
+                      <td className="py-3.5 px-4 font-bold text-white whitespace-nowrap">
                         <div>{student.name}</div>
                       </td>
 
-                      <td className="py-3.5 px-4 text-xs">
+                      <td className="py-3.5 px-4 text-xs whitespace-nowrap">
                         <div className="text-slate-300 font-medium">{student.fname || 'N/A'}</div>
                         <div className="text-slate-500 font-mono flex items-center gap-1 mt-0.5">
                           <Phone className="w-3 h-3" /> {student.fatherNumber || 'N/A'}
                         </div>
                       </td>
 
-                      <td className="py-3.5 px-4">
-                        <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 text-indigo-300 border border-slate-700">
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 whitespace-nowrap shadow-sm">
                           Class {studentClassObj?.name || 'Unassigned'}
                         </span>
                       </td>
 
                       {/* Status & Date */}
-                      <td className="py-3.5 px-4 text-center">
+                      <td className="py-3.5 px-4 text-center whitespace-nowrap">
                         {isPaid ? (
                           <div className="flex flex-col items-center">
                             <span className="px-3 py-1 rounded-xl text-xs font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5 shadow-sm">
@@ -480,23 +481,23 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                       </td>
 
                       {/* Actions */}
-                      <td className="py-3.5 px-4 text-center">
+                      <td className="py-3.5 px-4 text-center whitespace-nowrap">
                         <div className="flex items-center justify-center gap-2">
                           {isAdminLoggedIn ? (
                             <>
                               {isPaid ? (
                                 <button
                                   onClick={() => handleMarkUnpaid(student)}
-                                  className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded-xl text-xs font-bold flex items-center gap-1 transition-colors"
+                                  className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700/80 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer hover:border-amber-500/30"
                                   title="Mark as Unpaid"
                                 >
                                   <RotateCcw className="w-3.5 h-3.5" /> Mark Unpaid
                                 </button>
                               ) : (
-                                <div className="flex items-center gap-1.5">
+                                <div className="flex items-center gap-2">
                                   <button
                                     onClick={() => handleOpenPaymentModal(student)}
-                                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-md shadow-emerald-600/30 transition-all cursor-pointer"
+                                    className="px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/25 active:scale-95 transition-all cursor-pointer"
                                   >
                                     <Check className="w-3.5 h-3.5" /> Mark Paid
                                   </button>
@@ -522,10 +523,10 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                                       const msg = `Respected Parent, Monthly fee for *${student.name}* (Roll #${student.rollNo}, Class ${studentClassObj?.name}) for the month of *${monthName}* is PENDING. Kindly deposit at your earliest convenience. - Al-Zia Science Academy`;
                                       window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                                     }}
-                                    className="px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm transition-all cursor-pointer"
+                                    className="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 hover:border-emerald-500/50 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
                                     title="Send WhatsApp Fee Pending Reminder to Parent"
                                   >
-                                    💬 WA Reminder
+                                    <MessageCircle className="w-3.5 h-3.5" /> WA Reminder
                                   </button>
                                 </div>
                               )}
