@@ -230,18 +230,18 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
       <div className="glass-panel glow-accent-amber p-6 rounded-2xl shadow-xl space-y-4 overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-500/20 pb-3">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
-              <Trophy className="w-4 h-4 text-amber-400" /> Class Wall of Honor
+            <div className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
+              <Trophy className="w-4 h-4 text-amber-500 dark:text-amber-400" /> Class Wall of Honor
             </div>
-            <h3 className="text-xl font-extrabold text-white flex items-center gap-2">
+            <h3 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
               🏆 Class-Wise Top High Scorers
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Highest scoring student in each class with overall combined marks & percentage.
             </p>
           </div>
 
-          <span className="px-3 py-1 bg-amber-500/10 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-bold font-mono">
+          <span className="px-3 py-1 bg-amber-100 dark:bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-500/30 rounded-xl text-xs font-bold font-mono shadow-xs">
             {classTopScorers.filter(c => c.topScorer).length} Top Achievers
           </span>
         </div>
@@ -253,7 +253,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
             return (
               <div
                 key={c.classId}
-                className="flex-1 min-w-[210px] max-w-[270px] glass-card p-4 rounded-2xl flex flex-col justify-between transition-all group shrink-0 sm:shrink"
+                className="flex-1 min-w-[210px] max-w-[270px] glass-card p-4 rounded-2xl flex flex-col justify-between transition-all group shrink-0 sm:shrink shadow-sm"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2">
@@ -261,7 +261,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
                       Class {c.className}
                     </span>
                     {scorer && (
-                      <span className="text-[11px] font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20">
+                      <span className="text-[11px] font-mono font-bold text-amber-800 dark:text-amber-400 bg-amber-100 dark:bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-300 dark:border-amber-500/20 shadow-xs">
                         🏆 #{scorer.rollNo}
                       </span>
                     )}
@@ -269,49 +269,49 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
 
                   {scorer ? (
                     <div className="space-y-2 mt-2">
-                      <h4 className="font-extrabold text-white text-sm group-hover:text-amber-300 transition-colors leading-tight">
+                      <h4 className="font-extrabold text-slate-900 dark:text-white text-sm group-hover:text-amber-600 dark:group-hover:text-amber-300 transition-colors leading-tight">
                         {scorer.studentName}
                       </h4>
-                      <p className="text-[11px] text-slate-400">
+                      <p className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">
                         {scorer.fname}
                       </p>
 
-                      <div className="bg-indigo-500/10 p-2.5 rounded-xl border border-indigo-500/20 space-y-1">
-                        <div className="text-[11px] font-bold text-indigo-300 flex items-center justify-between">
+                      <div className="bg-indigo-50 dark:bg-indigo-500/10 p-2.5 rounded-xl border border-indigo-200 dark:border-indigo-500/20 space-y-1 shadow-xs">
+                        <div className="text-[11px] font-bold text-indigo-700 dark:text-indigo-300 flex items-center justify-between">
                           <span>Overall Score:</span>
-                          <span className="text-emerald-400 font-bold font-mono">{scorer.obtainedMarks} / {scorer.maxMarks}</span>
+                          <span className="text-emerald-600 dark:text-emerald-400 font-bold font-mono">{scorer.obtainedMarks} / {scorer.maxMarks}</span>
                         </div>
-                        <div className="text-[10px] text-slate-400 flex items-center justify-between">
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
                           <span>Tests Evaluated:</span>
-                          <span className="text-slate-300 font-semibold">{scorer.testsTaken} Subject(s)</span>
+                          <span className="text-slate-700 dark:text-slate-300 font-semibold">{scorer.testsTaken} Subject(s)</span>
                         </div>
                       </div>
                     </div>
                   ) : (
-                    <div className="py-6 text-center text-slate-500 text-xs italic">
-                      No test marks recorded for Class {c.className} yet.
+                    <div className="py-6 text-center text-slate-400 text-xs italic">
+                      No test records yet
                     </div>
                   )}
                 </div>
 
                 {scorer && (
-                  <div className="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between gap-2 text-xs">
+                  <div className="mt-4 pt-3 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between gap-2">
                     {isAdminLoggedIn ? (
                       <button
                         onClick={() => setSelectedCertificateScorer(scorer)}
-                        className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all cursor-pointer hover:shadow-amber-500/30"
+                        className="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 active:scale-95 text-slate-950 rounded-xl text-xs font-black inline-flex items-center gap-1.5 shadow-md shadow-amber-500/25 transition-all cursor-pointer"
                         title="Generate & Print Official Class Topper Certificate of Excellence"
                       >
                         <Award className="w-3.5 h-3.5 text-slate-950 shrink-0" />
                         <span>Certificate</span>
                       </button>
                     ) : (
-                      <span className="text-xs font-mono text-amber-400 font-bold flex items-center gap-1">
-                        <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                      <span className="text-xs font-mono text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1">
+                        <Trophy className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
                         <span>1st Position</span>
                       </span>
                     )}
-                    <span className="font-mono font-extrabold text-emerald-400 text-xs bg-emerald-500/10 px-2.5 py-1 rounded-xl border border-emerald-500/20 flex items-center">
+                    <span className="font-mono font-extrabold text-emerald-700 dark:text-emerald-400 text-xs bg-emerald-100 dark:bg-emerald-500/10 px-2.5 py-1 rounded-xl border border-emerald-300 dark:border-emerald-500/20 flex items-center shadow-xs">
                       {scorer.percentage}%
                     </span>
                   </div>
@@ -325,13 +325,13 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
       {/* 2. Dashboard Top Header & Month Filter */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl overflow-hidden">
         <div>
-          <div className="flex items-center gap-2 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-1">
+          <div className="flex items-center gap-2 text-indigo-500 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
             <Sparkles className="w-4 h-4" /> {isAdminLoggedIn ? 'Admin Management & Analytics' : 'Al-Zia Academy Portal'}
           </div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
             {isAdminLoggedIn ? 'Admin Dashboard' : 'Academy Dashboard'}
           </h2>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
             {isAdminLoggedIn 
               ? 'Track student attendance, fee collections, test score accumulations, and overall class performance.'
               : 'Welcome to Al-Zia Science Academy portal. View latest announcement notices, class wall of honor, and monthly performance.'}
@@ -339,14 +339,14 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
         </div>
 
         {/* Month Picker */}
-        <div className="flex items-center gap-3 bg-slate-800/90 border border-slate-700/80 rounded-xl px-4 py-2 shadow-sm">
-          <Calendar className="w-4 h-4 text-indigo-400" />
-          <span className="text-xs text-slate-400 font-medium">Month:</span>
+        <div className="flex items-center gap-3 bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl px-4 py-2 shadow-sm">
+          <Calendar className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-bold">Month:</span>
           <input
             type="month"
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="bg-transparent text-sm font-semibold text-white focus:outline-none cursor-pointer"
+            className="bg-transparent text-sm font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer"
           />
         </div>
       </div>

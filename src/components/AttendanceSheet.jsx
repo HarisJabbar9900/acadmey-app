@@ -91,13 +91,13 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
         <div className="flex flex-wrap items-center gap-3">
           
           {/* Date Picker */}
-          <div className="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2">
-            <Calendar className="w-4 h-4 text-indigo-400" />
+          <div className="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 shadow-sm">
+            <Calendar className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="bg-transparent text-sm font-semibold text-white focus:outline-none cursor-pointer"
+              className="bg-transparent text-sm font-bold text-slate-800 dark:text-white focus:outline-none cursor-pointer"
             />
           </div>
 
@@ -106,22 +106,22 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
             <>
               <button
                 onClick={handleMarkAllPresent}
-                className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                className="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/25 active:scale-95 transition-all cursor-pointer"
               >
-                <UserCheck className="w-4 h-4 text-emerald-400" />
+                <UserCheck className="w-4 h-4 text-white" />
                 Mark All Present
               </button>
 
               <button
                 onClick={handleSave}
-                className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition-colors"
+                className="px-5 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-sm font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/30 active:scale-95 transition-all cursor-pointer"
               >
                 <Save className="w-4 h-4" />
                 Save Attendance
               </button>
             </>
           ) : (
-            <div className="px-3.5 py-2 bg-slate-800/80 border border-slate-700 text-slate-400 rounded-xl text-xs font-medium flex items-center gap-2">
+            <div className="px-3.5 py-2 bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-sm">
               <span>👁️ Read Only</span>
               <span className="text-[10px] text-slate-500">(Admin PIN required to mark attendance)</span>
             </div>

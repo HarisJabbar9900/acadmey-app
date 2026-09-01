@@ -488,7 +488,7 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                               {isPaid ? (
                                 <button
                                   onClick={() => handleMarkUnpaid(student)}
-                                  className="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-500 dark:bg-slate-800 dark:hover:bg-slate-700 text-amber-800 hover:text-slate-950 dark:text-amber-400 border border-amber-200 hover:border-amber-400 dark:border-slate-700/80 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
+                                  className="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-amber-500/20 active:scale-95 transition-all cursor-pointer"
                                   title="Mark as Unpaid"
                                 >
                                   <RotateCcw className="w-3.5 h-3.5" /> Mark Unpaid
@@ -523,7 +523,7 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                                       const msg = `Respected Parent, Monthly fee for *${student.name}* (Roll #${student.rollNo}, Class ${studentClassObj?.name}) for the month of *${monthName}* is PENDING. Kindly deposit at your earliest convenience. - Al-Zia Science Academy`;
                                       window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                                     }}
-                                    className="px-3.5 py-1.5 bg-emerald-50 hover:bg-emerald-600 dark:bg-emerald-500/10 dark:hover:bg-emerald-500/20 text-emerald-700 hover:text-white dark:text-emerald-400 dark:hover:text-emerald-300 border border-emerald-200 hover:border-emerald-600 dark:border-emerald-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
+                                    className="px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/25 active:scale-95 transition-all cursor-pointer"
                                     title="Send WhatsApp Fee Pending Reminder to Parent"
                                   >
                                     <MessageCircle className="w-3.5 h-3.5" /> WA Reminder
@@ -538,7 +538,7 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                           {/* Print Fee Slip */}
                           <button
                             onClick={() => setReceiptStudent({ student, feeRecord })}
-                            className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-xl transition-colors cursor-pointer"
+                            className="p-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
                             title="Print Fee Receipt Slip"
                           >
                             <Printer className="w-4 h-4" />

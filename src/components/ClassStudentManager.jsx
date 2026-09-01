@@ -413,7 +413,7 @@ export default function ClassStudentManager({
             <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => setIsClassModalOpen(true)}
-                className="px-3.5 py-1.5 bg-purple-50 hover:bg-purple-600 dark:bg-purple-950/40 dark:hover:bg-purple-600 text-purple-700 hover:text-white dark:text-purple-300 dark:hover:text-white border border-purple-200 hover:border-purple-600 dark:border-purple-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer whitespace-nowrap"
+                className="px-3.5 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-md shadow-purple-600/25 active:scale-95 cursor-pointer whitespace-nowrap"
               >
                 <FolderPlus className="w-3.5 h-3.5" />
                 + Add Class
@@ -421,7 +421,7 @@ export default function ClassStudentManager({
 
               <button
                 onClick={() => setIsManageClassesModalOpen(true)}
-                className="px-3.5 py-1.5 bg-rose-50 hover:bg-rose-600 dark:bg-rose-950/40 dark:hover:bg-rose-600 text-rose-700 hover:text-white dark:text-rose-300 dark:hover:text-white border border-rose-200 hover:border-rose-600 dark:border-rose-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer whitespace-nowrap"
+                className="px-3.5 py-1.5 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-md shadow-rose-600/25 active:scale-95 cursor-pointer whitespace-nowrap"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 ⚙️ Edit / Delete Classes
@@ -626,7 +626,7 @@ export default function ClassStudentManager({
                             {/* Student ID Card Button (Admin Only) */}
                             <button
                               onClick={() => setSelectedIdCardStudent(student)}
-                              className="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-500 dark:bg-amber-500/15 dark:hover:bg-amber-500/25 active:scale-95 text-amber-800 hover:text-slate-950 dark:text-amber-300 dark:hover:text-amber-200 border border-amber-200 hover:border-amber-400 dark:border-amber-500/30 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition-all whitespace-nowrap cursor-pointer"
+                              className="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 active:scale-95 text-slate-950 rounded-xl text-xs font-black inline-flex items-center gap-1.5 shadow-md shadow-amber-500/25 transition-all whitespace-nowrap cursor-pointer"
                               title="Generate Student Identity Card"
                             >
                               <Contact className="w-3.5 h-3.5" /> ID Card
@@ -643,7 +643,7 @@ export default function ClassStudentManager({
 
                             <button
                               onClick={() => handleOpenEdit(student)}
-                              className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-xl transition-all cursor-pointer"
+                              className="p-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
                               title="Edit Student"
                             >
                               <Edit3 className="w-4 h-4" />
@@ -652,7 +652,7 @@ export default function ClassStudentManager({
                               onClick={() => {
                                 onDeleteStudent(student.id);
                               }}
-                              className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-all cursor-pointer"
+                              className="p-1.5 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-300 hover:bg-rose-600 hover:text-white dark:hover:bg-rose-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
                               title="Delete Student"
                             >
                               <Trash2 className="w-4 h-4" />
