@@ -234,56 +234,56 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         
         {/* Card 1: Grand Total Academy Collected Revenue */}
-        <div className="bg-slate-900/70 border border-emerald-500/30 p-5 rounded-2xl shadow-xl flex flex-col justify-between">
+        <div className="glass-card glow-accent-emerald p-5 rounded-2xl shadow-xl flex flex-col justify-between overflow-hidden">
           <div className="flex items-center justify-between mb-3">
             <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Total Academy Collected</span>
             <div className="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl">
               <DollarSign className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-emerald-400">Rs. {grandTotalCollected.toLocaleString()}</div>
+          <div className="text-3xl font-extrabold text-emerald-400 font-mono">Rs. {grandTotalCollected.toLocaleString()}</div>
           <p className="text-xs text-slate-400 mt-1 flex items-center gap-1 font-mono">
             <span>Collected in {selectedMonth}</span>
           </p>
         </div>
 
         {/* Card 2: Total Pending Fee */}
-        <div className="bg-slate-900/70 border border-rose-500/30 p-5 rounded-2xl shadow-xl flex flex-col justify-between">
+        <div className="glass-card p-5 rounded-2xl shadow-xl flex flex-col justify-between overflow-hidden border-rose-500/30">
           <div className="flex items-center justify-between mb-3">
             <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Total Pending Fee</span>
             <div className="p-2.5 bg-rose-500/10 text-rose-400 rounded-xl">
               <Clock className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-rose-400">Rs. {grandTotalPending.toLocaleString()}</div>
+          <div className="text-3xl font-extrabold text-rose-400 font-mono">Rs. {grandTotalPending.toLocaleString()}</div>
           <p className="text-xs text-slate-400 mt-1 flex items-center gap-1 font-mono">
             <span>Remaining Unpaid Amount</span>
           </p>
         </div>
 
         {/* Card 3: Paid Students Count */}
-        <div className="bg-slate-900/70 border border-slate-800 p-5 rounded-2xl shadow-xl flex flex-col justify-between">
+        <div className="glass-card glow-accent-indigo p-5 rounded-2xl shadow-xl flex flex-col justify-between overflow-hidden">
           <div className="flex items-center justify-between mb-3">
             <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Paid Students</span>
             <div className="p-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl">
               <UserCheck className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-white">{grandTotalPaidCount}</div>
+          <div className="text-3xl font-extrabold text-white font-mono">{grandTotalPaidCount}</div>
           <p className="text-xs text-emerald-400 font-semibold mt-1">
             {data.students.length > 0 ? Math.round((grandTotalPaidCount / data.students.length) * 100) : 0}% Fee Recovery Rate
           </p>
         </div>
 
         {/* Card 4: Unpaid Students Count */}
-        <div className="bg-slate-900/70 border border-slate-800 p-5 rounded-2xl shadow-xl flex flex-col justify-between">
+        <div className="glass-card glow-accent-amber p-5 rounded-2xl shadow-xl flex flex-col justify-between overflow-hidden">
           <div className="flex items-center justify-between mb-3">
             <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Unpaid Students</span>
             <div className="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl">
               <XCircle className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-rose-400">{grandTotalUnpaidCount}</div>
+          <div className="text-3xl font-extrabold text-rose-400 font-mono">{grandTotalUnpaidCount}</div>
           <p className="text-xs text-slate-400 mt-1">Students awaiting fee deposit</p>
         </div>
 
@@ -301,15 +301,15 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
             <div
               key={c.classId}
               onClick={() => setActiveClassFilter(c.classId)}
-              className={`p-4 rounded-xl border transition-all cursor-pointer ${
+              className={`p-4 rounded-2xl transition-all cursor-pointer ${
                 activeClassFilter === c.classId
-                  ? 'bg-indigo-950/60 border-indigo-500 shadow-lg shadow-indigo-500/10 scale-105'
-                  : 'bg-slate-900/80 border-slate-800 hover:border-slate-700'
+                  ? 'bg-indigo-950/70 border border-indigo-500 shadow-xl shadow-indigo-500/15 scale-[1.02]'
+                  : 'glass-card hover:border-indigo-500/40'
               }`}
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="font-extrabold text-sm text-white">Class {c.className}</span>
-                <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-mono">
+                <span className="text-[10px] bg-slate-800 text-slate-300 px-2.5 py-0.5 rounded-full font-mono font-bold">
                   {c.totalStudents} stds
                 </span>
               </div>
@@ -410,8 +410,8 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
       </div>
 
       {/* Main Student Fee Ledger Table */}
-      <div className="bg-slate-900/60 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-slate-800 bg-slate-900/90 flex items-center justify-between">
+      <div className="glass-panel glow-accent-indigo rounded-2xl overflow-hidden shadow-xl">
+        <div className="p-4 border-b border-slate-800/80 bg-slate-900/90 flex items-center justify-between">
           <div>
             <h3 className="font-bold text-white text-base flex items-center gap-2">
               <CreditCard className="w-5 h-5 text-indigo-400" />

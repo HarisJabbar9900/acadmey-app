@@ -166,27 +166,27 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
 
       {/* Daily Live Stats Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-3 text-center">
-          <span className="text-xs text-slate-400 block font-medium">Total Students</span>
-          <span className="text-xl font-bold text-white mt-1 block">{totalCount}</span>
+        <div className="glass-card p-3.5 text-center rounded-2xl">
+          <span className="text-xs text-slate-400 block font-semibold">Total Students</span>
+          <span className="text-xl font-extrabold text-white mt-1 block font-mono">{totalCount}</span>
         </div>
-        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 text-center">
-          <span className="text-xs text-emerald-400 block font-medium">Present</span>
-          <span className="text-xl font-bold text-emerald-300 mt-1 block">{presentCount}</span>
+        <div className="glass-card glow-accent-emerald p-3.5 text-center rounded-2xl border-emerald-500/30 overflow-hidden">
+          <span className="text-xs text-emerald-400 block font-semibold">Present</span>
+          <span className="text-xl font-extrabold text-emerald-300 mt-1 block font-mono">{presentCount}</span>
         </div>
-        <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-3 text-center">
-          <span className="text-xs text-rose-400 block font-medium">Absent</span>
-          <span className="text-xl font-bold text-rose-300 mt-1 block">{absentCount}</span>
+        <div className="glass-card p-3.5 text-center rounded-2xl border-rose-500/30 overflow-hidden">
+          <span className="text-xs text-rose-400 block font-semibold">Absent</span>
+          <span className="text-xl font-extrabold text-rose-300 mt-1 block font-mono">{absentCount}</span>
         </div>
-        <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 text-center">
-          <span className="text-xs text-amber-400 block font-medium">Late</span>
-          <span className="text-xl font-bold text-amber-300 mt-1 block">{lateCount}</span>
+        <div className="glass-card glow-accent-amber p-3.5 text-center rounded-2xl border-amber-500/30 overflow-hidden">
+          <span className="text-xs text-amber-400 block font-semibold">Late</span>
+          <span className="text-xl font-extrabold text-amber-300 mt-1 block font-mono">{lateCount}</span>
         </div>
       </div>
 
       {/* Class Attendance Register Table */}
-      <div className="bg-slate-900/60 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-slate-800 bg-slate-900/90 flex items-center justify-between">
+      <div className="glass-panel glow-accent-indigo rounded-2xl overflow-hidden shadow-xl">
+        <div className="p-4 border-b border-slate-800/80 bg-slate-900/90 flex items-center justify-between">
           <span className="font-bold text-white text-base flex items-center gap-2">
             <ClipboardCheck className="w-5 h-5 text-indigo-400" />
             Class {currentClass?.name || ''} Student Roster

@@ -227,7 +227,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
       <div className="dashboard-layout-main space-y-8 print:hidden">
 
       {/* 1. 🏆 Class-Wise Top High Scorers (Wall of Honor - RIGHT BELOW ANNOUNCEMENT BANNER) */}
-      <div className="bg-gradient-to-r from-amber-950/20 via-slate-900 to-indigo-950/20 border border-amber-500/30 p-6 rounded-2xl shadow-xl space-y-4">
+      <div className="glass-panel glow-accent-amber p-6 rounded-2xl shadow-xl space-y-4 overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-500/20 pb-3">
           <div>
             <div className="inline-flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
@@ -253,7 +253,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
             return (
               <div
                 key={c.classId}
-                className="flex-1 min-w-[210px] max-w-[270px] bg-slate-900/90 border border-slate-800 hover:border-amber-500/40 p-4 rounded-2xl shadow-lg flex flex-col justify-between transition-all group shrink-0 sm:shrink"
+                className="flex-1 min-w-[210px] max-w-[270px] glass-card p-4 rounded-2xl flex flex-col justify-between transition-all group shrink-0 sm:shrink"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2">
@@ -323,7 +323,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
       </div>
 
       {/* 2. Dashboard Top Header & Month Filter */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl overflow-hidden">
         <div>
           <div className="flex items-center gap-2 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-1">
             <Sparkles className="w-4 h-4" /> {isAdminLoggedIn ? 'Admin Management & Analytics' : 'Al-Zia Academy Portal'}
@@ -473,8 +473,8 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
       )}
 
       {/* 4. 📋 Monthly Student Scores Accumulation Ledger (Full Width - 100% Space) */}
-      <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 shadow-xl w-full">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 mb-4 gap-2">
+      <div className="glass-panel glow-accent-indigo rounded-2xl p-6 shadow-xl w-full overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800/80 mb-4 gap-2">
           <div>
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Award className="w-5 h-5 text-indigo-400" />
@@ -482,7 +482,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
             </h3>
             <p className="text-xs text-slate-400">Total obtained marks vs max available marks for {formattedMonthName}</p>
           </div>
-          <span className="text-xs font-semibold px-3.5 py-1 bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 rounded-full w-fit">
+          <span className="text-xs font-semibold px-3.5 py-1 bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 rounded-full w-fit shadow-sm">
             {monthlyTests.length} Subject Test(s) Evaluated
           </span>
         </div>
@@ -492,7 +492,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
           {filteredClasses.map((cls) => {
             const classTopper = studentPerformance.find(s => s.className === cls.name && s.classRank === 1 && s.totalMaxMarks > 0);
             return (
-              <div key={cls.id} className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm relative overflow-hidden">
+              <div key={cls.id} className="glass-card border-amber-500/30 hover:border-amber-500/60 rounded-2xl p-3.5 flex flex-col justify-between shadow-sm relative overflow-hidden">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-extrabold uppercase text-amber-400 font-mono tracking-wider">
                     Class {cls.name} 1st Rank
@@ -612,8 +612,8 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
       </div>
 
       {/* 5. 📈 Performance Bar Chart (Full Width Below Ledger) */}
-      <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 shadow-xl w-full">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 mb-6 gap-2">
+      <div className="glass-panel glow-accent-indigo rounded-2xl p-6 shadow-xl w-full overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800/80 mb-6 gap-2">
           <div>
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-indigo-400" />
@@ -623,7 +623,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
               Cumulative score percentages for {formattedMonthName}
             </p>
           </div>
-          <span className="text-xs font-semibold px-3 py-1 bg-slate-800 text-slate-300 border border-slate-700 rounded-full w-fit">
+          <span className="text-xs font-semibold px-3 py-1 bg-slate-800 text-slate-300 border border-slate-700/80 rounded-full w-fit shadow-sm">
             {chartData.length} Student(s) Visualized
           </span>
         </div>
