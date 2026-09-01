@@ -248,7 +248,7 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
         </div>
 
         {/* Card 2: Total Pending Fee */}
-        <div className="glass-card p-5 rounded-2xl shadow-xl flex flex-col justify-between overflow-hidden border-rose-300 dark:border-rose-500/30">
+        <div className="glass-card glow-accent-rose p-5 rounded-2xl shadow-xl flex flex-col justify-between overflow-hidden">
           <div className="flex items-center justify-between mb-3">
             <span className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Total Pending Fee</span>
             <div className="p-2.5 bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-xl shadow-xs">
