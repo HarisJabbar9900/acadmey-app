@@ -9,6 +9,7 @@ import {
   UserCheck, 
   AlertCircle,
   Filter,
+  MessageCircle,
   Lock
 } from 'lucide-react';
 
@@ -228,39 +229,39 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
                             <button
                               type="button"
                               onClick={() => handleStatusChange(student.id, 'Present')}
-                              className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
                                 currentStatus === 'Present'
-                                  ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 scale-105'
-                                  : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+                                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-600/25 scale-105'
+                                  : 'bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-emerald-400 border border-slate-700/60'
                               }`}
                             >
-                              <CheckCircle2 className="w-4 h-4" /> Present
+                              <CheckCircle2 className="w-3.5 h-3.5" /> Present
                             </button>
 
                             {/* Absent Button */}
                             <button
                               type="button"
                               onClick={() => handleStatusChange(student.id, 'Absent')}
-                              className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
                                 currentStatus === 'Absent'
-                                  ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30 scale-105'
-                                  : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+                                  ? 'bg-gradient-to-r from-rose-600 to-red-600 text-white shadow-md shadow-rose-600/25 scale-105'
+                                  : 'bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-rose-400 border border-slate-700/60'
                               }`}
                             >
-                              <XCircle className="w-4 h-4" /> Absent
+                              <XCircle className="w-3.5 h-3.5" /> Absent
                             </button>
 
                             {/* Late Button */}
                             <button
                               type="button"
                               onClick={() => handleStatusChange(student.id, 'Late')}
-                              className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
                                 currentStatus === 'Late'
-                                  ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/30 scale-105'
-                                  : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+                                  ? 'bg-gradient-to-r from-amber-600 to-yellow-600 text-white shadow-md shadow-amber-600/25 scale-105'
+                                  : 'bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-amber-400 border border-slate-700/60'
                               }`}
                             >
-                              <Clock className="w-4 h-4" /> Late
+                              <Clock className="w-3.5 h-3.5" /> Late
                             </button>
 
                             {/* WhatsApp Parent Alert Button if Absent */}
@@ -287,10 +288,10 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
                                   const msg = `Respected Parent, Your child *${student.name}* (Roll #${student.rollNo}, Class ${currentClass?.name}) was *ABSENT* today (${formattedDate}) at Al-Zia Science Academy. Kindly ensure regular attendance. - Al-Zia Science Academy`;
                                   window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                                 }}
-                                className="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-md transition-all cursor-pointer"
+                                className="px-3 py-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 hover:border-emerald-500/50 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
                                 title="Send WhatsApp Absent Alert to Parent"
                               >
-                                💬 WA Alert
+                                <MessageCircle className="w-3.5 h-3.5" /> WA Alert
                               </button>
                             )}
                           </div>
