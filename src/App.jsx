@@ -399,13 +399,13 @@ export default function App() {
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${
-      theme === 'dark' ? 'bg-slate-950 text-slate-100 dark-mode' : 'bg-slate-100 text-slate-900 light-mode'
+      theme === 'dark' ? 'bg-slate-950 text-slate-100 dark-mode' : 'bg-slate-50 text-slate-900 light-mode'
     } flex flex-col lg:flex-row font-sans selection:bg-indigo-500 selection:text-white`}>
       
       {/* Background Subtle Gradients */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 print:hidden">
-        <div className={`absolute -top-40 -left-40 w-96 h-96 ${theme === 'dark' ? 'bg-indigo-600/10' : 'bg-indigo-500/10'} rounded-full blur-3xl`} />
-        <div className={`absolute top-1/3 -right-40 w-96 h-96 ${theme === 'dark' ? 'bg-purple-600/10' : 'bg-purple-500/10'} rounded-full blur-3xl`} />
+        <div className={`absolute -top-40 -left-40 w-96 h-96 ${theme === 'dark' ? 'bg-indigo-600/10' : 'bg-indigo-500/5'} rounded-full blur-3xl`} />
+        <div className={`absolute top-1/3 -right-40 w-96 h-96 ${theme === 'dark' ? 'bg-purple-600/10' : 'bg-purple-500/5'} rounded-full blur-3xl`} />
       </div>
 
       {/* Left Sidebar Navigation (Desktop Left Sidebar + Mobile Responsive Drawer) */}
@@ -430,17 +430,19 @@ export default function App() {
       <div className="flex-1 flex flex-col min-w-0 z-10 relative">
 
         {/* 💻 Desktop Sleek Top Header Bar */}
-        <header className="hidden lg:flex items-center justify-between px-8 py-4 bg-slate-950/60 backdrop-blur-md border-b border-slate-800/80 print:hidden">
+        <header className={`hidden lg:flex items-center justify-between px-8 py-4 ${
+          theme === 'dark' ? 'bg-slate-950/70 border-slate-800/80' : 'bg-white/80 border-slate-200/90'
+        } backdrop-blur-md border-b print:hidden`}>
           <div>
-            <div className="flex items-center gap-2 text-[11px] font-bold text-indigo-400 uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-[11px] font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-wider">
               <span>Portal</span>
-              <span className="text-slate-600">/</span>
+              <span className="text-slate-400 dark:text-slate-600">/</span>
               <span>{tabDetails[activeTab]?.title || 'Overview'}</span>
             </div>
-            <h2 className="text-xl font-extrabold text-white tracking-tight mt-0.5">
+            <h2 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight mt-0.5">
               {tabDetails[activeTab]?.title || 'Dashboard'}
             </h2>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               {tabDetails[activeTab]?.subtitle || 'Al-Zia Science Academy Online Management'}
             </p>
           </div>
