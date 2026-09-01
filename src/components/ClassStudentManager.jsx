@@ -359,11 +359,36 @@ export default function ClassStudentManager({
         </div>
       )}
 
-      {/* Class Filter Bar */}
-      <div className="glass-panel rounded-2xl p-4 flex flex-col xl:flex-row xl:items-center justify-between gap-4 shadow-lg">
+      {/* Class Filter & Search Bar */}
+      <div className="glass-panel rounded-2xl p-4 space-y-3.5 shadow-lg">
         
-        {/* Class Filter Badges / Buttons */}
-        <div className="flex flex-wrap items-center gap-2">
+        {/* Top: Full-Width Sleek Search Bar */}
+        <div className="relative w-full">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search student by name, father name, or roll # (e.g. 101, Ali)..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full pl-9.5 pr-8 py-2.5 bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 shadow-inner transition-all"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 cursor-pointer"
+              title="Clear Search"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Bottom: Class Filter Badges / Buttons in 1 Clean Row */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-0.5">
           <span className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mr-1 shrink-0">
             <Filter className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" /> Filter:
           </span>
@@ -373,7 +398,7 @@ export default function ClassStudentManager({
               setFilterClassId('ALL');
               setCurrentPage(1);
             }}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 ${
               filterClassId === 'ALL'
                 ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30'
                 : 'bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60'
@@ -397,7 +422,7 @@ export default function ClassStudentManager({
                   setFilterClassId(c.id);
                   setCurrentPage(1);
                 }}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer shrink-0 ${
                   isSelected
                     ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30'
                     : 'bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60'
@@ -412,31 +437,6 @@ export default function ClassStudentManager({
               </button>
             );
           })}
-        </div>
-
-        {/* Search Bar */}
-        <div className="relative w-full xl:w-72 shrink-0">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-          <input
-            type="text"
-            placeholder="Search student, father or roll #..."
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="w-full pl-9.5 pr-8 py-2 bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 shadow-inner"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 cursor-pointer"
-              title="Clear Search"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          )}
         </div>
 
       </div>
