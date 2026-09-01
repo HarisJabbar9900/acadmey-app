@@ -30,7 +30,27 @@ export default function App() {
   const [data, setData] = useState(getInitialData);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedClassId, setSelectedClassId] = useState('ALL');
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  
+  // Persistent Admin Session (Stays logged in across page reloads / refreshes)
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
+    try {
+      return localStorage.getItem('academy_admin_session_active') === 'true';
+    } catch (e) {
+      return false;
+    }
+  });
+
+  const handleSetIsAdminLoggedIn = (status) => {
+    setIsAdminLoggedIn(status);
+    try {
+      if (status) {
+        localStorage.setItem('academy_admin_session_active', 'true');
+      } else {
+        localStorage.removeItem('academy_admin_session_active');
+      }
+    } catch (e) {}
+  };
+
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
 
@@ -435,7 +455,7 @@ export default function App() {
           selectedClassId={selectedClassId}
           setSelectedClassId={setSelectedClassId}
           isAdminLoggedIn={isAdminLoggedIn}
-          setIsAdminLoggedIn={setIsAdminLoggedIn}
+          setIsAdminLoggedIn={handleSetIsAdminLoggedIn}
           theme={theme}
           toggleTheme={toggleTheme}
           adminPin={adminPin}
