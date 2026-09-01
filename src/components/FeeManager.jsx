@@ -192,41 +192,41 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
     <div className="space-y-8">
       
       {/* Top Banner Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-1">
+          <div className="inline-flex items-center gap-2 text-indigo-500 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
             <Sparkles className="w-4 h-4" /> Al-Zia Science Academy Accounts
           </div>
-          <h2 className="text-2xl font-extrabold text-white tracking-tight flex items-center gap-2.5">
-            <CreditCard className="w-6 h-6 text-indigo-400" />
+          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
+            <CreditCard className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
             Class-Wise Student Fee Manager
           </h2>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Track student monthly fee payments (Paid / Unpaid status with payment date & receipt generation).
           </p>
         </div>
 
         {/* Month Picker */}
-        <div className="flex items-center gap-3 bg-slate-800/90 border border-slate-700/80 rounded-xl px-4 py-2 shrink-0">
-          <Calendar className="w-4 h-4 text-indigo-400" />
-          <span className="text-xs text-slate-400 font-medium">Select Month:</span>
+        <div className="flex items-center gap-3 bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl px-4 py-2 shrink-0 shadow-sm">
+          <Calendar className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-bold">Select Month:</span>
           <input
             type="month"
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="bg-transparent text-sm font-semibold text-white focus:outline-none cursor-pointer"
+            className="bg-transparent text-sm font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer"
           />
         </div>
       </div>
 
       {/* Notification Alert */}
       {notification && (
-        <div className="bg-emerald-500/20 border border-emerald-500/40 text-emerald-200 px-5 py-3.5 rounded-2xl flex items-center justify-between text-sm font-semibold shadow-xl shadow-emerald-950/40 animate-pulse">
+        <div className="bg-emerald-500/20 border border-emerald-500/40 text-emerald-800 dark:text-emerald-200 px-5 py-3.5 rounded-2xl flex items-center justify-between text-sm font-semibold shadow-xl shadow-emerald-950/40 animate-pulse">
           <div className="flex items-center gap-3">
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span>{notification}</span>
           </div>
-          <button onClick={() => setNotification(null)} className="text-xs text-emerald-400 hover:text-white">✕</button>
+          <button onClick={() => setNotification(null)} className="text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 font-bold">✕</button>
         </div>
       )}
 
@@ -236,27 +236,27 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
         {/* Card 1: Grand Total Academy Collected Revenue */}
         <div className="glass-card glow-accent-emerald p-5 rounded-2xl shadow-xl flex flex-col justify-between overflow-hidden">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Total Academy Collected</span>
-            <div className="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl">
+            <span className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Total Academy Collected</span>
+            <div className="p-2.5 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl shadow-xs">
               <DollarSign className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-emerald-400 font-mono">Rs. {grandTotalCollected.toLocaleString()}</div>
-          <p className="text-xs text-slate-400 mt-1 flex items-center gap-1 font-mono">
+          <div className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">Rs. {grandTotalCollected.toLocaleString()}</div>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1 font-mono font-medium">
             <span>Collected in {selectedMonth}</span>
           </p>
         </div>
 
         {/* Card 2: Total Pending Fee */}
-        <div className="glass-card p-5 rounded-2xl shadow-xl flex flex-col justify-between overflow-hidden border-rose-500/30">
+        <div className="glass-card p-5 rounded-2xl shadow-xl flex flex-col justify-between overflow-hidden border-rose-300 dark:border-rose-500/30">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Total Pending Fee</span>
-            <div className="p-2.5 bg-rose-500/10 text-rose-400 rounded-xl">
+            <span className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Total Pending Fee</span>
+            <div className="p-2.5 bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-xl shadow-xs">
               <Clock className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-rose-400 font-mono">Rs. {grandTotalPending.toLocaleString()}</div>
-          <p className="text-xs text-slate-400 mt-1 flex items-center gap-1 font-mono">
+          <div className="text-3xl font-extrabold text-rose-600 dark:text-rose-400 font-mono">Rs. {grandTotalPending.toLocaleString()}</div>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1 font-mono font-medium">
             <span>Remaining Unpaid Amount</span>
           </p>
         </div>
@@ -264,13 +264,13 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
         {/* Card 3: Paid Students Count */}
         <div className="glass-card glow-accent-indigo p-5 rounded-2xl shadow-xl flex flex-col justify-between overflow-hidden">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Paid Students</span>
-            <div className="p-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl">
+            <span className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Paid Students</span>
+            <div className="p-2.5 bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl shadow-xs">
               <UserCheck className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-white font-mono">{grandTotalPaidCount}</div>
-          <p className="text-xs text-emerald-400 font-semibold mt-1">
+          <div className="text-3xl font-extrabold text-slate-900 dark:text-white font-mono">{grandTotalPaidCount}</div>
+          <p className="text-xs text-emerald-600 dark:text-emerald-400 font-bold mt-1">
             {data.students.length > 0 ? Math.round((grandTotalPaidCount / data.students.length) * 100) : 0}% Fee Recovery Rate
           </p>
         </div>
@@ -278,21 +278,21 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
         {/* Card 4: Unpaid Students Count */}
         <div className="glass-card glow-accent-amber p-5 rounded-2xl shadow-xl flex flex-col justify-between overflow-hidden">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Unpaid Students</span>
-            <div className="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl">
+            <span className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">Unpaid Students</span>
+            <div className="p-2.5 bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-xl shadow-xs">
               <XCircle className="w-5 h-5" />
             </div>
           </div>
-          <div className="text-3xl font-extrabold text-rose-400 font-mono">{grandTotalUnpaidCount}</div>
-          <p className="text-xs text-slate-400 mt-1">Students awaiting fee deposit</p>
+          <div className="text-3xl font-extrabold text-rose-600 dark:text-rose-400 font-mono">{grandTotalUnpaidCount}</div>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Students awaiting fee deposit</p>
         </div>
 
       </div>
 
       {/* Class-Wise Collection Summary Grid */}
       <div className="space-y-3">
-        <h3 className="text-base font-bold text-white flex items-center gap-2">
-          <Building2 className="w-4 h-4 text-indigo-400" />
+        <h3 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+          <Building2 className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
           Class-Wise Fee Collection Breakdown ({selectedMonth})
         </h3>
         
@@ -303,32 +303,32 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
               onClick={() => setActiveClassFilter(c.classId)}
               className={`p-4 rounded-2xl transition-all cursor-pointer ${
                 activeClassFilter === c.classId
-                  ? 'bg-indigo-950/70 border border-indigo-500 shadow-xl shadow-indigo-500/15 scale-[1.02]'
-                  : 'glass-card hover:border-indigo-500/40'
+                  ? 'bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-500 shadow-md scale-[1.02]'
+                  : 'glass-card hover:border-indigo-500/40 shadow-xs'
               }`}
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="font-extrabold text-sm text-white">Class {c.className}</span>
-                <span className="text-[10px] bg-slate-800 text-slate-300 px-2.5 py-0.5 rounded-full font-mono font-bold">
+                <span className="font-extrabold text-sm text-slate-900 dark:text-white">Class {c.className}</span>
+                <span className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2.5 py-0.5 rounded-full font-mono font-bold border border-slate-200 dark:border-slate-700 shadow-xs">
                   {c.totalStudents} stds
                 </span>
               </div>
 
               <div className="space-y-1 mt-2">
                 <div className="flex items-center justify-between text-xs font-mono">
-                  <span className="text-slate-400">Collected:</span>
-                  <span className="text-emerald-400 font-bold">Rs. {c.classCollected.toLocaleString()}</span>
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">Collected:</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">Rs. {c.classCollected.toLocaleString()}</span>
                 </div>
 
                 <div className="flex items-center justify-between text-xs font-mono">
-                  <span className="text-slate-400">Pending:</span>
-                  <span className="text-rose-400 font-bold">Rs. {c.classPending.toLocaleString()}</span>
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">Pending:</span>
+                  <span className="text-rose-600 dark:text-rose-400 font-bold">Rs. {c.classPending.toLocaleString()}</span>
                 </div>
 
-                <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-800/80">
-                  <span className="text-emerald-400 font-semibold">{c.paidCount} Paid</span>
+                <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-200/80 dark:border-slate-800/80">
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">{c.paidCount} Paid</span>
                   <span>•</span>
-                  <span className="text-rose-400 font-semibold">{c.unpaidCount} Unpaid</span>
+                  <span className="text-rose-600 dark:text-rose-400 font-bold">{c.unpaidCount} Unpaid</span>
                 </div>
               </div>
             </div>
@@ -337,20 +337,20 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
       </div>
 
       {/* Filter & Control Toolbar */}
-      <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl space-y-4 shadow-lg">
+      <div className="glass-panel p-4 rounded-2xl space-y-4 shadow-lg">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           
           {/* Class Tabs */}
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-            <span className="text-xs font-semibold text-slate-400 shrink-0 flex items-center gap-1">
-              <Filter className="w-3.5 h-3.5 text-indigo-400" /> Class:
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-400 shrink-0 flex items-center gap-1">
+              <Filter className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" /> Class:
             </span>
             <button
               onClick={() => setActiveClassFilter('ALL')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                 activeClassFilter === 'ALL'
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'bg-slate-800 text-slate-400 hover:text-white'
+                  ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white hover:bg-indigo-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 shadow-xs'
               }`}
             >
               All Classes ({data.students.length})
@@ -361,14 +361,14 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                 <button
                   key={c.id}
                   onClick={() => setActiveClassFilter(c.id)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
                     activeClassFilter === c.id
-                      ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 scale-105'
-                      : 'bg-slate-800 text-slate-300 hover:text-white'
+                      ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30 scale-105'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white hover:bg-indigo-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 shadow-xs'
                   }`}
                 >
                   <span>Class {c.name}</span>
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${activeClassFilter === c.id ? 'bg-indigo-800 text-white' : 'bg-slate-700 text-slate-300'}`}>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono ${activeClassFilter === c.id ? 'bg-indigo-950/60 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}`}>
                     {count}
                   </span>
                 </button>
@@ -378,15 +378,15 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
 
           {/* Status Tabs & Search */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center bg-slate-800/80 p-1 rounded-xl border border-slate-700/80">
+            <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-xs">
               {['ALL', 'Paid', 'Unpaid'].map(st => (
                 <button
                   key={st}
                   onClick={() => setStatusFilter(st)}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     statusFilter === st
-                      ? 'bg-indigo-600 text-white shadow-sm'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white'
                   }`}
                 >
                   {st === 'ALL' ? 'All' : st === 'Paid' ? '🟢 Paid' : '🔴 Unpaid'}
@@ -401,7 +401,7 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                 placeholder="Search student, roll #..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 font-medium"
+                className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 font-medium shadow-xs"
               />
             </div>
           </div>
@@ -411,13 +411,13 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
 
       {/* Main Student Fee Ledger Table */}
       <div className="glass-panel glow-accent-indigo rounded-2xl overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-slate-800/80 bg-slate-900/90 flex items-center justify-between">
+        <div className="p-4 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-100/70 dark:bg-slate-900/90 flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-white text-base flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-indigo-400" />
+            <h3 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
+              <CreditCard className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
               Student Fee Register ({selectedMonth})
             </h3>
-            <p className="text-xs text-slate-400">Showing {filteredStudents.length} student record(s)</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Showing {filteredStudents.length} student record(s)</p>
           </div>
         </div>
 
