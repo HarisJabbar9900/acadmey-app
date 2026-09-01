@@ -225,103 +225,8 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
   return (
     <>
       <div className="dashboard-layout-main space-y-8 print:hidden">
-      {/* 🏆 Class-Wise Top High Scorers (Wall of Honor - Right Below Notice Board) */}
-      <div className="bg-gradient-to-r from-amber-950/20 via-slate-900 to-indigo-950/20 border border-amber-500/30 p-6 rounded-2xl shadow-xl space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-500/20 pb-3">
-          <div>
-            <div className="inline-flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
-              <Trophy className="w-4 h-4 text-amber-400" /> Class Wall of Honor
-            </div>
-            <h3 className="text-xl font-extrabold text-white flex items-center gap-2">
-              🏆 Class-Wise Top High Scorers
-            </h3>
-            <p className="text-xs text-slate-400">
-              Highest scoring student in each class with overall combined marks & percentage.
-            </p>
-          </div>
 
-          <span className="px-3 py-1 bg-amber-500/10 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-bold font-mono">
-            {classTopScorers.filter(c => c.topScorer).length} Top Achievers
-          </span>
-        </div>
-
-        <div className="flex flex-nowrap justify-center items-stretch gap-4 overflow-x-auto no-scrollbar pb-1">
-          {classTopScorers.map(c => {
-            const scorer = c.topScorer;
-
-            return (
-              <div
-                key={c.classId}
-                className="flex-1 min-w-[210px] max-w-[270px] bg-slate-900/90 border border-slate-800 hover:border-amber-500/40 p-4 rounded-2xl shadow-lg flex flex-col justify-between transition-all group shrink-0 sm:shrink"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-indigo-600 text-white shadow-sm">
-                      Class {c.className}
-                    </span>
-                    {scorer && (
-                      <span className="text-[11px] font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20">
-                        🏆 #{scorer.rollNo}
-                      </span>
-                    )}
-                  </div>
-
-                  {scorer ? (
-                    <div className="space-y-2 mt-2">
-                      <h4 className="font-extrabold text-white text-sm group-hover:text-amber-300 transition-colors leading-tight">
-                        {scorer.studentName}
-                      </h4>
-                      <p className="text-[11px] text-slate-400">
-                        {scorer.fname}
-                      </p>
-
-                      <div className="bg-indigo-500/10 p-2.5 rounded-xl border border-indigo-500/20 space-y-1">
-                        <div className="text-[11px] font-bold text-indigo-300 flex items-center justify-between">
-                          <span>Overall Score:</span>
-                          <span className="text-emerald-400 font-bold font-mono">{scorer.obtainedMarks} / {scorer.maxMarks}</span>
-                        </div>
-                        <div className="text-[10px] text-slate-400 flex items-center justify-between">
-                          <span>Tests Evaluated:</span>
-                          <span className="text-slate-300 font-semibold">{scorer.testsTaken} Subject(s)</span>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="py-6 text-center text-slate-500 text-xs italic">
-                      No test marks recorded for Class {c.className} yet.
-                    </div>
-                  )}
-                </div>
-
-                {scorer && (
-                  <div className="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between gap-2 text-xs">
-                    {isAdminLoggedIn ? (
-                      <button
-                        onClick={() => setSelectedCertificateScorer(scorer)}
-                        className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all cursor-pointer hover:shadow-amber-500/30"
-                        title="Generate & Print Official Class Topper Certificate of Excellence"
-                      >
-                        <Award className="w-3.5 h-3.5 text-slate-950 shrink-0" />
-                        <span>Certificate</span>
-                      </button>
-                    ) : (
-                      <span className="text-xs font-mono text-amber-400 font-bold flex items-center gap-1">
-                        <Trophy className="w-3.5 h-3.5 text-amber-400" />
-                        <span>1st Position</span>
-                      </span>
-                    )}
-                    <span className="font-mono font-extrabold text-emerald-400 text-xs bg-emerald-500/10 px-2.5 py-1 rounded-xl border border-emerald-500/20 flex items-center">
-                      {scorer.percentage}%
-                    </span>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Dashboard Top Header */}
+      {/* 1. Dashboard Top Header & Month Filter */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
         <div>
           <div className="flex items-center gap-2 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-1">
@@ -338,7 +243,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
         </div>
 
         {/* Month Picker */}
-        <div className="flex items-center gap-3 bg-slate-800/90 border border-slate-700/80 rounded-xl px-4 py-2">
+        <div className="flex items-center gap-3 bg-slate-800/90 border border-slate-700/80 rounded-xl px-4 py-2 shadow-sm">
           <Calendar className="w-4 h-4 text-indigo-400" />
           <span className="text-xs text-slate-400 font-medium">Month:</span>
           <input
@@ -350,7 +255,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
         </div>
       </div>
 
-      {/* KPI Metric Cards (Visible ONLY to Logged-in Admin) */}
+      {/* 2. KPI Metric Cards (Visible ONLY to Logged-in Admin) */}
       {isAdminLoggedIn && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
           
@@ -437,7 +342,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
         </div>
       )}
 
-      {/* Monthly Performance Visual Chart & Table */}
+      {/* 3. 📈 Monthly Performance Visual Chart & Marks Summary Ledger (SHOWN PROMINENTLY AT TOP) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Visual Bar Chart */}
@@ -633,6 +538,102 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
           </div>
         </div>
 
+      </div>
+
+      {/* 4. 🏆 Class-Wise Top High Scorers (Wall of Honor) */}
+      <div className="bg-gradient-to-r from-amber-950/20 via-slate-900 to-indigo-950/20 border border-amber-500/30 p-6 rounded-2xl shadow-xl space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-500/20 pb-3">
+          <div>
+            <div className="inline-flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
+              <Trophy className="w-4 h-4 text-amber-400" /> Class Wall of Honor
+            </div>
+            <h3 className="text-xl font-extrabold text-white flex items-center gap-2">
+              🏆 Class-Wise Top High Scorers
+            </h3>
+            <p className="text-xs text-slate-400">
+              Highest scoring student in each class with overall combined marks & percentage.
+            </p>
+          </div>
+
+          <span className="px-3 py-1 bg-amber-500/10 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-bold font-mono">
+            {classTopScorers.filter(c => c.topScorer).length} Top Achievers
+          </span>
+        </div>
+
+        <div className="flex flex-nowrap justify-center items-stretch gap-4 overflow-x-auto no-scrollbar pb-1">
+          {classTopScorers.map(c => {
+            const scorer = c.topScorer;
+
+            return (
+              <div
+                key={c.classId}
+                className="flex-1 min-w-[210px] max-w-[270px] bg-slate-900/90 border border-slate-800 hover:border-amber-500/40 p-4 rounded-2xl shadow-lg flex flex-col justify-between transition-all group shrink-0 sm:shrink"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-indigo-600 text-white shadow-sm">
+                      Class {c.className}
+                    </span>
+                    {scorer && (
+                      <span className="text-[11px] font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20">
+                        🏆 #{scorer.rollNo}
+                      </span>
+                    )}
+                  </div>
+
+                  {scorer ? (
+                    <div className="space-y-2 mt-2">
+                      <h4 className="font-extrabold text-white text-sm group-hover:text-amber-300 transition-colors leading-tight">
+                        {scorer.studentName}
+                      </h4>
+                      <p className="text-[11px] text-slate-400">
+                        {scorer.fname}
+                      </p>
+
+                      <div className="bg-indigo-500/10 p-2.5 rounded-xl border border-indigo-500/20 space-y-1">
+                        <div className="text-[11px] font-bold text-indigo-300 flex items-center justify-between">
+                          <span>Overall Score:</span>
+                          <span className="text-emerald-400 font-bold font-mono">{scorer.obtainedMarks} / {scorer.maxMarks}</span>
+                        </div>
+                        <div className="text-[10px] text-slate-400 flex items-center justify-between">
+                          <span>Tests Evaluated:</span>
+                          <span className="text-slate-300 font-semibold">{scorer.testsTaken} Subject(s)</span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="py-6 text-center text-slate-500 text-xs italic">
+                      No test marks recorded for Class {c.className} yet.
+                    </div>
+                  )}
+                </div>
+
+                {scorer && (
+                  <div className="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between gap-2 text-xs">
+                    {isAdminLoggedIn ? (
+                      <button
+                        onClick={() => setSelectedCertificateScorer(scorer)}
+                        className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all cursor-pointer hover:shadow-amber-500/30"
+                        title="Generate & Print Official Class Topper Certificate of Excellence"
+                      >
+                        <Award className="w-3.5 h-3.5 text-slate-950 shrink-0" />
+                        <span>Certificate</span>
+                      </button>
+                    ) : (
+                      <span className="text-xs font-mono text-amber-400 font-bold flex items-center gap-1">
+                        <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                        <span>1st Position</span>
+                      </span>
+                    )}
+                    <span className="font-mono font-extrabold text-emerald-400 text-xs bg-emerald-500/10 px-2.5 py-1 rounded-xl border border-emerald-500/20 flex items-center">
+                      {scorer.percentage}%
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Printable Report Card Modal */}
