@@ -26,14 +26,31 @@ export default function StudentFeedback({
 }) {
   // Student form state
   const [studentName, setStudentName] = useState('');
-  const [selectedClass, setSelectedClass] = useState('9th');
+  const [selectedClass, setSelectedClass] = useState(() => data.classes?.[0]?.name || '9th');
   const [category, setCategory] = useState('General Suggestion');
   const [comment, setComment] = useState('');
 
   const [statusFilter, setStatusFilter] = useState('ALL'); // 'ALL' | 'Pending' | 'Resolved'
+  const [classFilter, setClassFilter] = useState('ALL');
   const [successMessage, setSuccessMessage] = useState('');
 
   const feedbacksList = data.feedbacks || [];
+
+  // Helper to format class name cleanly (handles '9th', 'Class 9th', 'cls-9th')
+  const getDisplayClassName = (classNameOrId) => {
+    if (!classNameOrId) return 'General';
+    const matchedClass = data.classes?.find(c => c.id === classNameOrId || c.name === classNameOrId);
+    if (matchedClass) {
+      const cleanName = matchedClass.name.replace(/^Class\s+/i, '');
+      return `Class ${cleanName}`;
+    }
+    const str = String(classNameOrId).trim();
+    if (str.toLowerCase().startsWith('class')) {
+      return str;
+    }
+    const cleaned = str.replace(/^cls-/i, '');
+    return `Class ${cleaned}`;
+  };
 
   // Submit Student Feedback
   const handleSubmitFeedback = (e) => {
@@ -63,8 +80,9 @@ export default function StudentFeedback({
 
   // Filter feedbacks for Admin Inbox
   const filteredFeedbacks = feedbacksList.filter(fb => {
-    if (statusFilter === 'ALL') return true;
-    return fb.status === statusFilter;
+    const matchesStatus = statusFilter === 'ALL' || fb.status === statusFilter;
+    const matchesClass = classFilter === 'ALL' || getDisplayClassName(fb.className) === getDisplayClassName(classFilter);
+    return matchesStatus && matchesClass;
   });
 
   const categoryIcons = {
@@ -150,9 +168,14 @@ export default function StudentFeedback({
                 onChange={(e) => setSelectedClass(e.target.value)}
                 className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white font-bold focus:outline-none focus:border-indigo-500 cursor-pointer shadow-xs"
               >
-                {data.classes.map(c => (
-                  <option key={c.id} value={c.name} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Class {c.name}</option>
-                ))}
+                {data.classes.map(c => {
+                  const cleanName = c.name.replace(/^Class\s+/i, '');
+                  return (
+                    <option key={c.id} value={cleanName} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
+                      Class {cleanName}
+                    </option>
+                  );
+                })}
               </select>
             </div>
 
@@ -210,21 +233,54 @@ export default function StudentFeedback({
               </h3>
             </div>
 
-            {/* Status Filter */}
-            <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-xs">
-              {['ALL', 'Pending', 'Resolved'].map(st => (
+            {/* Filters: Class and Status */}
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Class Tabs */}
+              <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
                 <button
-                  key={st}
-                  onClick={() => setStatusFilter(st)}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    statusFilter === st
+                  onClick={() => setClassFilter('ALL')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    classFilter === 'ALL'
                       ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-sm'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white border border-slate-200 dark:border-slate-700'
                   }`}
                 >
-                  {st === 'ALL' ? 'All' : st}
+                  All
                 </button>
-              ))}
+                {data.classes.map(c => {
+                  const cleanName = c.name.replace(/^Class\s+/i, '');
+                  return (
+                    <button
+                      key={c.id}
+                      onClick={() => setClassFilter(cleanName)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        classFilter === cleanName
+                          ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-sm'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white border border-slate-200 dark:border-slate-700'
+                      }`}
+                    >
+                      {cleanName}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Status Filter */}
+              <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-xs">
+                {['ALL', 'Pending', 'Resolved'].map(st => (
+                  <button
+                    key={st}
+                    onClick={() => setStatusFilter(st)}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      statusFilter === st
+                        ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-sm'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white'
+                    }`}
+                  >
+                    {st === 'ALL' ? 'All' : st}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -247,7 +303,7 @@ export default function StudentFeedback({
                       <div className="flex items-center justify-between gap-2 mb-2">
                         <div className="flex items-center gap-2">
                           <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-indigo-50 dark:bg-indigo-600 text-indigo-700 dark:text-white border border-indigo-200 dark:border-indigo-600 shadow-xs">
-                            Class {fb.className}
+                            {getDisplayClassName(fb.className)}
                           </span>
                           <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center gap-1 shadow-xs">
                             <IconComp className="w-3 h-3 text-indigo-500 dark:text-indigo-400" /> {fb.category}
