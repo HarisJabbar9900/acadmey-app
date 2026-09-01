@@ -523,21 +523,21 @@ export default function ClassStudentManager({
 
             {selectedClassObj && (
               <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200/80 dark:border-slate-800/80 mt-2">
-                <span className="text-xs text-slate-600 dark:text-slate-400 font-semibold flex items-center gap-1.5">
-                  <span>Class <strong className="text-indigo-600 dark:text-indigo-300 font-bold">{selectedClassObj.name}</strong> Settings:</span>
+                <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1.5">
+                  <span>Class <strong className="text-indigo-600 dark:text-indigo-400 font-extrabold">{selectedClassObj.name}</strong> Settings:</span>
                 </span>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => handleOpenEditClass(selectedClassObj)}
-                    className="px-3.5 py-1.5 bg-indigo-100 hover:bg-indigo-600 dark:bg-indigo-900/40 dark:hover:bg-indigo-600 text-indigo-800 hover:text-white dark:text-indigo-200 dark:hover:text-white border border-indigo-300 dark:border-indigo-500/50 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
+                    className="px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/25 active:scale-95 transition-all cursor-pointer"
                   >
                     <Edit3 className="w-3.5 h-3.5" /> Edit Class Name
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDeleteClassWithConfirm(selectedClassObj)}
-                    className="px-3.5 py-1.5 bg-rose-100 hover:bg-rose-600 dark:bg-rose-900/40 dark:hover:bg-rose-600 text-rose-800 hover:text-white dark:text-rose-200 dark:hover:text-white border border-rose-300 dark:border-rose-500/50 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer"
+                    className="px-3.5 py-1.5 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-rose-600/25 active:scale-95 transition-all cursor-pointer"
                   >
                     <Trash2 className="w-3.5 h-3.5" /> Delete Class {selectedClassObj.name}
                   </button>
