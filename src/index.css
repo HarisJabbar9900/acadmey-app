@@ -361,8 +361,10 @@ html.light-mode .glass-card:hover {
 .light-mode button .text-white,
 .light-mode a.text-white,
 .light-mode a .text-white,
-.light-mode span.text-white,
-.light-mode [class*="bg-indigo-600"] {
+.light-mode button[class*="from-indigo"],
+.light-mode a[class*="from-indigo"],
+.light-mode button[class*="from-emerald"],
+.light-mode a[class*="from-emerald"] {
   color: #ffffff;
 }
 

@@ -302,7 +302,7 @@ export default function StudentFeedback({
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-2">
                         <div className="flex items-center gap-2">
-                          <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-indigo-50 dark:bg-indigo-600 text-indigo-700 dark:text-white border border-indigo-200 dark:border-indigo-600 shadow-xs">
+                          <span className="px-2.5 py-0.5 rounded-md text-[11px] font-extrabold bg-indigo-100 dark:bg-indigo-900/50 text-indigo-900 dark:text-indigo-200 border border-indigo-200 dark:border-indigo-700/80 shadow-xs">
                             {getDisplayClassName(fb.className)}
                           </span>
                           <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center gap-1 shadow-xs">
