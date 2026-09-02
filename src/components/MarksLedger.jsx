@@ -72,7 +72,7 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
     <div className="space-y-6">
       
       {/* Top Bar & Actions */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl overflow-hidden">
         <div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Award className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />

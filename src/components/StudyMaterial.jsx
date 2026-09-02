@@ -170,7 +170,7 @@ export default function StudyMaterial({ data, selectedClassId, isAdminLoggedIn, 
     <div className="space-y-6">
 
       {/* Top Banner Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl overflow-hidden">
         <div>
           <div className="inline-flex items-center gap-2 text-indigo-500 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
             <Sparkles className="w-4 h-4" /> Class-Wise Digital Library

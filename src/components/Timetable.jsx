@@ -74,7 +74,7 @@ export default function Timetable({ timetable = [], selectedClassId, isAdminLogg
     <div className="space-y-6">
       
       {/* Header Banner */}
-      <div className="glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-4 overflow-hidden">
         <div>
           <div className="inline-flex items-center gap-2 text-indigo-500 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
             <Sparkles className="w-4 h-4" /> Official Schedule

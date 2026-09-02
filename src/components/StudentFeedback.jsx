@@ -96,7 +96,7 @@ export default function StudentFeedback({
     <div className="space-y-6">
       
       {/* Top Banner Header */}
-      <div className="glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-4 overflow-hidden">
         <div>
           <div className="inline-flex items-center gap-2 text-indigo-500 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
             <Sparkles className="w-4 h-4" /> Al-Zia Science Academy Feedback Corner
@@ -130,7 +130,7 @@ export default function StudentFeedback({
       )}
 
       {/* Public Student Feedback Submission Form */}
-      <div className="glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl space-y-4">
+      <div className="glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl space-y-4 overflow-hidden">
         <div>
           <div className="inline-flex items-center gap-2 text-indigo-500 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
             <Sparkles className="w-4 h-4" /> Direct Communication
