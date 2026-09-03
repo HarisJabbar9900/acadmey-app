@@ -246,22 +246,22 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
           </span>
         </div>
 
-        <div className="flex flex-nowrap justify-center items-stretch gap-4 overflow-x-auto no-scrollbar pb-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {classTopScorers.map(c => {
             const scorer = c.topScorer;
 
             return (
               <div
                 key={c.classId}
-                className="flex-1 min-w-[210px] max-w-[270px] glass-card p-4 rounded-2xl flex flex-col justify-between transition-all group shrink-0 sm:shrink shadow-sm"
+                className="w-full glass-card p-4 sm:p-4 rounded-2xl flex flex-col justify-between transition-all group shadow-sm hover:shadow-md hover:border-amber-500/40"
               >
                 <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-indigo-600 text-white shadow-sm">
+                  <div className="flex items-center justify-between gap-2 mb-2.5">
+                    <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow-xs">
                       Class {c.className}
                     </span>
                     {scorer && (
-                      <span className="text-[11px] font-mono font-bold text-amber-800 dark:text-amber-400 bg-amber-100 dark:bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-300 dark:border-amber-500/20 shadow-xs">
+                      <span className="text-xs font-mono font-bold text-amber-800 dark:text-amber-400 bg-amber-100 dark:bg-amber-500/10 px-2.5 py-0.5 rounded-lg border border-amber-300 dark:border-amber-500/20 shadow-xs">
                         🏆 #{scorer.rollNo}
                       </span>
                     )}
@@ -269,19 +269,21 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
 
                   {scorer ? (
                     <div className="space-y-2 mt-2">
-                      <h4 className="font-extrabold text-slate-900 dark:text-white text-sm group-hover:text-amber-600 dark:group-hover:text-amber-300 transition-colors leading-tight">
-                        {scorer.studentName}
-                      </h4>
-                      <p className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                        {scorer.fname}
-                      </p>
+                      <div>
+                        <h4 className="font-extrabold text-slate-900 dark:text-white text-base sm:text-sm group-hover:text-amber-600 dark:group-hover:text-amber-300 transition-colors leading-tight">
+                          {scorer.studentName}
+                        </h4>
+                        <p className="text-xs sm:text-[11px] text-slate-600 dark:text-slate-400 font-medium mt-0.5">
+                          {scorer.fname || 'N/A'}
+                        </p>
+                      </div>
 
-                      <div className="bg-indigo-50 dark:bg-indigo-500/10 p-2.5 rounded-xl border border-indigo-200 dark:border-indigo-500/20 space-y-1 shadow-xs">
-                        <div className="text-[11px] font-bold text-indigo-700 dark:text-indigo-300 flex items-center justify-between">
+                      <div className="bg-indigo-50 dark:bg-indigo-500/10 p-2.5 rounded-xl border border-indigo-200 dark:border-indigo-500/20 space-y-1.5 shadow-xs">
+                        <div className="text-xs sm:text-[11px] font-bold text-indigo-700 dark:text-indigo-300 flex items-center justify-between">
                           <span>Overall Score:</span>
                           <span className="text-emerald-600 dark:text-emerald-400 font-bold font-mono">{scorer.obtainedMarks} / {scorer.maxMarks}</span>
                         </div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
+                        <div className="text-[11px] sm:text-[10px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
                           <span>Tests Evaluated:</span>
                           <span className="text-slate-700 dark:text-slate-300 font-semibold">{scorer.testsTaken} Subject(s)</span>
                         </div>
