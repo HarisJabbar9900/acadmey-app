@@ -165,22 +165,22 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
                       const score = test.scores ? test.scores[student.id] : undefined;
                       const percentage = score !== undefined && Number(test.maxMarks) > 0 ? Math.round((Number(score) / Number(test.maxMarks)) * 100) : 0;
                       return (
-                        <div key={student.id} className="flex items-center justify-between text-slate-300 py-1 border-b border-slate-800/40 last:border-0">
+                        <div key={student.id} className="flex items-center justify-between text-slate-800 dark:text-slate-300 py-1.5 border-b border-slate-200/80 dark:border-slate-800/40 last:border-0">
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-white">{student.name}</span>
-                            <span className="text-[10px] text-slate-400 font-mono">(#{student.rollNo})</span>
+                            <span className="font-bold text-slate-900 dark:text-white">{student.name}</span>
+                            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">(#{student.rollNo})</span>
                           </div>
 
                           {score !== undefined ? (
                             <div className="flex items-center gap-2 font-mono">
-                              <span className="text-xs text-white">
-                                <strong className="text-indigo-400 font-bold">{score}</strong> / {test.maxMarks}
+                              <span className="text-xs text-slate-900 dark:text-white font-bold">
+                                <strong className="text-indigo-600 dark:text-indigo-400 font-extrabold">{score}</strong> <span className="text-slate-500 dark:text-slate-400 font-normal">/ {test.maxMarks}</span>
                               </span>
-                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                                percentage >= 80 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' :
-                                percentage >= 60 ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' :
-                                percentage >= 40 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' :
-                                'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                              <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold ${
+                                percentage >= 80 ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/30' :
+                                percentage >= 60 ? 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-800 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-500/30' :
+                                percentage >= 40 ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-500/30' :
+                                'bg-rose-100 dark:bg-rose-500/20 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-500/30'
                               }`}>
                                 {percentage}%
                               </span>
@@ -202,7 +202,7 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
                                     const msg = `Respected Parent, Result of *${test.subject}* Test for *${student.name}* (Roll #${student.rollNo}): Marks Obtained: *${score}/${test.maxMarks}* (${percentage}%). - Al-Zia Science Academy`;
                                     window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                                   }}
-                                  className="p-1 text-emerald-400 hover:bg-emerald-500/10 rounded transition-colors"
+                                  className="p-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/10 rounded transition-colors cursor-pointer"
                                   title="Send Test Score via WhatsApp to Parent"
                                 >
                                   💬
@@ -210,7 +210,7 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
                               )}
                             </div>
                           ) : (
-                            <span className="text-[11px] text-slate-500 italic">Not evaluated</span>
+                            <span className="text-[11px] text-slate-400 dark:text-slate-500 italic">Not evaluated</span>
                           )}
                         </div>
                       );
@@ -231,17 +231,17 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
 
       {/* Modal: Create Test */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-5 my-auto max-h-[85vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-5 my-auto max-h-[85vh] overflow-y-auto">
             
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <FileSpreadsheet className="w-5 h-5 text-indigo-400" />
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <FileSpreadsheet className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
                 Add New Test Marks
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-white text-sm"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-sm cursor-pointer"
               >
                 ✕
               </button>
@@ -251,17 +251,17 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
               
               {/* Target Class Selection */}
               <div>
-                <label className="block text-xs font-bold text-indigo-300 mb-1">Target Class *</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-indigo-300 mb-1">Target Class *</label>
                 <select
                   value={modalClassId}
                   onChange={(e) => {
                     setModalClassId(e.target.value);
                     setScores({}); // reset draft scores on class change
                   }}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white font-bold focus:outline-none focus:border-indigo-500 cursor-pointer"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-900 dark:text-white font-bold focus:outline-none focus:border-indigo-500 cursor-pointer shadow-xs"
                 >
                   {data.classes.map(c => (
-                    <option key={c.id} value={c.id} className="bg-slate-900 text-white">
+                    <option key={c.id} value={c.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
                       Class {c.name}
                     </option>
                   ))}
@@ -270,18 +270,18 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1">Test Title</label>
+                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Test Title</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Chapter 1 Quiz"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 shadow-xs"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1">Subject Name</label>
+                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Subject Name</label>
                   <input
                     type="text"
                     required
@@ -289,7 +289,7 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
                     placeholder="e.g. Physics, Math, Computer..."
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 shadow-xs"
                   />
                   <datalist id="subject-suggestions">
                     <option value="Computer Science" />
@@ -311,10 +311,10 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
                         key={sub}
                         type="button"
                         onClick={() => setSubject(sub)}
-                        className={`text-[10px] px-2 py-0.5 rounded-lg border transition-all ${
+                        className={`text-[10px] px-2 py-0.5 rounded-lg border transition-all cursor-pointer ${
                           subject === sub
-                            ? 'bg-indigo-600 text-white border-indigo-500 font-bold'
-                            : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
+                            ? 'bg-indigo-600 text-white border-indigo-500 font-bold shadow-xs'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:text-indigo-600 dark:hover:text-white'
                         }`}
                       >
                         + {sub}
@@ -326,8 +326,8 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-indigo-300 mb-1">
-                    🎯 Class Test Total Marks <span className="text-[10px] text-slate-400 font-normal">(Same for all students)</span>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-indigo-300 mb-1">
+                    🎯 Class Test Total Marks <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">(Same for all students)</span>
                   </label>
                   <input
                     type="number"
@@ -336,35 +336,35 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
                     placeholder="e.g. 50 or 100"
                     value={maxMarks}
                     onChange={(e) => setMaxMarks(e.target.value)}
-                    className="w-full bg-slate-800 border border-indigo-500/50 rounded-xl px-3 py-2 text-sm text-white font-mono font-bold focus:outline-none focus:border-indigo-400"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-indigo-300 dark:border-indigo-500/50 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white font-mono font-bold focus:outline-none focus:border-indigo-500 shadow-xs"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1">Test Date</label>
+                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Test Date</label>
                   <input
                     type="date"
                     required
                     value={testDate}
                     onChange={(e) => setTestDate(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 shadow-xs"
                   />
                 </div>
               </div>
 
               {/* Student Marks Entry List */}
               <div className="pt-2">
-                <div className="bg-indigo-950/40 border border-indigo-900/50 p-2.5 rounded-xl mb-2 flex items-center justify-between">
-                  <span className="text-xs font-bold text-white flex items-center gap-2">
+                <div className="bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/50 p-2.5 rounded-xl mb-2 flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <span>Students in <strong>Class {modalCurrentClass?.name}</strong></span>
-                    <span className="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full font-mono font-normal">
+                    <span className="text-[10px] bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full font-mono font-normal border border-indigo-200 dark:border-indigo-500/20">
                       {modalClassStudents.length} Students
                     </span>
                   </span>
-                  <span className="text-xs font-mono font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-md border border-indigo-500/20">
+                  <span className="text-xs font-mono font-bold text-indigo-700 dark:text-indigo-400 bg-white dark:bg-indigo-500/10 px-2 py-0.5 rounded-md border border-indigo-200 dark:border-indigo-500/20 shadow-xs">
                     Total Test Marks: {maxMarks || 0}
                   </span>
                 </div>
-                <div className="bg-slate-950/60 border border-slate-800 rounded-xl p-3 max-h-56 overflow-y-auto space-y-2.5">
+                <div className="bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl p-3 max-h-56 overflow-y-auto space-y-2.5">
                   {modalClassStudents.length > 0 ? (
                     modalClassStudents.map(student => {
                       const currentScore = scores[student.id];
@@ -374,20 +374,20 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
                         : null;
 
                       return (
-                      <div key={student.id} className="flex items-center justify-between gap-3 text-xs bg-slate-900/60 p-2 rounded-lg border border-slate-800/80">
+                      <div key={student.id} className="flex items-center justify-between gap-3 text-xs bg-white dark:bg-slate-900/60 p-2.5 rounded-lg border border-slate-200/80 dark:border-slate-800/80 shadow-xs">
                         <div className="flex flex-col">
-                          <span className="text-white font-bold">{student.name}</span>
-                          <span className="text-[10px] text-slate-400 font-mono">Roll #{student.rollNo} • {student.fname}</span>
+                          <span className="text-slate-900 dark:text-white font-bold">{student.name}</span>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">Roll #{student.rollNo} • {student.fname}</span>
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0">
                           {/* Live Percentage Badge */}
                           {percentage !== null && (
                             <span className={`px-2 py-0.5 rounded-md font-mono text-[11px] font-bold ${
-                              percentage >= 80 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' :
-                              percentage >= 60 ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' :
-                              percentage >= 40 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' :
-                              'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                              percentage >= 80 ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/30' :
+                              percentage >= 60 ? 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-800 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-500/30' :
+                              percentage >= 40 ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-500/30' :
+                              'bg-rose-100 dark:bg-rose-500/20 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-500/30'
                             }`}>
                               {percentage}%
                             </span>
@@ -401,7 +401,7 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
                               placeholder="0"
                               value={scores[student.id] ?? ''}
                               onChange={(e) => handleScoreChange(student.id, e.target.value)}
-                              className="w-20 bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-white font-mono font-bold focus:outline-none focus:border-indigo-500 text-right text-xs"
+                              className="w-20 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 text-slate-900 dark:text-white font-mono font-bold focus:outline-none focus:border-indigo-500 text-right text-xs"
                             />
                             <span className="text-[11px] text-slate-500 font-mono">/ {maxMarks}</span>
                           </div>
@@ -417,17 +417,17 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-semibold"
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-semibold cursor-pointer border border-slate-200 dark:border-slate-700"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold shadow-lg shadow-indigo-600/30"
+                  className="px-5 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-indigo-600/30 cursor-pointer"
                 >
                   Save Test Marks
                 </button>
