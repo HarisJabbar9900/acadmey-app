@@ -17,7 +17,8 @@ import {
   X,
   Edit2,
   Printer,
-  Contact
+  Contact,
+  Sparkles
 } from 'lucide-react';
 import ReportCardModal from './ReportCardModal';
 import IdCardModal from './IdCardModal';
@@ -299,26 +300,31 @@ export default function ClassStudentManager({
     <div className="space-y-6">
       
       {/* Top Banner & Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
-        <h2 className="text-2xl font-extrabold text-white tracking-tight flex items-center gap-2.5">
-          <Users className="w-6 h-6 text-indigo-400" />
-          Class & Student Management
-        </h2>
-        <p className="text-xs text-slate-400 mt-1">
-          Manage classes, class-wise subjects 📚, student roll numbers, and parent contact information.
-        </p>
+      <div className="glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl overflow-hidden">
+        <div>
+          <div className="inline-flex items-center gap-2 text-indigo-500 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <Sparkles className="w-4 h-4" /> Al-Zia Science Academy Roster
+          </div>
+          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
+            <Users className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
+            Class & Student Management
+          </h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Manage classes, class-wise subjects 📚, student roll numbers, and parent contact information.
+          </p>
+        </div>
       </div>
 
       {/* Dynamic Save/Update Notification Alert Banner */}
       {notification && (
-        <div className="bg-emerald-500/20 border border-emerald-500/40 text-emerald-200 px-5 py-3.5 rounded-2xl flex items-center justify-between text-sm font-semibold shadow-xl shadow-emerald-950/40 animate-pulse">
+        <div className="bg-emerald-500/20 border border-emerald-500/40 text-emerald-800 dark:text-emerald-200 px-5 py-3.5 rounded-2xl flex items-center justify-between text-sm font-semibold shadow-xl shadow-emerald-950/40 animate-pulse">
           <div className="flex items-center gap-3">
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span>{notification}</span>
           </div>
           <button 
             onClick={() => setNotification(null)}
-            className="text-xs text-emerald-400 hover:text-white"
+            className="text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 font-bold cursor-pointer"
           >
             ✕
           </button>
