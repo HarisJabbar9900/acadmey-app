@@ -12,9 +12,10 @@ import {
 } from 'lucide-react';
 
 export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedClassId, isAdminLoggedIn }) {
-  const [activeClassId, setActiveClassId] = useState(selectedClassId !== 'ALL' ? selectedClassId : (data.classes[0]?.id || ''));
-  const [modalClassId, setModalClassId] = useState(selectedClassId !== 'ALL' ? selectedClassId : (data.classes[0]?.id || ''));
+  const [activeClassId, setActiveClassId] = useState(selectedClassId && selectedClassId !== 'ALL' ? selectedClassId : (data.classes[0]?.id || ''));
+  const [modalClassId, setModalClassId] = useState(selectedClassId && selectedClassId !== 'ALL' ? selectedClassId : (data.classes[0]?.id || ''));
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
   // Form State for creating a new test
   const [title, setTitle] = useState('');
@@ -23,17 +24,30 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
   const [testDate, setTestDate] = useState(new Date().toISOString().split('T')[0]);
   const [scores, setScores] = useState({});
 
-  // Sync modalClassId if activeClassId changes
+  // Sync activeClassId if selectedClassId prop changes
   React.useEffect(() => {
-    if (activeClassId) setModalClassId(activeClassId);
-  }, [activeClassId]);
+    if (selectedClassId) {
+      setActiveClassId(selectedClassId);
+    }
+  }, [selectedClassId]);
 
-  const currentClass = data.classes.find(c => c.id === activeClassId);
-  const classStudents = data.students.filter(s => s.classId === activeClassId);
-  const classTests = data.tests.filter(t => t.classId === activeClassId);
+  // Sync modalClassId if activeClassId changes (always default to a valid concrete class id)
+  React.useEffect(() => {
+    if (activeClassId && activeClassId !== 'ALL') {
+      setModalClassId(activeClassId);
+    } else if (data.classes && data.classes.length > 0) {
+      setModalClassId(data.classes[0].id);
+    }
+  }, [activeClassId, data.classes]);
 
-  const modalCurrentClass = data.classes.find(c => c.id === modalClassId);
-  const modalClassStudents = data.students.filter(s => s.classId === modalClassId);
+  const isAllClasses = activeClassId === 'ALL';
+  const currentClass = isAllClasses ? { name: 'All Classes' } : data.classes.find(c => c.id === activeClassId);
+  const classTests = isAllClasses 
+    ? (Array.isArray(data.tests) ? data.tests : [])
+    : (Array.isArray(data.tests) ? data.tests : []).filter(t => t && t.classId === activeClassId);
+
+  const modalCurrentClass = data.classes.find(c => c.id === modalClassId) || data.classes[0];
+  const modalClassStudents = (data.students || []).filter(s => s.classId === (modalClassId || data.classes[0]?.id));
 
   const handleScoreChange = (studentId, value) => {
     setScores(prev => ({
@@ -44,21 +58,62 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
 
   const handleCreateTest = (e) => {
     e.preventDefault();
-    if (!title || !subject || !maxMarks || !modalClassId) return;
+    const cleanTitle = title.trim();
+    const cleanSubject = subject.trim();
+    const numMaxMarks = Number(maxMarks);
+    const targetClassId = modalClassId || (data.classes[0]?.id || '');
 
-    const monthStr = testDate.substring(0, 7); // "YYYY-MM"
+    if (!cleanTitle) {
+      alert('Please enter a test title');
+      return;
+    }
+    if (!cleanSubject) {
+      alert('Please enter or select a subject name');
+      return;
+    }
+    if (isNaN(numMaxMarks) || numMaxMarks <= 0) {
+      alert('Please enter valid maximum marks (e.g. 50 or 100)');
+      return;
+    }
+    if (!targetClassId) {
+      alert('Please select a target class for this test');
+      return;
+    }
+
+    // Clean and sanitize student scores
+    const cleanScores = {};
+    if (scores && typeof scores === 'object') {
+      Object.entries(scores).forEach(([sId, val]) => {
+        if (val !== '' && val !== undefined && val !== null) {
+          const num = Number(val);
+          if (!isNaN(num)) {
+            cleanScores[sId] = num;
+          }
+        }
+      });
+    }
+
+    const monthStr = testDate ? testDate.substring(0, 7) : new Date().toISOString().substring(0, 7);
     const newTest = {
       id: 'tst-' + Date.now(),
-      classId: modalClassId,
-      title,
-      subject,
-      maxMarks: Number(maxMarks),
-      date: testDate,
+      classId: targetClassId,
+      title: cleanTitle,
+      subject: cleanSubject,
+      maxMarks: numMaxMarks,
+      date: testDate || new Date().toISOString().split('T')[0],
       month: monthStr,
-      scores
+      scores: cleanScores
     };
 
     onAddTest(newTest);
+
+    // Automatically switch view to the target class so user immediately sees the new test!
+    setActiveClassId(targetClassId);
+
+    const targetClassName = data.classes.find(c => c.id === targetClassId)?.name || 'Class';
+    setAlertMessage(`New test "${cleanTitle}" added successfully for Class ${targetClassName}!`);
+    setTimeout(() => setAlertMessage(''), 4000);
+
     setIsModalOpen(false);
 
     // Reset Form
@@ -93,9 +148,12 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
               onChange={(e) => setActiveClassId(e.target.value)}
               className="bg-transparent text-sm font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer"
             >
+              <option value="ALL" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
+                All Classes
+              </option>
               {data.classes.map((c) => (
                 <option key={c.id} value={c.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
-                  {c.name}
+                  Class {c.name}
                 </option>
               ))}
             </select>
@@ -104,7 +162,10 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
           {/* Create Test Button */}
           {isAdminLoggedIn ? (
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => {
+                setModalClassId(activeClassId && activeClassId !== 'ALL' ? activeClassId : (data.classes[0]?.id || ''));
+                setIsModalOpen(true);
+              }}
               className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-sm font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/30 active:scale-95 transition-all cursor-pointer"
             >
               <PlusCircle className="w-4 h-4" />
@@ -118,6 +179,14 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
         </div>
       </div>
 
+      {/* Dynamic Save/Update Notification Alert Banner */}
+      {alertMessage && (
+        <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 p-4 rounded-xl flex items-center gap-3 text-sm animate-fade-in font-semibold shadow-xs">
+          <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+          <span>{alertMessage}</span>
+        </div>
+      )}
+
       {/* Tests List Grid */}
       <div className="space-y-4">
         <h3 className="text-sm font-bold text-slate-700 dark:text-slate-400 uppercase tracking-wider">
@@ -126,19 +195,32 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
 
         {classTests.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {classTests.map((test) => (
+            {classTests.map((test) => {
+              const testClassName = data.classes.find(c => c.id === test.classId)?.name || 'N/A';
+              const testClassStudents = (data.students || []).filter(s => s.classId === test.classId);
+
+              return (
               <div key={test.id} className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 hover:border-indigo-500/40 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                 <div>
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 rounded-full shadow-xs">
-                        {test.subject}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 rounded-full shadow-xs">
+                          {test.subject}
+                        </span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 rounded-md">
+                          Class {testClassName}
+                        </span>
+                      </div>
                       <h4 className="text-lg font-bold text-slate-900 dark:text-white mt-2">{test.title}</h4>
                     </div>
                     {isAdminLoggedIn && (
                       <button
-                        onClick={() => onDeleteTest(test.id)}
+                        onClick={() => {
+                          if (window.confirm(`Are you sure you want to delete test "${test.title}"?`)) {
+                            onDeleteTest(test.id);
+                          }
+                        }}
                         className="p-1.5 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-600 hover:text-white dark:hover:bg-rose-600 dark:hover:text-white rounded-lg transition-colors cursor-pointer shadow-xs"
                         title="Delete Test"
                       >
@@ -159,9 +241,9 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
 
                 {/* Score Summary breakdown */}
                 <div className="mt-4 pt-3 border-t border-slate-200/80 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-950/40 rounded-xl p-3">
-                  <div className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Student Marks List:</div>
+                  <div className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Student Marks List ({testClassStudents.length}):</div>
                   <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1 text-xs">
-                    {classStudents.map(student => {
+                    {testClassStudents.map(student => {
                       const score = test.scores ? test.scores[student.id] : undefined;
                       const percentage = score !== undefined && Number(test.maxMarks) > 0 ? Math.round((Number(score) / Number(test.maxMarks)) * 100) : 0;
                       return (
@@ -219,11 +301,12 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
                 </div>
 
               </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
-          <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-12 text-center text-slate-500">
-            <BookOpen className="w-8 h-8 text-slate-600 mx-auto mb-2" />
+          <div className="bg-slate-100/70 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-12 text-center text-slate-500 dark:text-slate-400 shadow-xs">
+            <BookOpen className="w-8 h-8 text-slate-400 dark:text-slate-600 mx-auto mb-2" />
             No tests created for this class yet. Click "Create New Test" to add subject marks.
           </div>
         )}

@@ -194,10 +194,13 @@ export default function App() {
 
   // Handler: Add Test Marks
   const handleAddTest = (newTest) => {
-    setData(prev => ({
-      ...prev,
-      tests: [newTest, ...prev.tests]
-    }));
+    setData(prev => {
+      const existingTests = Array.isArray(prev?.tests) ? prev.tests : [];
+      return {
+        ...prev,
+        tests: [newTest, ...existingTests]
+      };
+    });
 
     // Cloud Sync
     syncWithFirestore('tests', newTest.id, newTest);
@@ -205,10 +208,13 @@ export default function App() {
 
   // Handler: Delete Test
   const handleDeleteTest = (testId) => {
-    setData(prev => ({
-      ...prev,
-      tests: prev.tests.filter(t => t.id !== testId)
-    }));
+    setData(prev => {
+      const existingTests = Array.isArray(prev?.tests) ? prev.tests : [];
+      return {
+        ...prev,
+        tests: existingTests.filter(t => t && t.id !== testId)
+      };
+    });
 
     deleteFromFirestore('tests', testId);
   };
