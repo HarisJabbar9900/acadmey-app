@@ -10,7 +10,8 @@ import {
   AlertCircle,
   Filter,
   MessageCircle,
-  Lock
+  Lock,
+  Sparkles
 } from 'lucide-react';
 
 export default function AttendanceSheet({ data, onSaveAttendance, selectedClassId, isAdminLoggedIn }) {
@@ -19,13 +20,13 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
 
   if (!isAdminLoggedIn) {
     return (
-      <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-12 text-center max-w-xl mx-auto space-y-4 my-8 shadow-2xl">
-        <div className="w-16 h-16 bg-indigo-500/10 text-indigo-400 rounded-2xl flex items-center justify-center mx-auto border border-indigo-500/20">
+      <div className="glass-panel border border-slate-200 dark:border-slate-800 rounded-2xl p-12 text-center max-w-xl mx-auto space-y-4 my-8 shadow-2xl">
+        <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center mx-auto border border-indigo-200 dark:border-indigo-500/20 shadow-xs">
           <Lock className="w-8 h-8" />
         </div>
-        <h2 className="text-xl font-bold text-white">Daily Attendance Management</h2>
-        <p className="text-xs text-slate-400 leading-relaxed">
-          Daily attendance register is restricted and accessible to Admin only. Please click <strong className="text-indigo-400">Admin Login</strong> in the top right menu and enter your PIN to mark or view attendance.
+        <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">Daily Attendance Management</h2>
+        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+          Daily attendance register is restricted and accessible to Admin only. Please click <strong className="text-indigo-600 dark:text-indigo-400">Admin Login</strong> in the top right menu and enter your PIN to mark or view attendance.
         </p>
       </div>
     );
@@ -76,52 +77,58 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
     <div className="space-y-6">
       
       {/* Top Action Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-slate-900/60 border border-slate-800 p-6 rounded-2xl">
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl overflow-hidden">
         <div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            <ClipboardCheck className="w-5 h-5 text-indigo-400" />
+          <div className="inline-flex items-center gap-2 text-indigo-500 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <Sparkles className="w-4 h-4" /> Al-Zia Science Academy Daily Roll Call
+          </div>
+          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
+            <ClipboardCheck className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
             Class-Wise Daily Attendance Register
           </h2>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Select a class, tap Present or Absent for each student, and save records permanently.
           </p>
         </div>
 
-        {/* Date Selector & Action Buttons */}
-        <div className="flex flex-wrap items-center gap-3">
+        {/* Date Selector & Action Buttons arranged neatly in a single cohesive row */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 shrink-0">
           
           {/* Date Picker */}
-          <div className="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 shadow-sm">
-            <Calendar className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+          <div className="flex items-center gap-2 bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2 shadow-xs">
+            <Calendar className="w-4 h-4 text-indigo-500 dark:text-indigo-400 shrink-0" />
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-bold sm:hidden">Date:</span>
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="bg-transparent text-sm font-bold text-slate-800 dark:text-white focus:outline-none cursor-pointer"
+              className="bg-transparent text-sm font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer"
             />
           </div>
 
           {/* Admin Attendance Controls */}
           {isAdminLoggedIn ? (
-            <>
+            <div className="flex items-center gap-2.5">
               <button
                 onClick={handleMarkAllPresent}
-                className="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/25 active:scale-95 transition-all cursor-pointer"
+                className="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/25 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+                title="Mark all active class students as Present"
               >
                 <UserCheck className="w-4 h-4 text-white" />
-                Mark All Present
+                <span>Mark All Present</span>
               </button>
 
               <button
                 onClick={handleSave}
-                className="px-5 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-sm font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/30 active:scale-95 transition-all cursor-pointer"
+                className="px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/30 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+                title="Save attendance records to cloud database"
               >
-                <Save className="w-4 h-4" />
-                Save Attendance
+                <Save className="w-4 h-4 text-white" />
+                <span>Save Attendance</span>
               </button>
-            </>
+            </div>
           ) : (
-            <div className="px-3.5 py-2 bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-sm">
+            <div className="px-3.5 py-2 bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-xs">
               <span>👁️ Read Only</span>
               <span className="text-[10px] text-slate-500">(Admin PIN required to mark attendance)</span>
             </div>
