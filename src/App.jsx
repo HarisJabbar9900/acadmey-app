@@ -11,6 +11,7 @@ import StudentFeedback from './components/StudentFeedback';
 import NoticeBoard from './components/NoticeBoard';
 import AiChatbot from './components/AiChatbot';
 import CommandPalette from './components/CommandPalette';
+import MobileSplashScreen from './components/MobileSplashScreen';
 import { 
   getInitialData, 
   saveLocalData, 
@@ -457,6 +458,9 @@ export default function App() {
       theme === 'dark' ? 'bg-slate-950 text-slate-100 dark-mode' : 'bg-slate-50 text-slate-900 light-mode'
     } flex flex-col lg:flex-row font-sans selection:bg-indigo-500 selection:text-white`}>
       
+      {/* 📱 Mobile-Only Luxury Startup Splash Loader (Never shows on Laptop/Desktop) */}
+      <MobileSplashScreen />
+
       {/* Background Subtle Gradients */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 print:hidden">
         <div className={`absolute -top-40 -left-40 w-[36rem] h-[36rem] ${theme === 'dark' ? 'bg-indigo-600/10' : 'bg-indigo-500/15'} rounded-full blur-3xl`} />
