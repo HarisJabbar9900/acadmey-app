@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { GraduationCap, Sparkles, Award, ShieldCheck, Zap } from 'lucide-react';
 
 export default function MobileSplashScreen({ onFinish }) {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth < 768;
+  });
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [progress, setProgress] = useState(0);
   const [statusText, setStatusText] = useState('Initializing Secure Portal...');
@@ -12,12 +15,18 @@ export default function MobileSplashScreen({ onFinish }) {
     if (typeof window === 'undefined') return;
     const isMobile = window.innerWidth < 768;
 
+    // Clean up pre-React instant splash element from HTML
+    const preSplash = document.getElementById('mobile-instant-splash');
+    if (preSplash) {
+      preSplash.remove();
+    }
+
     if (!isMobile) {
+      setIsVisible(false);
       if (onFinish) onFinish();
       return;
     }
 
-    // It's a mobile device -> show splash screen
     setIsVisible(true);
 
     const startTime = Date.now();
