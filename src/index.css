@@ -242,7 +242,7 @@ html.light-mode .glass-card:hover {
 
   /* Certificate Modal Print Settings */
   body:has(.certificate-modal-wrapper) {
-    background-color: #0f172a !important;
+    background-color: #ffffff !important;
   }
 
   .certificate-modal-wrapper {
@@ -253,7 +253,7 @@ html.light-mode .glass-card:hover {
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    background-color: #0f172a !important;
+    background-color: #ffffff !important;
     padding: 0 !important;
     margin: 0 !important;
   }
@@ -265,9 +265,9 @@ html.light-mode .glass-card:hover {
     box-sizing: border-box !important;
     margin: 0 !important;
     padding: 2rem !important;
-    background-color: #0f172a !important;
-    color: #ffffff !important;
-    border: 10px double #f59e0b !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 10px double #d97706 !important;
   }
 
   /* Report Card Modal Print Settings */

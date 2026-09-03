@@ -136,20 +136,20 @@ export default function ReportCardModal({ student, month, data, onClose }) {
   };
 
   return createPortal(
-    <div className="report-modal-wrapper fixed inset-0 z-[99999] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+    <div className="report-modal-wrapper fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
       
       {/* Modal Inner Container */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-3xl w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto max-h-[95vh] overflow-y-auto relative">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-3xl w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto max-h-[95vh] overflow-y-auto relative">
         
         {/* Sticky Controls Header (Hidden on Print) */}
-        <div className="sticky top-0 z-20 bg-slate-900/95 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4 pt-2 print-hidden print:hidden">
+        <div className="sticky top-0 z-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4 pt-2 print-hidden print:hidden">
           <div className="flex items-center gap-2.5">
-            <div className="p-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl border border-indigo-500/20">
+            <div className="p-2.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl border border-indigo-200 dark:border-indigo-500/20">
               <GraduationCap className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-extrabold text-white text-base sm:text-lg">Monthly Progress Report Card</h3>
-              <p className="text-xs text-slate-400">Student: {student.name} | Roll #{student.rollNo}</p>
+              <h3 className="font-extrabold text-slate-900 dark:text-white text-base sm:text-lg">Monthly Progress Report Card</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Student: {student.name} | Roll #{student.rollNo}</p>
             </div>
           </div>
 
@@ -182,7 +182,7 @@ export default function ReportCardModal({ student, month, data, onClose }) {
 
             <button
               onClick={onClose}
-              className="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-xl transition-all cursor-pointer"
+              className="p-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white rounded-xl transition-all cursor-pointer border border-slate-200 dark:border-slate-700"
               title="Close Modal"
             >
               <X className="w-5 h-5" />
@@ -190,145 +190,159 @@ export default function ReportCardModal({ student, month, data, onClose }) {
           </div>
         </div>
 
-        {/* PRINTABLE REPORT CARD CONTAINER */}
+        {/* PRINTABLE REPORT CARD CONTAINER (Always Clean Light Mode) */}
         <div 
           id="report-card-print-area"
-          className="bg-white text-slate-900 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6 mx-auto print:shadow-none print:w-full print:max-w-none print:p-6"
+          className="relative bg-white text-slate-900 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6 mx-auto print:shadow-none print:w-full print:max-w-none print:p-6 overflow-hidden border border-slate-200"
         >
-          {/* Header Title Banner */}
-          <div className="border-b-2 border-indigo-900 pb-4 text-center space-y-1">
-            <div className="flex items-center justify-center gap-2 text-indigo-900">
-              <GraduationCap className="w-8 h-8" />
-              <h1 className="text-2xl font-black uppercase tracking-wider">Al-Zia Science Academy</h1>
-            </div>
-            <p className="text-xs font-bold text-slate-600 uppercase tracking-widest">
-              Official Monthly Student Progress & Performance Report Card
-            </p>
-            <div className="inline-block bg-indigo-900 text-white text-xs font-mono font-bold px-3.5 py-1 rounded-full mt-1">
-              Month: {monthFormatted}
-            </div>
+          {/* Academy Name Background Watermark */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none z-0 overflow-hidden opacity-[0.05] print:opacity-[0.07]">
+            <GraduationCap className="w-80 h-80 text-indigo-950" />
+            <span className="text-3xl sm:text-5xl font-black tracking-widest text-indigo-950 uppercase font-serif text-center -rotate-12 whitespace-nowrap mt-3">
+              AL-ZIA SCIENCE ACADEMY
+            </span>
+            <span className="text-xs sm:text-sm font-bold tracking-widest text-slate-900 uppercase font-sans mt-2 -rotate-12">
+              Official Progress & Performance Report
+            </span>
           </div>
 
-          {/* Student Personal Info Grid */}
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
-            <div>
-              <span className="text-slate-500 block text-[10px] uppercase font-sans font-bold">Student Name</span>
-              <span className="font-extrabold text-slate-900 text-sm">{student.name}</span>
+          <div className="relative z-10 space-y-6">
+            {/* Header Title Banner */}
+            <div className="border-b-2 border-indigo-900 pb-4 text-center space-y-1">
+              <div className="flex items-center justify-center gap-2 text-indigo-900">
+                <GraduationCap className="w-8 h-8" />
+                <h1 className="text-2xl font-black uppercase tracking-wider">Al-Zia Science Academy</h1>
+              </div>
+              <p className="text-xs font-bold text-slate-600 uppercase tracking-widest">
+                Official Monthly Student Progress & Performance Report Card
+              </p>
+              <div className="inline-block bg-indigo-900 text-white text-xs font-mono font-bold px-3.5 py-1 rounded-full mt-1 shadow-xs">
+                Month: {monthFormatted}
+              </div>
             </div>
 
-            <div>
-              <span className="text-slate-500 block text-[10px] uppercase font-sans font-bold">Father Name</span>
-              <span className="font-bold text-slate-800">{student.fname || 'N/A'}</span>
+            {/* Student Personal Info Grid */}
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
+              <div>
+                <span className="text-slate-500 block text-[10px] uppercase font-sans font-bold">Student Name</span>
+                <span className="font-extrabold text-slate-900 text-sm">{student.name}</span>
+              </div>
+
+              <div>
+                <span className="text-slate-500 block text-[10px] uppercase font-sans font-bold">Father Name</span>
+                <span className="font-bold text-slate-800">{student.fname || 'N/A'}</span>
+              </div>
+
+              <div>
+                <span className="text-slate-500 block text-[10px] uppercase font-sans font-bold">Roll Number</span>
+                <span className="font-extrabold text-indigo-700 text-sm">#{student.rollNo}</span>
+              </div>
+
+              <div>
+                <span className="text-slate-500 block text-[10px] uppercase font-sans font-bold">Class</span>
+                <span className="font-bold text-slate-800">Class {studentClass?.name || 'N/A'}</span>
+              </div>
             </div>
 
-            <div>
-              <span className="text-slate-500 block text-[10px] uppercase font-sans font-bold">Roll Number</span>
-              <span className="font-extrabold text-indigo-700 text-sm">#{student.rollNo}</span>
+            {/* Monthly Attendance Summary Box */}
+            <div className="bg-slate-100/80 p-3 rounded-xl border border-slate-200 flex items-center justify-between text-xs font-mono">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-indigo-700" />
+                <span className="font-bold text-slate-700 font-sans">Monthly Attendance:</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <span>Total Days: <strong>{totalDays}</strong></span>
+                <span className="text-emerald-700 font-bold">Present: {presentDays}</span>
+                <span className="text-rose-700 font-bold">Absent: {absentDays}</span>
+                <span className="bg-indigo-900 text-white font-bold px-2 py-0.5 rounded text-[11px]">
+                  {attendancePercentage}%
+                </span>
+              </div>
             </div>
 
-            <div>
-              <span className="text-slate-500 block text-[10px] uppercase font-sans font-bold">Class</span>
-              <span className="font-bold text-slate-800">Class {studentClass?.name || 'N/A'}</span>
-            </div>
-          </div>
+            {/* Subject-Wise Test Performance Table */}
+            <div className="space-y-2">
+              <h3 className="text-xs font-bold text-indigo-950 uppercase tracking-wider flex items-center gap-1.5 font-sans">
+                <Award className="w-4 h-4 text-indigo-700" /> Subject-Wise Test Evaluation Ledger
+              </h3>
 
-          {/* Monthly Attendance Summary Box */}
-          <div className="bg-slate-100/80 p-3 rounded-xl border border-slate-200 flex items-center justify-between text-xs font-mono">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-indigo-700" />
-              <span className="font-bold text-slate-700 font-sans">Monthly Attendance:</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <span>Total Days: <strong>{totalDays}</strong></span>
-              <span className="text-emerald-700 font-bold">Present: {presentDays}</span>
-              <span className="text-rose-700 font-bold">Absent: {absentDays}</span>
-              <span className="bg-indigo-900 text-white font-bold px-2 py-0.5 rounded text-[11px]">
-                {attendancePercentage}%
-              </span>
-            </div>
-          </div>
-
-          {/* Subject-Wise Test Performance Table */}
-          <div className="space-y-2">
-            <h3 className="text-xs font-bold text-indigo-950 uppercase tracking-wider flex items-center gap-1.5 font-sans">
-              <Award className="w-4 h-4 text-indigo-700" /> Subject-Wise Test Evaluation Ledger
-            </h3>
-
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="bg-indigo-900 text-white font-sans text-[11px] uppercase">
-                  <th className="p-2.5 rounded-tl-lg">Subject Name</th>
-                  <th className="p-2.5">Date</th>
-                  <th className="p-2.5 text-center">Obtained Marks</th>
-                  <th className="p-2.5 text-center">Total Marks</th>
-                  <th className="p-2.5 text-center">Percentage</th>
-                  <th className="p-2.5 text-center rounded-tr-lg">Grade</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200 border-x border-b border-slate-200 font-mono">
-                {subjectScores.length > 0 ? (
-                  subjectScores.map((score, idx) => (
-                    <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
-                      <td className="p-2.5 font-bold font-sans text-slate-900">{score.subject}</td>
-                      <td className="p-2.5 text-slate-600 text-[11px]">{score.date}</td>
-                      <td className="p-2.5 text-center font-bold text-indigo-900">{score.obtained}</td>
-                      <td className="p-2.5 text-center text-slate-600">{score.max}</td>
-                      <td className="p-2.5 text-center font-bold">{score.pct}%</td>
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="bg-indigo-900 text-white font-sans text-[11px] uppercase">
+                    <th className="p-2.5 rounded-tl-lg">Subject Name</th>
+                    <th className="p-2.5">Date</th>
+                    <th className="p-2.5 text-center">Obtained Marks</th>
+                    <th className="p-2.5 text-center">Total Marks</th>
+                    <th className="p-2.5 text-center">Percentage</th>
+                    <th className="p-2.5 text-center rounded-tr-lg">Grade</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200 border-x border-b border-slate-200 font-mono">
+                  {subjectScores.length > 0 ? (
+                    subjectScores.map((score, idx) => (
+                      <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
+                        <td className="p-2.5 font-bold font-sans text-slate-900">{score.subject}</td>
+                        <td className="p-2.5 text-slate-600 text-[11px]">{score.date}</td>
+                        <td className="p-2.5 text-center font-bold text-indigo-900">{score.obtained}</td>
+                        <td className="p-2.5 text-center text-slate-600">{score.max}</td>
+                        <td className="p-2.5 text-center font-bold">{score.pct}%</td>
+                        <td className="p-2.5 text-center">
+                          <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${
+                            score.grade === 'A+' || score.grade === 'A' ? 'bg-emerald-100 text-emerald-800' :
+                            score.grade === 'B' || score.grade === 'C' ? 'bg-indigo-100 text-indigo-800' :
+                            'bg-rose-100 text-rose-800'
+                          }`}>
+                            {score.grade}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" className="p-6 text-center text-slate-500 italic font-sans">
+                        No tests recorded for this student in {monthFormatted}.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+                {subjectScores.length > 0 && (
+                  <tfoot>
+                    <tr className="bg-indigo-50 font-bold border-t-2 border-indigo-900 font-mono text-xs">
+                      <td colSpan="2" className="p-2.5 font-sans uppercase">Overall Summary Total:</td>
+                      <td className="p-2.5 text-center text-indigo-900 text-sm font-extrabold">{grandObtained}</td>
+                      <td className="p-2.5 text-center text-slate-700">{grandMax}</td>
+                      <td className="p-2.5 text-center text-indigo-950 text-sm font-extrabold">{overallPercentage}%</td>
                       <td className="p-2.5 text-center">
-                        <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${
-                          score.grade === 'A+' || score.grade === 'A' ? 'bg-emerald-100 text-emerald-800' :
-                          score.grade === 'B' || score.grade === 'C' ? 'bg-indigo-100 text-indigo-800' :
-                          'bg-rose-100 text-rose-800'
-                        }`}>
-                          {score.grade}
+                        <span className="px-2.5 py-0.5 bg-indigo-900 text-white rounded font-extrabold text-xs">
+                          {overallGrade}
                         </span>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="6" className="p-6 text-center text-slate-500 italic font-sans">
-                      No tests recorded for this student in {monthFormatted}.
-                    </td>
-                  </tr>
+                  </tfoot>
                 )}
-              </tbody>
-              {subjectScores.length > 0 && (
-                <tfoot>
-                  <tr className="bg-indigo-50 font-bold border-t-2 border-indigo-900 font-mono text-xs">
-                    <td colSpan="2" className="p-2.5 font-sans uppercase">Overall Summary Total:</td>
-                    <td className="p-2.5 text-center text-indigo-900 text-sm font-extrabold">{grandObtained}</td>
-                    <td className="p-2.5 text-center text-slate-700">{grandMax}</td>
-                    <td className="p-2.5 text-center text-indigo-950 text-sm font-extrabold">{overallPercentage}%</td>
-                    <td className="p-2.5 text-center">
-                      <span className="px-2.5 py-0.5 bg-indigo-900 text-white rounded font-extrabold text-xs">
-                        {overallGrade}
-                      </span>
-                    </td>
-                  </tr>
-                </tfoot>
-              )}
-            </table>
-          </div>
-
-          {/* Teacher Remarks & Principal Signature Box */}
-          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200">
-            <div className="border border-slate-200 p-3 rounded-xl bg-slate-50 space-y-1">
-              <span className="text-[10px] font-bold uppercase text-slate-500 font-sans block">Teacher Remarks & Conduct</span>
-              <p className="text-xs italic text-slate-700">
-                {overallPercentage >= 75 
-                  ? 'Excellent academic performance! Keep up the hard work.'
-                  : overallPercentage >= 50
-                  ? 'Satisfactory performance. Daily revision recommended.'
-                  : 'Needs improvement in core concepts and regular attendance.'}
-              </p>
+              </table>
             </div>
 
-            <div className="flex flex-col justify-end items-end pr-4 text-center">
-              <div className="w-40 border-b-2 border-slate-900 mb-1" />
-              <span className="text-xs font-bold text-slate-900 font-sans uppercase">Administrator</span>
-              <span className="text-[10px] text-slate-500 font-mono">Al-Zia Science Academy</span>
+            {/* Teacher Remarks & Principal Signature Box */}
+            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200">
+              <div className="border border-slate-200 p-3 rounded-xl bg-slate-50 space-y-1">
+                <span className="text-[10px] font-bold uppercase text-slate-500 font-sans block">Teacher Remarks & Conduct</span>
+                <p className="text-xs italic text-slate-700">
+                  {overallPercentage >= 75 
+                    ? 'Excellent academic performance! Keep up the hard work.'
+                    : overallPercentage >= 50
+                    ? 'Satisfactory performance. Daily revision recommended.'
+                    : 'Needs improvement in core concepts and regular attendance.'}
+                </p>
+              </div>
+
+              <div className="flex flex-col justify-end items-end pr-4 text-center">
+                <div className="w-40 border-b-2 border-slate-900 mb-1" />
+                <span className="text-xs font-bold text-slate-900 font-sans uppercase">Administrator</span>
+                <span className="text-[10px] text-slate-500 font-mono">Al-Zia Science Academy</span>
+              </div>
             </div>
+
           </div>
 
         </div>
