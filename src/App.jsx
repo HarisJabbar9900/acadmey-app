@@ -12,6 +12,7 @@ import NoticeBoard from './components/NoticeBoard';
 import AiChatbot from './components/AiChatbot';
 import CommandPalette from './components/CommandPalette';
 import MobileSplashScreen from './components/MobileSplashScreen';
+import StaffInfo from './components/StaffInfo';
 import { 
   getInitialData, 
   saveLocalData, 
@@ -450,6 +451,10 @@ export default function App() {
     feedback: { 
       title: 'Feedback & Student Inquiries', 
       subtitle: 'Parent and student questions, feedback messages, reviews and replies' 
+    },
+    staff: { 
+      title: 'Teaching Faculty & Staff Directory', 
+      subtitle: 'Faculty profiles, subject specializations, academic degrees and teaching qualifications' 
     }
   };
 
@@ -624,6 +629,14 @@ export default function App() {
               onAddFeedback={handleAddFeedback}
               onDeleteFeedback={handleDeleteFeedback}
               onToggleFeedbackStatus={handleToggleFeedbackStatus}
+            />
+          )}
+
+          {activeTab === 'staff' && (
+            <StaffInfo
+              faculty={data.faculty || []}
+              isAdminLoggedIn={isAdminLoggedIn}
+              onUpdateFaculty={handleUpdateFaculty}
             />
           )}
         </main>

@@ -27,7 +27,8 @@ import {
   School,
   ExternalLink,
   Laptop,
-  Search
+  Search,
+  UserCheck
 } from 'lucide-react';
 import { isFirebaseActive } from '../services/academyService';
 
@@ -93,6 +94,12 @@ export default function Sidebar({
           label: 'Study Material', 
           icon: BookOpen,
           badge: 'Free'
+        },
+        { 
+          id: 'staff', 
+          label: 'Faculty & Staff Info', 
+          icon: UserCheck,
+          badge: 'Staff'
         }
       ]
     },

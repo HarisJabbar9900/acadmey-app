@@ -222,7 +222,7 @@ const DEFAULT_NOTICES = [
   }
 ];
 
-const DEFAULT_FACULTY = [
+export const DEFAULT_FACULTY = [
   { id: 'fac-1', subject: 'Computer Science', teacher: 'Sir Haris Jabbar', education: 'BS Computer Science (BSCS - Gold Medalist)', experience: '6+ Years Board Specialist', classes: '9th, 10th, 11th, 12th' },
   { id: 'fac-2', subject: 'Physics', teacher: 'Prof. Malik Umar', education: 'M.Sc Physics (Gold Medalist)', experience: '10+ Years Board Examiner', classes: '9th, 10th, 11th, 12th' },
   { id: 'fac-3', subject: 'Chemistry', teacher: 'Sir Hassan Raza', education: 'M.Sc Applied Chemistry', experience: '7+ Years Teaching', classes: '9th, 10th, 11th, 12th' },
