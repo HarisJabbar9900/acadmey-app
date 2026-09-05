@@ -343,7 +343,7 @@ export default function Sidebar({
             <div className="flex gap-2 pt-0.5">
               <button
                 onClick={() => setIsChangePinModalOpen(true)}
-                className="flex-1 py-1.5 px-2 bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800/90 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer shadow-sm"
+                className="flex-1 py-1.5 px-2 bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800/90 dark:hover:bg-slate-700 text-slate-700 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-white rounded-lg text-[10px] font-bold flex items-center justify-center gap-1 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer shadow-sm"
                 title="Change Admin Security PIN"
               >
                 <Settings className="w-3 h-3 text-indigo-500 dark:text-indigo-400" />
@@ -364,13 +364,13 @@ export default function Sidebar({
                 <Lock className="w-3.5 h-3.5" />
               </div>
               <div>
-                <p className="text-[11px] font-bold text-slate-800 dark:text-slate-200">Admin Controls</p>
-                <p className="text-[9px] text-slate-500 dark:text-slate-400">Staff Authentication</p>
+                <span className="text-xs font-bold text-slate-900 dark:text-white block leading-tight">Admin Login</span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400">PIN authentication</span>
               </div>
             </div>
             <button
               onClick={() => setIsLoginModalOpen(true)}
-              className="px-3 py-1 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-[11px] font-bold shadow-md shadow-indigo-600/30 transition-all hover:scale-105 cursor-pointer"
+              className="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-lg text-xs font-bold shadow-md shadow-indigo-600/30 active:scale-95 transition-all cursor-pointer"
             >
               Login
             </button>
@@ -381,18 +381,18 @@ export default function Sidebar({
         <div className="flex items-center justify-between gap-2">
           <button
             onClick={toggleTheme}
-            className="flex-1 py-1.5 px-2 bg-white dark:bg-slate-800/80 hover:bg-indigo-50 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700/60 rounded-xl text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white transition-all text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+            className="group flex-1 py-1.5 px-2.5 bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800/90 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600 rounded-xl transition-all text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-xs"
             title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
           >
             {theme === 'dark' ? (
               <>
-                <Sun className="w-3.5 h-3.5 text-amber-400" />
-                <span className="text-[11px]">Light Mode</span>
+                <Sun className="w-4 h-4 text-amber-400 group-hover:text-amber-300 transition-colors shrink-0" />
+                <span className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors">Light Mode</span>
               </>
             ) : (
               <>
-                <Moon className="w-3.5 h-3.5 text-indigo-500" />
-                <span className="text-[11px]">Dark Mode</span>
+                <Moon className="w-4 h-4 text-indigo-600 group-hover:text-indigo-700 transition-colors shrink-0" />
+                <span className="text-xs font-bold text-slate-800 group-hover:text-indigo-700 transition-colors">Dark Mode</span>
               </>
             )}
           </button>
@@ -440,7 +440,7 @@ export default function Sidebar({
         <div className="flex items-center gap-2">
           <button
             onClick={onOpenCommandPalette}
-            className="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-xl text-xs transition-colors cursor-pointer shadow-xs"
+            className="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-xl text-xs transition-colors cursor-pointer shadow-xs"
             title="Search Portal (Ctrl + K)"
           >
             <Search className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
