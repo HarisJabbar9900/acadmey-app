@@ -25,7 +25,10 @@ import {
   updatePresence,
   removePresence,
   subscribeToPresence,
-  cleanStalePresence
+  cleanStalePresence,
+  subscribeToCollection,
+  fetchCloudData,
+  syncAllDataToCloud
 } from './services/academyService';
 
 export default function App() {
@@ -126,14 +129,76 @@ export default function App() {
     updateAdminPinInCloud(stringPin).catch(() => {});
   };
 
-  // Auto-seed existing student data & subscribe to real-time Admin PIN from Firestore
+  // Real-time Cloud Synchronization (Tests, Students, Classes, Notices, Admin PIN)
   useEffect(() => {
+    let unsubscribePin = null;
+    let unsubTests = null;
+    let unsubStudents = null;
+    let unsubClasses = null;
+    let unsubNotices = null;
+
     try {
+      // 1. If local data exists, ensure cloud has all tests & records
       if (data) {
         seedFirestoreData(data).catch(() => {});
+        syncAllDataToCloud(data).catch(() => {});
       }
-      
-      const unsubscribePin = subscribeToAdminPin(remotePin => {
+
+      // 2. Fetch fresh cloud data immediately on startup (for mobile & desktop)
+      fetchCloudData().then(cloudData => {
+        if (cloudData) {
+          setData(prev => ({
+            ...prev,
+            ...(cloudData.tests && cloudData.tests.length > 0 ? { tests: cloudData.tests } : {}),
+            ...(cloudData.students && cloudData.students.length > 0 ? { students: cloudData.students } : {}),
+            ...(cloudData.classes && cloudData.classes.length > 0 ? { classes: cloudData.classes } : {}),
+            ...(cloudData.notices && cloudData.notices.length > 0 ? { notices: cloudData.notices } : {})
+          }));
+        }
+      }).catch(() => {});
+
+      // 3. Real-time listener for tests (updates Top High Scorers live across all devices)
+      unsubTests = subscribeToCollection('tests', (remoteTests) => {
+        if (Array.isArray(remoteTests) && remoteTests.length > 0) {
+          setData(prev => {
+            if (JSON.stringify(prev.tests) === JSON.stringify(remoteTests)) return prev;
+            return { ...prev, tests: remoteTests };
+          });
+        }
+      });
+
+      // 4. Real-time listener for students
+      unsubStudents = subscribeToCollection('students', (remoteStudents) => {
+        if (Array.isArray(remoteStudents) && remoteStudents.length > 0) {
+          setData(prev => {
+            if (JSON.stringify(prev.students) === JSON.stringify(remoteStudents)) return prev;
+            return { ...prev, students: remoteStudents };
+          });
+        }
+      });
+
+      // 5. Real-time listener for classes
+      unsubClasses = subscribeToCollection('classes', (remoteClasses) => {
+        if (Array.isArray(remoteClasses) && remoteClasses.length > 0) {
+          setData(prev => {
+            if (JSON.stringify(prev.classes) === JSON.stringify(remoteClasses)) return prev;
+            return { ...prev, classes: remoteClasses };
+          });
+        }
+      });
+
+      // 6. Real-time listener for notices
+      unsubNotices = subscribeToCollection('notices', (remoteNotices) => {
+        if (Array.isArray(remoteNotices) && remoteNotices.length > 0) {
+          setData(prev => {
+            if (JSON.stringify(prev.notices) === JSON.stringify(remoteNotices)) return prev;
+            return { ...prev, notices: remoteNotices };
+          });
+        }
+      });
+
+      // 7. Real-time Admin PIN
+      unsubscribePin = subscribeToAdminPin(remotePin => {
         if (remotePin) {
           setAdminPin(String(remotePin));
           try {
@@ -141,13 +206,17 @@ export default function App() {
           } catch (e) {}
         }
       });
-
-      return () => {
-        if (typeof unsubscribePin === 'function') unsubscribePin();
-      };
     } catch (err) {
-      console.warn('Admin PIN sync warning:', err);
+      console.warn('Real-time sync error:', err);
     }
+
+    return () => {
+      if (typeof unsubscribePin === 'function') unsubscribePin();
+      if (typeof unsubTests === 'function') unsubTests();
+      if (typeof unsubStudents === 'function') unsubStudents();
+      if (typeof unsubClasses === 'function') unsubClasses();
+      if (typeof unsubNotices === 'function') unsubNotices();
+    };
   }, []);
 
   // Light / Dark Theme State
@@ -524,6 +593,34 @@ export default function App() {
                 {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
               </span>
             </div>
+
+            {/* Live Cloud Real-time Status & Sync Button */}
+            <button
+              onClick={async () => {
+                try {
+                  await syncAllDataToCloud(data);
+                  const fresh = await fetchCloudData();
+                  if (fresh) {
+                    setData(prev => ({
+                      ...prev,
+                      ...(fresh.tests && fresh.tests.length > 0 ? { tests: fresh.tests } : {}),
+                      ...(fresh.students && fresh.students.length > 0 ? { students: fresh.students } : {}),
+                      ...(fresh.classes && fresh.classes.length > 0 ? { classes: fresh.classes } : {}),
+                      ...(fresh.notices && fresh.notices.length > 0 ? { notices: fresh.notices } : {})
+                    }));
+                  }
+                  alert('☁️ Live Cloud Synced! All latest tests and toppers are updated across Laptop and Mobile.');
+                } catch (e) {
+                  console.error(e);
+                }
+              }}
+              className="px-2.5 sm:px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-all active:scale-95"
+              title="Click to sync data with Cloud / All Devices"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="hidden sm:inline">☁️ Cloud Live</span>
+              <span className="sm:hidden">☁️ Sync</span>
+            </button>
 
             {isAdminLoggedIn ? (
               <span className="px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">

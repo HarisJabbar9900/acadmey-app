@@ -591,3 +591,79 @@ export const subscribeToCollection = (collectionName, callback) => {
   }
 };
 
+export const fetchCloudData = async () => {
+  if (!isFirebaseActive() || !db) return null;
+  try {
+    const cloudData = {};
+
+    const testsSnap = await getDocs(collection(db, 'tests'));
+    if (!testsSnap.empty) {
+      cloudData.tests = [];
+      testsSnap.forEach(d => cloudData.tests.push({ id: d.id, ...d.data() }));
+    }
+
+    const studentsSnap = await getDocs(collection(db, 'students'));
+    if (!studentsSnap.empty) {
+      cloudData.students = [];
+      studentsSnap.forEach(d => cloudData.students.push({ id: d.id, ...d.data() }));
+    }
+
+    const classesSnap = await getDocs(collection(db, 'classes'));
+    if (!classesSnap.empty) {
+      cloudData.classes = [];
+      classesSnap.forEach(d => cloudData.classes.push({ id: d.id, ...d.data() }));
+    }
+
+    const noticesSnap = await getDocs(collection(db, 'notices'));
+    if (!noticesSnap.empty) {
+      cloudData.notices = [];
+      noticesSnap.forEach(d => cloudData.notices.push({ id: d.id, ...d.data() }));
+    }
+
+    return cloudData;
+  } catch (e) {
+    console.warn('fetchCloudData warning:', e);
+    return null;
+  }
+};
+
+export const syncAllDataToCloud = async (currentData) => {
+  if (!isFirebaseActive() || !db || !currentData) return;
+  try {
+    // Sync tests
+    if (Array.isArray(currentData.tests) && currentData.tests.length > 0) {
+      for (const tst of currentData.tests) {
+        if (tst?.id) {
+          await setDoc(doc(db, 'tests', tst.id), tst, { merge: true });
+        }
+      }
+    }
+    // Sync students
+    if (Array.isArray(currentData.students) && currentData.students.length > 0) {
+      for (const std of currentData.students) {
+        if (std?.id) {
+          await setDoc(doc(db, 'students', std.id), std, { merge: true });
+        }
+      }
+    }
+    // Sync classes
+    if (Array.isArray(currentData.classes) && currentData.classes.length > 0) {
+      for (const cls of currentData.classes) {
+        if (cls?.id) {
+          await setDoc(doc(db, 'classes', cls.id), cls, { merge: true });
+        }
+      }
+    }
+    // Sync notices
+    if (Array.isArray(currentData.notices) && currentData.notices.length > 0) {
+      for (const ntc of currentData.notices) {
+        if (ntc?.id) {
+          await setDoc(doc(db, 'notices', ntc.id), ntc, { merge: true });
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('syncAllDataToCloud error:', err);
+  }
+};
+
