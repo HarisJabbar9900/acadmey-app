@@ -12,12 +12,18 @@ import {
   Eye,
   EyeOff,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  GraduationCap,
+  Users
 } from 'lucide-react';
 
 export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedClassId, isAdminLoggedIn }) {
-  const [activeClassId, setActiveClassId] = useState(selectedClassId && selectedClassId !== 'ALL' ? selectedClassId : (data.classes[0]?.id || ''));
-  const [modalClassId, setModalClassId] = useState(selectedClassId && selectedClassId !== 'ALL' ? selectedClassId : (data.classes[0]?.id || ''));
+  const initialClassId = (selectedClassId && selectedClassId !== 'ALL' && data.classes.some(c => c.id === selectedClassId))
+    ? selectedClassId
+    : (data.classes[0]?.id || 'cls-9th');
+
+  const [activeClassId, setActiveClassId] = useState(initialClassId);
+  const [modalClassId, setModalClassId] = useState(initialClassId);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [expandedTestIds, setExpandedTestIds] = useState({});
@@ -38,25 +44,22 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
 
   // Sync activeClassId if selectedClassId prop changes
   React.useEffect(() => {
-    if (selectedClassId) {
+    if (selectedClassId && selectedClassId !== 'ALL' && data.classes.some(c => c.id === selectedClassId)) {
       setActiveClassId(selectedClassId);
     }
-  }, [selectedClassId]);
+  }, [selectedClassId, data.classes]);
 
   // Sync modalClassId if activeClassId changes (always default to a valid concrete class id)
   React.useEffect(() => {
-    if (activeClassId && activeClassId !== 'ALL') {
+    if (activeClassId && data.classes.some(c => c.id === activeClassId)) {
       setModalClassId(activeClassId);
     } else if (data.classes && data.classes.length > 0) {
       setModalClassId(data.classes[0].id);
     }
   }, [activeClassId, data.classes]);
 
-  const isAllClasses = activeClassId === 'ALL';
-  const currentClass = isAllClasses ? { name: 'All Classes' } : data.classes.find(c => c.id === activeClassId);
-  const classTests = isAllClasses 
-    ? (Array.isArray(data.tests) ? data.tests : [])
-    : (Array.isArray(data.tests) ? data.tests : []).filter(t => t && t.classId === activeClassId);
+  const currentClass = data.classes.find(c => c.id === activeClassId) || data.classes[0];
+  const classTests = (Array.isArray(data.tests) ? data.tests : []).filter(t => t && t.classId === activeClassId);
 
   const modalCurrentClass = data.classes.find(c => c.id === modalClassId) || data.classes[0];
   const modalClassStudents = (data.students || []).filter(s => s.classId === (modalClassId || data.classes[0]?.id));
@@ -80,11 +83,11 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
       return;
     }
     if (!cleanSubject) {
-      alert('Please enter or select a subject name');
+      alert('Please enter or select a subject');
       return;
     }
     if (isNaN(numMaxMarks) || numMaxMarks <= 0) {
-      alert('Please enter valid maximum marks (e.g. 50 or 100)');
+      alert('Please enter valid total marks greater than 0');
       return;
     }
     if (!targetClassId) {
@@ -107,7 +110,7 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
 
     const monthStr = testDate ? testDate.substring(0, 7) : new Date().toISOString().substring(0, 7);
     const newTest = {
-      id: 'tst-' + Date.now(),
+      id: `test-${Date.now()}`,
       classId: targetClassId,
       title: cleanTitle,
       subject: cleanSubject,
@@ -153,16 +156,13 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
         <div className="flex flex-wrap items-center gap-3">
           
           {/* Class Select */}
-          <div className="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 shadow-sm">
+          <div className="hidden items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 shadow-sm">
             <span className="text-xs text-slate-500 dark:text-slate-400 font-bold">Class:</span>
             <select
               value={activeClassId}
               onChange={(e) => setActiveClassId(e.target.value)}
               className="bg-transparent text-sm font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer"
             >
-              <option value="ALL" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
-                All Classes
-              </option>
               {data.classes.map((c) => (
                 <option key={c.id} value={c.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
                   Class {c.name}
@@ -175,7 +175,7 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
           {isAdminLoggedIn ? (
             <button
               onClick={() => {
-                setModalClassId(activeClassId && activeClassId !== 'ALL' ? activeClassId : (data.classes[0]?.id || ''));
+                setModalClassId(activeClassId || (data.classes[0]?.id || ''));
                 setIsModalOpen(true);
               }}
               className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-sm font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/30 active:scale-95 transition-all cursor-pointer"
@@ -199,11 +199,100 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
         </div>
       )}
 
+      {/* 🎓 4 Classes Interactive Tabs / Selector Cards */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+            <GraduationCap className="w-4 h-4 text-indigo-500" />
+            Select Class:
+          </span>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+            Active: <strong className="text-indigo-600 dark:text-indigo-400">Class {currentClass?.name}</strong>
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {data.classes.map((c) => {
+            const isSelected = activeClassId === c.id;
+            const classTestCount = (data.tests || []).filter(t => t && t.classId === c.id).length;
+            const classStudentCount = (data.students || []).filter(s => s && s.classId === c.id).length;
+
+            return (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => setActiveClassId(c.id)}
+                className={`relative p-3.5 sm:p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between group ${
+                  isSelected
+                    ? 'bg-gradient-to-br from-indigo-600 via-indigo-600 to-indigo-700 text-white border-indigo-500 shadow-lg shadow-indigo-600/30 scale-[1.02] ring-2 ring-indigo-400/40'
+                    : 'bg-white dark:bg-slate-900/70 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-indigo-400 dark:hover:border-indigo-500/40 hover:bg-slate-50 dark:hover:bg-slate-800/60 shadow-sm hover:scale-[1.01]'
+                }`}
+              >
+                <div className="flex items-center justify-between w-full mb-2">
+                  <div className="flex items-center gap-2">
+                    <div className={`p-1.5 rounded-xl transition-colors ${
+                      isSelected 
+                        ? 'bg-white/20 text-white' 
+                        : 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-500/20'
+                    }`}>
+                      <GraduationCap className="w-4 h-4" />
+                    </div>
+                    <span className={`text-base font-extrabold block leading-tight ${isSelected ? 'text-white' : 'text-slate-900 dark:text-white'}`}>
+                      Class {c.name}
+                    </span>
+                  </div>
+
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full font-mono transition-colors ${
+                    isSelected
+                      ? 'bg-white/25 text-white'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
+                  }`}>
+                    {classTestCount} {classTestCount === 1 ? 'Test' : 'Tests'}
+                  </span>
+                </div>
+
+                <div className={`flex items-center justify-between text-[11px] pt-2 border-t ${
+                  isSelected ? 'border-white/20 text-indigo-100' : 'border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400'
+                }`}>
+                  <span className="flex items-center gap-1">
+                    <Users className="w-3 h-3" />
+                    {classStudentCount} Students
+                  </span>
+                  <span className={`font-bold text-[10px] ${isSelected ? 'text-white' : 'text-indigo-600 dark:text-indigo-400'}`}>
+                    {isSelected ? '● Active' : 'View Tests →'}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Tests List Grid */}
       <div className="space-y-4">
-        <h3 className="text-sm font-bold text-slate-700 dark:text-slate-400 uppercase tracking-wider">
-          Recent Tests ({currentClass?.name || 'Selected Class'})
-        </h3>
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <Award className="w-4 h-4 text-indigo-500" />
+              Class {currentClass?.name} Tests ({classTests.length})
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Showing tests exclusively for Class {currentClass?.name}. Click any class above to switch view.
+            </p>
+          </div>
+          {isAdminLoggedIn && (
+            <button
+              onClick={() => {
+                setModalClassId(activeClassId);
+                setIsModalOpen(true);
+              }}
+              className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1.5 cursor-pointer bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 px-3 py-1.5 rounded-xl border border-indigo-200 dark:border-indigo-500/30 transition-all shadow-xs"
+            >
+              <PlusCircle className="w-3.5 h-3.5" />
+              + Add Test to Class {currentClass?.name}
+            </button>
+          )}
+        </div>
 
         {classTests.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -378,9 +467,25 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
             })}
           </div>
         ) : (
-          <div className="bg-slate-100/70 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-12 text-center text-slate-500 dark:text-slate-400 shadow-xs">
-            <BookOpen className="w-8 h-8 text-slate-400 dark:text-slate-600 mx-auto mb-2" />
-            No tests created for this class yet. Click "Create New Test" to add subject marks.
+          <div className="bg-white dark:bg-slate-900/50 border border-dashed border-slate-300 dark:border-slate-800 rounded-2xl p-10 text-center text-slate-500 dark:text-slate-400 shadow-sm">
+            <BookOpen className="w-10 h-10 text-indigo-400/60 dark:text-indigo-500/40 mx-auto mb-2" />
+            <h4 className="text-base font-bold text-slate-800 dark:text-slate-200">No Tests Recorded for Class {currentClass?.name}</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
+              There are currently no recorded tests for Class {currentClass?.name}. Click below to add a new test.
+            </p>
+            {isAdminLoggedIn && (
+              <button
+                type="button"
+                onClick={() => {
+                  setModalClassId(activeClassId);
+                  setIsModalOpen(true);
+                }}
+                className="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold inline-flex items-center gap-2 shadow-md shadow-indigo-600/30 cursor-pointer active:scale-95 transition-all"
+              >
+                <PlusCircle className="w-4 h-4" />
+                Create First Test for Class {currentClass?.name}
+              </button>
+            )}
           </div>
         )}
       </div>
