@@ -27,6 +27,8 @@ import {
   subscribeToPresence,
   cleanStalePresence,
   subscribeToCollection,
+  subscribeToMapCollection,
+  subscribeToDoc,
   fetchCloudData,
   syncAllDataToCloud
 } from './services/academyService';
@@ -129,13 +131,19 @@ export default function App() {
     updateAdminPinInCloud(stringPin).catch(() => {});
   };
 
-  // Real-time Cloud Synchronization (Tests, Students, Classes, Notices, Admin PIN)
+  // Real-time Cloud Synchronization (All Essential Academic Data across Laptop, Mobile & All Devices)
   useEffect(() => {
     let unsubscribePin = null;
     let unsubTests = null;
     let unsubStudents = null;
     let unsubClasses = null;
     let unsubNotices = null;
+    let unsubAttendance = null;
+    let unsubFees = null;
+    let unsubResources = null;
+    let unsubFeedbacks = null;
+    let unsubFaculty = null;
+    let unsubTimetable = null;
 
     try {
       // 1. If local data exists, ensure cloud has all tests & records
@@ -152,7 +160,13 @@ export default function App() {
             ...(cloudData.tests && cloudData.tests.length > 0 ? { tests: cloudData.tests } : {}),
             ...(cloudData.students && cloudData.students.length > 0 ? { students: cloudData.students } : {}),
             ...(cloudData.classes && cloudData.classes.length > 0 ? { classes: cloudData.classes } : {}),
-            ...(cloudData.notices && cloudData.notices.length > 0 ? { notices: cloudData.notices } : {})
+            ...(cloudData.notices && cloudData.notices.length > 0 ? { notices: cloudData.notices } : {}),
+            ...(cloudData.attendance && Object.keys(cloudData.attendance).length > 0 ? { attendance: { ...prev.attendance, ...cloudData.attendance } } : {}),
+            ...(cloudData.fees && Object.keys(cloudData.fees).length > 0 ? { fees: { ...prev.fees, ...cloudData.fees } } : {}),
+            ...(cloudData.resources && cloudData.resources.length > 0 ? { resources: cloudData.resources } : {}),
+            ...(cloudData.feedbacks && cloudData.feedbacks.length > 0 ? { feedbacks: cloudData.feedbacks } : {}),
+            ...(Array.isArray(cloudData.timetable) && cloudData.timetable.length > 0 ? { timetable: cloudData.timetable } : {}),
+            ...(Array.isArray(cloudData.faculty) ? { faculty: cloudData.faculty } : {})
           }));
         }
       }).catch(() => {});
@@ -197,7 +211,67 @@ export default function App() {
         }
       });
 
-      // 7. Real-time Admin PIN
+      // 7. Real-time listener for attendance
+      unsubAttendance = subscribeToMapCollection('attendance', (remoteAtt) => {
+        if (remoteAtt && Object.keys(remoteAtt).length > 0) {
+          setData(prev => ({
+            ...prev,
+            attendance: { ...prev.attendance, ...remoteAtt }
+          }));
+        }
+      });
+
+      // 8. Real-time listener for fees
+      unsubFees = subscribeToMapCollection('fees', (remoteFees) => {
+        if (remoteFees && Object.keys(remoteFees).length > 0) {
+          setData(prev => ({
+            ...prev,
+            fees: { ...prev.fees, ...remoteFees }
+          }));
+        }
+      });
+
+      // 9. Real-time listener for study resources
+      unsubResources = subscribeToCollection('resources', (remoteRes) => {
+        if (Array.isArray(remoteRes) && remoteRes.length > 0) {
+          setData(prev => {
+            if (JSON.stringify(prev.resources) === JSON.stringify(remoteRes)) return prev;
+            return { ...prev, resources: remoteRes };
+          });
+        }
+      });
+
+      // 10. Real-time listener for student feedback
+      unsubFeedbacks = subscribeToCollection('feedbacks', (remoteFb) => {
+        if (Array.isArray(remoteFb) && remoteFb.length > 0) {
+          setData(prev => {
+            if (JSON.stringify(prev.feedbacks) === JSON.stringify(remoteFb)) return prev;
+            return { ...prev, feedbacks: remoteFb };
+          });
+        }
+      });
+
+      // 11. Real-time listener for faculty (Staff Directory)
+      unsubFaculty = subscribeToDoc('settings', 'faculty', (docData) => {
+        if (docData && Array.isArray(docData.list)) {
+          setData(prev => {
+            if (JSON.stringify(prev.faculty) === JSON.stringify(docData.list)) return prev;
+            return { ...prev, faculty: docData.list };
+          });
+        }
+      });
+
+      // 12. Real-time listener for timetable
+      unsubTimetable = subscribeToDoc('settings', 'timetable', (docData) => {
+        if (docData && Array.isArray(docData.schedule) && docData.schedule.length > 0) {
+          setData(prev => {
+            if (JSON.stringify(prev.timetable) === JSON.stringify(docData.schedule)) return prev;
+            return { ...prev, timetable: docData.schedule };
+          });
+        }
+      });
+
+      // 13. Real-time Admin PIN
       unsubscribePin = subscribeToAdminPin(remotePin => {
         if (remotePin) {
           setAdminPin(String(remotePin));
@@ -216,6 +290,12 @@ export default function App() {
       if (typeof unsubStudents === 'function') unsubStudents();
       if (typeof unsubClasses === 'function') unsubClasses();
       if (typeof unsubNotices === 'function') unsubNotices();
+      if (typeof unsubAttendance === 'function') unsubAttendance();
+      if (typeof unsubFees === 'function') unsubFees();
+      if (typeof unsubResources === 'function') unsubResources();
+      if (typeof unsubFeedbacks === 'function') unsubFeedbacks();
+      if (typeof unsubFaculty === 'function') unsubFaculty();
+      if (typeof unsubTimetable === 'function') unsubTimetable();
     };
   }, []);
 
@@ -606,10 +686,16 @@ export default function App() {
                       ...(fresh.tests && fresh.tests.length > 0 ? { tests: fresh.tests } : {}),
                       ...(fresh.students && fresh.students.length > 0 ? { students: fresh.students } : {}),
                       ...(fresh.classes && fresh.classes.length > 0 ? { classes: fresh.classes } : {}),
-                      ...(fresh.notices && fresh.notices.length > 0 ? { notices: fresh.notices } : {})
+                      ...(fresh.notices && fresh.notices.length > 0 ? { notices: fresh.notices } : {}),
+                      ...(fresh.attendance && Object.keys(fresh.attendance).length > 0 ? { attendance: { ...prev.attendance, ...fresh.attendance } } : {}),
+                      ...(fresh.fees && Object.keys(fresh.fees).length > 0 ? { fees: { ...prev.fees, ...fresh.fees } } : {}),
+                      ...(fresh.resources && fresh.resources.length > 0 ? { resources: fresh.resources } : {}),
+                      ...(fresh.feedbacks && fresh.feedbacks.length > 0 ? { feedbacks: fresh.feedbacks } : {}),
+                      ...(Array.isArray(fresh.timetable) && fresh.timetable.length > 0 ? { timetable: fresh.timetable } : {}),
+                      ...(Array.isArray(fresh.faculty) ? { faculty: fresh.faculty } : {})
                     }));
                   }
-                  alert('☁️ Live Cloud Synced! All latest tests and toppers are updated across Laptop and Mobile.');
+                  alert('☁️ Live Cloud Synced! All tests, marks, toppers, attendance, fees, and staff are updated across Laptop and Mobile.');
                 } catch (e) {
                   console.error(e);
                 }

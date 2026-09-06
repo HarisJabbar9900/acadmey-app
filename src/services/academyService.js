@@ -591,33 +591,111 @@ export const subscribeToCollection = (collectionName, callback) => {
   }
 };
 
+export const subscribeToMapCollection = (collectionName, callback) => {
+  if (!db) return () => {};
+  try {
+    return onSnapshot(collection(db, collectionName), (snapshot) => {
+      const mapObj = {};
+      snapshot.forEach(docSnap => {
+        mapObj[docSnap.id] = { id: docSnap.id, ...docSnap.data() };
+      });
+      callback(mapObj);
+    }, (error) => {
+      console.warn(`Firestore map subscription error on ${collectionName}:`, error);
+    });
+  } catch (e) {
+    console.warn(`Subscribe to map ${collectionName} failed:`, e);
+    return () => {};
+  }
+};
+
+export const subscribeToDoc = (collectionName, docId, callback) => {
+  if (!db) return () => {};
+  try {
+    return onSnapshot(doc(db, collectionName, docId), (docSnap) => {
+      if (docSnap.exists()) {
+        callback(docSnap.data());
+      }
+    }, (error) => {
+      console.warn(`Firestore doc subscription error on ${collectionName}/${docId}:`, error);
+    });
+  } catch (e) {
+    console.warn(`Subscribe to doc ${collectionName}/${docId} failed:`, e);
+    return () => {};
+  }
+};
+
 export const fetchCloudData = async () => {
   if (!isFirebaseActive() || !db) return null;
   try {
     const cloudData = {};
 
+    // 1. Tests
     const testsSnap = await getDocs(collection(db, 'tests'));
     if (!testsSnap.empty) {
       cloudData.tests = [];
       testsSnap.forEach(d => cloudData.tests.push({ id: d.id, ...d.data() }));
     }
 
+    // 2. Students
     const studentsSnap = await getDocs(collection(db, 'students'));
     if (!studentsSnap.empty) {
       cloudData.students = [];
       studentsSnap.forEach(d => cloudData.students.push({ id: d.id, ...d.data() }));
     }
 
+    // 3. Classes
     const classesSnap = await getDocs(collection(db, 'classes'));
     if (!classesSnap.empty) {
       cloudData.classes = [];
       classesSnap.forEach(d => cloudData.classes.push({ id: d.id, ...d.data() }));
     }
 
+    // 4. Notices
     const noticesSnap = await getDocs(collection(db, 'notices'));
     if (!noticesSnap.empty) {
       cloudData.notices = [];
       noticesSnap.forEach(d => cloudData.notices.push({ id: d.id, ...d.data() }));
+    }
+
+    // 5. Attendance
+    const attSnap = await getDocs(collection(db, 'attendance'));
+    if (!attSnap.empty) {
+      cloudData.attendance = {};
+      attSnap.forEach(d => { cloudData.attendance[d.id] = { id: d.id, ...d.data() }; });
+    }
+
+    // 6. Fees
+    const feesSnap = await getDocs(collection(db, 'fees'));
+    if (!feesSnap.empty) {
+      cloudData.fees = {};
+      feesSnap.forEach(d => { cloudData.fees[d.id] = { id: d.id, ...d.data() }; });
+    }
+
+    // 7. Resources
+    const resSnap = await getDocs(collection(db, 'resources'));
+    if (!resSnap.empty) {
+      cloudData.resources = [];
+      resSnap.forEach(d => cloudData.resources.push({ id: d.id, ...d.data() }));
+    }
+
+    // 8. Feedbacks
+    const fbSnap = await getDocs(collection(db, 'feedbacks'));
+    if (!fbSnap.empty) {
+      cloudData.feedbacks = [];
+      fbSnap.forEach(d => cloudData.feedbacks.push({ id: d.id, ...d.data() }));
+    }
+
+    // 9. Timetable
+    const ttSnap = await getDoc(doc(db, 'settings', 'timetable'));
+    if (ttSnap.exists() && Array.isArray(ttSnap.data()?.schedule)) {
+      cloudData.timetable = ttSnap.data().schedule;
+    }
+
+    // 10. Faculty
+    const facSnap = await getDoc(doc(db, 'settings', 'faculty'));
+    if (facSnap.exists() && Array.isArray(facSnap.data()?.list)) {
+      cloudData.faculty = facSnap.data().list;
     }
 
     return cloudData;
@@ -630,7 +708,7 @@ export const fetchCloudData = async () => {
 export const syncAllDataToCloud = async (currentData) => {
   if (!isFirebaseActive() || !db || !currentData) return;
   try {
-    // Sync tests
+    // 1. Sync tests
     if (Array.isArray(currentData.tests) && currentData.tests.length > 0) {
       for (const tst of currentData.tests) {
         if (tst?.id) {
@@ -638,7 +716,7 @@ export const syncAllDataToCloud = async (currentData) => {
         }
       }
     }
-    // Sync students
+    // 2. Sync students
     if (Array.isArray(currentData.students) && currentData.students.length > 0) {
       for (const std of currentData.students) {
         if (std?.id) {
@@ -646,7 +724,7 @@ export const syncAllDataToCloud = async (currentData) => {
         }
       }
     }
-    // Sync classes
+    // 3. Sync classes
     if (Array.isArray(currentData.classes) && currentData.classes.length > 0) {
       for (const cls of currentData.classes) {
         if (cls?.id) {
@@ -654,13 +732,45 @@ export const syncAllDataToCloud = async (currentData) => {
         }
       }
     }
-    // Sync notices
+    // 4. Sync notices
     if (Array.isArray(currentData.notices) && currentData.notices.length > 0) {
       for (const ntc of currentData.notices) {
         if (ntc?.id) {
           await setDoc(doc(db, 'notices', ntc.id), ntc, { merge: true });
         }
       }
+    }
+    // 5. Sync attendance
+    if (currentData.attendance && typeof currentData.attendance === 'object') {
+      for (const [key, record] of Object.entries(currentData.attendance)) {
+        if (key && record) {
+          await setDoc(doc(db, 'attendance', key), record, { merge: true });
+        }
+      }
+    }
+    // 6. Sync fees
+    if (currentData.fees && typeof currentData.fees === 'object') {
+      for (const [key, fee] of Object.entries(currentData.fees)) {
+        if (key && fee) {
+          await setDoc(doc(db, 'fees', key), fee, { merge: true });
+        }
+      }
+    }
+    // 7. Sync resources
+    if (Array.isArray(currentData.resources) && currentData.resources.length > 0) {
+      for (const res of currentData.resources) {
+        if (res?.id) {
+          await setDoc(doc(db, 'resources', res.id), res, { merge: true });
+        }
+      }
+    }
+    // 8. Sync timetable
+    if (Array.isArray(currentData.timetable) && currentData.timetable.length > 0) {
+      await setDoc(doc(db, 'settings', 'timetable'), { schedule: currentData.timetable }, { merge: true });
+    }
+    // 9. Sync faculty
+    if (Array.isArray(currentData.faculty)) {
+      await setDoc(doc(db, 'settings', 'faculty'), { list: currentData.faculty }, { merge: true });
     }
   } catch (err) {
     console.warn('syncAllDataToCloud error:', err);
