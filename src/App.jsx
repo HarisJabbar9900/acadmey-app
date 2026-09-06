@@ -409,7 +409,7 @@ export default function App() {
     const newData = { ...data, faculty: updatedFacultyList };
     setData(newData);
     saveLocalData(newData);
-    syncWithFirestore(newData, 'faculty');
+    syncWithFirestore('settings', 'faculty', { list: updatedFacultyList });
   };
 
   const handleUpdateAiRules = (updatedRules) => {
