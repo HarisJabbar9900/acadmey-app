@@ -13,6 +13,7 @@ import AiChatbot from './components/AiChatbot';
 import CommandPalette from './components/CommandPalette';
 import MobileSplashScreen from './components/MobileSplashScreen';
 import StaffInfo from './components/StaffInfo';
+import { Heart, Code } from 'lucide-react';
 import { 
   getInitialData, 
   saveLocalData, 
@@ -887,8 +888,39 @@ export default function App() {
         </main>
 
         {/* Footer */}
-        <footer className="app-footer-main relative border-t border-slate-800/80 bg-slate-950/60 backdrop-blur-md px-6 py-4 text-center text-slate-500 text-xs print:hidden">
-          Al-Zia Science Academy • Online Management Portal
+        <footer className="app-footer-main relative border-t border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-950/80 backdrop-blur-xl px-4 sm:px-8 py-5 text-slate-500 dark:text-slate-400 text-xs print:hidden transition-colors shadow-inner">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            {/* Left: Academy Brand */}
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl overflow-hidden border border-indigo-500/30 bg-slate-950 flex items-center justify-center shrink-0 shadow-sm">
+                <img src="/favicon.svg" alt="Al-Zia Emblem" className="w-full h-full object-cover" />
+              </div>
+              <div className="text-center md:text-left">
+                <h4 className="font-extrabold text-slate-900 dark:text-white text-xs tracking-tight">
+                  Al-Zia Science Academy
+                </h4>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Online Student &amp; Academy Management Portal
+                </p>
+              </div>
+            </div>
+
+            {/* Right: Professional Developer Credit & Copyright */}
+            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center md:text-right">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium shadow-xs">
+                <Code className="w-3.5 h-3.5 text-indigo-500" />
+                <span>Developed with</span>
+                <Heart className="w-3 h-3 text-rose-500 fill-rose-500 animate-pulse" />
+                <span>by <strong className="text-indigo-600 dark:text-indigo-400 font-bold tracking-wide">Haris Jabbar</strong></span>
+              </div>
+
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                All Rights Reserved &copy; 2026
+              </div>
+            </div>
+
+          </div>
         </footer>
 
       </div>
