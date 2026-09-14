@@ -13,7 +13,7 @@ import AiChatbot from './components/AiChatbot';
 import CommandPalette from './components/CommandPalette';
 import MobileSplashScreen from './components/MobileSplashScreen';
 import StaffInfo from './components/StaffInfo';
-import { Heart, Code } from 'lucide-react';
+import { Heart, Code, Sparkles, ShieldCheck, Clock, Award, GraduationCap } from 'lucide-react';
 import { 
   getInitialData, 
   saveLocalData, 
@@ -888,35 +888,111 @@ export default function App() {
         </main>
 
         {/* Footer */}
-        <footer className="app-footer-main relative border-t border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-950/80 backdrop-blur-xl px-4 sm:px-8 py-5 text-slate-500 dark:text-slate-400 text-xs print:hidden transition-colors shadow-inner">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        {/* Footer */}
+        <footer className="app-footer-main relative border-t border-slate-200/80 dark:border-slate-800/80 bg-gradient-to-b from-slate-50/90 via-white to-slate-100/90 dark:from-slate-900/90 dark:via-slate-950 dark:to-black backdrop-blur-2xl px-4 sm:px-8 pt-10 pb-28 md:pb-12 text-slate-500 dark:text-slate-400 text-xs print:hidden transition-colors shadow-2xl overflow-hidden">
+          
+          {/* Ambient Lighting Glow */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-24 bg-indigo-500/10 dark:bg-indigo-500/15 blur-3xl pointer-events-none rounded-full" />
+
+          <div className="max-w-7xl mx-auto relative space-y-8 lg:pr-36">
             
-            {/* Left: Academy Brand */}
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl overflow-hidden border border-indigo-500/30 bg-slate-950 flex items-center justify-center shrink-0 shadow-sm">
-                <img src="/favicon.svg" alt="Al-Zia Emblem" className="w-full h-full object-cover" />
-              </div>
-              <div className="text-center md:text-left">
-                <h4 className="font-extrabold text-slate-900 dark:text-white text-xs tracking-tight">
-                  Al-Zia Science Academy
-                </h4>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                  Online Student &amp; Academy Management Portal
+            {/* Top Tier: 3-Column Wide Executive Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+              
+              {/* Col 1: Academy Brand & Profile (5 cols) */}
+              <div className="md:col-span-5 space-y-3 text-center md:text-left">
+                <div className="flex items-center justify-center md:justify-start gap-3">
+                  <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-amber-400/40 bg-slate-950 flex items-center justify-center shrink-0 shadow-lg shadow-amber-500/10 p-1">
+                    <img src="/favicon.svg" alt="Al-Zia Science Academy Logo" className="w-full h-full object-contain" />
+                  </div>
+                  <div>
+                    <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                      Al-Zia Science Academy
+                    </h3>
+                    <p className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400">
+                      Center for Science &amp; Modern Academic Excellence
+                    </p>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-w-md mx-auto md:mx-0">
+                  Dedicated to preparing students of 9th, 10th, 11th &amp; 12th for top board positions through conceptual learning, rigorous testing, and modern digital academic management.
                 </p>
+
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-1">
+                  <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/20 flex items-center gap-1">
+                    <GraduationCap className="w-3.5 h-3.5 text-indigo-500" /> Class 9th – 12th
+                  </span>
+                  <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-500/20 flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5 text-amber-500" /> Evening: 3:00 – 6:30 PM
+                  </span>
+                </div>
               </div>
+
+              {/* Col 2: Key Features & Digital Portal (3 cols) */}
+              <div className="md:col-span-3 space-y-2.5 text-center md:text-left border-y md:border-y-0 md:border-l md:border-r border-slate-200/80 dark:border-slate-800/80 py-4 md:py-0 md:px-6">
+                <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white flex items-center justify-center md:justify-start gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-emerald-500" /> Verified System
+                </h4>
+                <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400 font-medium">
+                  <li className="flex items-center justify-center md:justify-start gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                    <span>Cloud-Synchronized Records</span>
+                  </li>
+                  <li className="flex items-center justify-center md:justify-start gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
+                    <span>Real-Time WhatsApp Alerts</span>
+                  </li>
+                  <li className="flex items-center justify-center md:justify-start gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                    <span>Automated Progress Reports</span>
+                  </li>
+                  <li className="flex items-center justify-center md:justify-start gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 shrink-0" />
+                    <span>Digital Study Library &amp; Tests</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Col 3: Lead Developer Showcase Card (4 cols) */}
+              <div className="md:col-span-4 flex flex-col items-center md:items-start space-y-3">
+                <div className="w-full p-4 rounded-2xl bg-white/80 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-md hover:border-indigo-500/40 transition-all group">
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 flex items-center gap-1">
+                      <Code className="w-3 h-3 text-indigo-500" /> Engineering
+                    </span>
+                    <span className="flex items-center gap-1 text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" /> Live v2.5
+                    </span>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                      Designed &amp; Architected by
+                    </div>
+                    <div className="text-sm sm:text-base font-black text-slate-900 dark:text-white flex items-center gap-1.5 tracking-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                      <span>Haris Jabbar</span>
+                      <Award className="w-4 h-4 text-amber-500 inline-block shrink-0" />
+                    </div>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+                      Lead Full-Stack Web Architect &amp; Software Specialist
+                    </p>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
-            {/* Right: Professional Developer Credit & Copyright */}
-            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center md:text-right">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium shadow-xs">
-                <Code className="w-3.5 h-3.5 text-indigo-500" />
-                <span>Developed with</span>
-                <Heart className="w-3 h-3 text-rose-500 fill-rose-500 animate-pulse" />
-                <span>by <strong className="text-indigo-600 dark:text-indigo-400 font-bold tracking-wide">Haris Jabbar</strong></span>
+            {/* Bottom Bar: Copyright & Dedicated Safe Clearance */}
+            <div className="pt-6 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+              <div className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                &copy; 2026 <strong className="text-slate-900 dark:text-white">Al-Zia Science Academy</strong>. All Rights Reserved.
               </div>
 
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                All Rights Reserved &copy; 2026
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 font-medium">
+                <span>Made with</span>
+                <Heart className="w-3 h-3 text-rose-500 fill-rose-500 animate-pulse" />
+                <span>for Quality Education in Pakistan</span>
               </div>
             </div>
 
