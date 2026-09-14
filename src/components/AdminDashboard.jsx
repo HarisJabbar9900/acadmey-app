@@ -12,7 +12,8 @@ import {
   Sparkles,
   Trophy,
   Printer,
-  FileText
+  FileText,
+  Trash2
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -26,8 +27,8 @@ import {
 import ReportCardModal from './ReportCardModal';
 import CertificateModal from './CertificateModal';
 
-export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn, onlineUsers = [] }) {
-  const [selectedMonth, setSelectedMonth] = useState('2026-08');
+export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn, onlineUsers = [], onPurgeAllData, onNavigate }) {
+  const [selectedMonth, setSelectedMonth] = useState(() => new Date().toISOString().slice(0, 7));
   const [selectedReportStudent, setSelectedReportStudent] = useState(null);
   const [selectedCertificateScorer, setSelectedCertificateScorer] = useState(null);
   const getMonthTitle = (monthStr) => {
@@ -290,8 +291,12 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
                       </div>
                     </div>
                   ) : (
-                    <div className="py-6 text-center text-slate-400 text-xs italic">
-                      No test records yet
+                    <div className="py-7 text-center space-y-1">
+                      <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+                        <Trophy className="w-3.5 h-3.5 text-slate-400" />
+                      </div>
+                      <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">Awaiting Test Records</p>
+                      <p className="text-[11px] text-slate-400 dark:text-slate-500">Toppers will rank automatically</p>
                     </div>
                   )}
                 </div>
@@ -340,22 +345,35 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
           </p>
         </div>
 
-        {/* Month Picker */}
-        <div className="flex items-center gap-3 bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl px-4 py-2 shadow-sm">
-          <Calendar className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
-          <span className="text-xs text-slate-500 dark:text-slate-400 font-bold">Month:</span>
-          <input
-            type="month"
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            className="bg-transparent text-sm font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer"
-          />
+        <div className="flex flex-wrap items-center gap-2.5">
+          {isAdminLoggedIn && onPurgeAllData && (
+            <button
+              onClick={onPurgeAllData}
+              className="px-3 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
+              title="Permanently wipe all sample/dummy records"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Clear Sample Data</span>
+            </button>
+          )}
+
+          {/* Month Picker */}
+          <div className="flex items-center gap-2.5 bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2 shadow-sm">
+            <Calendar className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-bold">Month:</span>
+            <input
+              type="month"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="bg-transparent text-xs font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer"
+            />
+          </div>
         </div>
       </div>
 
       {/* 3. KPI Metric Cards (Visible ONLY to Logged-in Admin) */}
       {isAdminLoggedIn && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           
           {/* Card 1: Total Students */}
           <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 p-5 shadow-sm hover:shadow-xl hover:border-indigo-500/40 dark:hover:border-indigo-500/40 transition-all duration-300 transform hover:-translate-y-1 group">
@@ -585,8 +603,25 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
                 })
               ) : (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-slate-500 italic">
-                    No students found for the selected filter.
+                  <td colSpan={7} className="py-12 px-4 text-center">
+                    <div className="max-w-md mx-auto space-y-3">
+                      <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 flex items-center justify-center mx-auto border border-indigo-500/20">
+                        <Users className="w-6 h-6" />
+                      </div>
+                      <h4 className="text-base font-bold text-slate-800 dark:text-white">No Students Enrolled Yet</h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        The academy database is clean and ready for your real student records. You can enroll students into Class 9th, 10th, 11th, or 12th.
+                      </p>
+                      {isAdminLoggedIn && onNavigate && (
+                        <button
+                          onClick={() => onNavigate('students')}
+                          className="mt-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-md shadow-indigo-600/30 transition-all cursor-pointer"
+                        >
+                          <Users className="w-3.5 h-3.5" />
+                          <span>Enroll First Student</span>
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               )}
@@ -652,8 +687,14 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
             </ResponsiveContainer>
           </div>
         ) : (
-          <div className="h-64 flex items-center justify-center text-slate-500 text-sm italic">
-            No test data for this month.
+          <div className="h-44 flex flex-col items-center justify-center text-center p-6 space-y-2">
+            <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-400 flex items-center justify-center border border-slate-200 dark:border-slate-700/60">
+              <TrendingUp className="w-5 h-5 text-indigo-500" />
+            </div>
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Ready For Real Exam Scores ({formattedMonthName})</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm">
+              Visual performance charts will populate automatically once subject tests and student marks are recorded.
+            </p>
           </div>
         )}
       </div>

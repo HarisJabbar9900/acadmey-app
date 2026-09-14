@@ -170,8 +170,22 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
           );
         })
         ) : (
-          <div className="col-span-full py-6 text-center text-slate-500 text-xs italic">
-            No active notices or announcements at the moment.
+          <div className="col-span-full py-10 px-4 text-center flex flex-col items-center justify-center border border-dashed border-slate-300 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-900/40">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-3 border border-amber-500/20">
+              <Megaphone className="w-6 h-6" />
+            </div>
+            <h4 className="text-sm font-bold text-slate-800 dark:text-white mb-1">No Announcements Posted Yet</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mb-4">
+              Academy updates, holiday notifications, and exam schedules will appear here in real-time for students and teachers.
+            </p>
+            {isAdminLoggedIn && (
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-amber-500/25 active:scale-95 transition-all cursor-pointer"
+              >
+                <Plus className="w-4 h-4" /> Post First Announcement
+              </button>
+            )}
           </div>
         )}
       </div>

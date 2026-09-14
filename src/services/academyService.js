@@ -31,94 +31,11 @@ const DEFAULT_CLASSES = [
   }
 ];
 
-const DEFAULT_STUDENTS = [
-  // Class 9th (4 Students)
-  { id: 'std-1', classId: 'cls-9th', rollNo: '101', name: 'Ali Ahmed', fname: 'Muhammad Ahmed', fatherNumber: '+92 300 1234567' },
-  { id: 'std-2', classId: 'cls-9th', rollNo: '102', name: 'Hamza Khan', fname: 'Tariq Khan', fatherNumber: '+92 301 2345678' },
-  { id: 'std-3', classId: 'cls-9th', rollNo: '103', name: 'Zainab Fatima', fname: 'Ghulam Hussain', fatherNumber: '+92 300 8765432' },
-  { id: 'std-4', classId: 'cls-9th', rollNo: '104', name: 'Abdullah Shah', fname: 'Syed Shah', fatherNumber: '+92 312 9876543' },
+const DEFAULT_STUDENTS = [];
 
-  // Class 10th (3 Students)
-  { id: 'std-5', classId: 'cls-10th', rollNo: '201', name: 'Usman Ghani', fname: 'Abdul Ghani', fatherNumber: '+92 302 3456789' },
-  { id: 'std-6', classId: 'cls-10th', rollNo: '202', name: 'Ayesha Bibi', fname: 'Muhammad Rafiq', fatherNumber: '+92 333 4567891' },
-  { id: 'std-7', classId: 'cls-10th', rollNo: '203', name: 'Muhammad Omer', fname: 'Farooq Ahmed', fatherNumber: '+92 321 6543210' },
+const DEFAULT_ATTENDANCE = {};
 
-  // Class 11th (3 Students)
-  { id: 'std-8', classId: 'cls-11th', rollNo: '301', name: 'Bilal Hassan', fname: 'Hassan Raza', fatherNumber: '+92 303 4567890' },
-  { id: 'std-9', classId: 'cls-11th', rollNo: '302', name: 'Mariam Tariq', fname: 'Tariq Mehmood', fatherNumber: '+92 345 7890123' },
-  { id: 'std-10', classId: 'cls-11th', rollNo: '303', name: 'Hassan Ali', fname: 'Liaquat Ali', fatherNumber: '+92 306 1122334' },
-
-  // Class 12th (3 Students)
-  { id: 'std-11', classId: 'cls-12th', rollNo: '401', name: 'Zaid Malik', fname: 'Malik Umar', fatherNumber: '+92 304 5678901' },
-  { id: 'std-12', classId: 'cls-12th', rollNo: '402', name: 'Noor Fatima', fname: 'Rashid Ahmed', fatherNumber: '+92 307 2233445' },
-  { id: 'std-13', classId: 'cls-12th', rollNo: '403', name: 'Shahzaib Khan', fname: 'Jahangir Khan', fatherNumber: '+92 313 5566778' }
-];
-
-const DEFAULT_ATTENDANCE = {
-  [`${new Date().toISOString().split('T')[0]}_cls-9th`]: {
-    date: new Date().toISOString().split('T')[0],
-    classId: 'cls-9th',
-    records: { 'std-1': 'Present', 'std-2': 'Absent', 'std-3': 'Present', 'std-4': 'Late' }
-  },
-  [`${new Date().toISOString().split('T')[0]}_cls-10th`]: {
-    date: new Date().toISOString().split('T')[0],
-    classId: 'cls-10th',
-    records: { 'std-5': 'Present', 'std-6': 'Present', 'std-7': 'Absent' }
-  },
-  [`${new Date().toISOString().split('T')[0]}_cls-11th`]: {
-    date: new Date().toISOString().split('T')[0],
-    classId: 'cls-11th',
-    records: { 'std-8': 'Present', 'std-9': 'Present', 'std-10': 'Present' }
-  },
-  [`${new Date().toISOString().split('T')[0]}_cls-12th`]: {
-    date: new Date().toISOString().split('T')[0],
-    classId: 'cls-12th',
-    records: { 'std-11': 'Present', 'std-12': 'Absent', 'std-13': 'Present' }
-  }
-};
-
-const DEFAULT_TESTS = [
-  {
-    id: 'tst-1',
-    classId: 'cls-9th',
-    title: 'Computer Basics Test 1',
-    subject: 'Computer Science',
-    maxMarks: 50,
-    date: '2026-08-05',
-    month: '2026-08',
-    scores: { 'std-1': 48, 'std-2': 42, 'std-3': 49, 'std-4': 38 }
-  },
-  {
-    id: 'tst-2',
-    classId: 'cls-10th',
-    title: 'Physics Mechanics Quiz',
-    subject: 'Physics',
-    maxMarks: 100,
-    date: '2026-08-10',
-    month: '2026-08',
-    scores: { 'std-5': 94, 'std-6': 88, 'std-7': 76 }
-  },
-  {
-    id: 'tst-3',
-    classId: 'cls-11th',
-    title: 'Chemistry Organic Test',
-    subject: 'Chemistry',
-    maxMarks: 75,
-    date: '2026-08-12',
-    month: '2026-08',
-    scores: { 'std-8': 70, 'std-9': 68, 'std-10': 62 }
-  },
-  {
-    id: 'tst-4',
-    classId: 'cls-12th',
-    title: 'Mathematics Algebra & Calculus',
-    subject: 'Math',
-    maxMarks: 100,
-    date: '2026-08-14',
-    month: '2026-08',
-    scores: { 'std-11': 98, 'std-12': 85, 'std-13': 91 }
-  }
-];
+const DEFAULT_TESTS = [];
 
 export const DEFAULT_TIMETABLE = [
   { id: 'tt-1', time: '3:00 – 3:35 PM', '9th': 'Physics', '10th': 'Math', '11th': 'English', '12th': 'Urdu', boys: 'Computer' },
@@ -129,98 +46,13 @@ export const DEFAULT_TIMETABLE = [
   { id: 'tt-6', time: '5:55 – 6:30 PM', '9th': 'Math', '10th': 'Biology', '11th': 'Urdu', '12th': '-', boys: '-' }
 ];
 
-const DEFAULT_RESOURCES = [
-  {
-    id: 'res-1',
-    title: 'Class 9th Computer Science Complete Text Book',
-    category: 'Book',
-    classId: 'cls-9th',
-    subject: 'Computer Science',
-    fileName: '9th_Computer_Science_Book.pdf',
-    fileUrl: '',
-    date: '2026-08-16'
-  },
-  {
-    id: 'res-2',
-    title: 'Class 10th Physics Solved Numerical Notes',
-    category: 'Notes',
-    classId: 'cls-10th',
-    subject: 'Physics',
-    fileName: '10th_Physics_Notes.pdf',
-    fileUrl: '',
-    date: '2026-08-16'
-  },
-  {
-    id: 'res-3',
-    title: 'First Year Chemistry Top 100 Important MCQs',
-    category: 'MCQs',
-    classId: 'cls-11th',
-    subject: 'Chemistry',
-    fileName: '11th_Chemistry_MCQs.pdf',
-    fileUrl: '',
-    date: '2026-08-16'
-  }
-];
+const DEFAULT_RESOURCES = [];
 
-const DEFAULT_FEES = {
-  [`2026-08_std-1`]: { month: '2026-08', studentId: 'std-1', monthlyFee: 2500, paidAmount: 2500, status: 'Paid', paidDate: '2026-08-05', paymentMethod: 'Cash' },
-  [`2026-08_std-2`]: { month: '2026-08', studentId: 'std-2', monthlyFee: 2500, paidAmount: 0, status: 'Unpaid', paidDate: '', paymentMethod: '' },
-  [`2026-08_std-3`]: { month: '2026-08', studentId: 'std-3', monthlyFee: 3000, paidAmount: 3000, status: 'Paid', paidDate: '2026-08-06', paymentMethod: 'EasyPaisa' },
-  [`2026-08_std-4`]: { month: '2026-08', studentId: 'std-4', monthlyFee: 2500, paidAmount: 0, status: 'Unpaid', paidDate: '', paymentMethod: '' },
-  [`2026-08_std-5`]: { month: '2026-08', studentId: 'std-5', monthlyFee: 3000, paidAmount: 3000, status: 'Paid', paidDate: '2026-08-02', paymentMethod: 'Cash' },
-  [`2026-08_std-6`]: { month: '2026-08', studentId: 'std-6', monthlyFee: 3000, paidAmount: 3000, status: 'Paid', paidDate: '2026-08-04', paymentMethod: 'JazzCash' },
-  [`2026-08_std-7`]: { month: '2026-08', studentId: 'std-7', monthlyFee: 3000, paidAmount: 0, status: 'Unpaid', paidDate: '', paymentMethod: '' },
-  [`2026-08_std-8`]: { month: '2026-08', studentId: 'std-8', monthlyFee: 3500, paidAmount: 3500, status: 'Paid', paidDate: '2026-08-01', paymentMethod: 'Cash' },
-  [`2026-08_std-9`]: { month: '2026-08', studentId: 'std-9', monthlyFee: 3500, paidAmount: 3500, status: 'Paid', paidDate: '2026-08-03', paymentMethod: 'Bank Transfer' },
-  [`2026-08_std-10`]: { month: '2026-08', studentId: 'std-10', monthlyFee: 3500, paidAmount: 0, status: 'Unpaid', paidDate: '', paymentMethod: '' },
-  [`2026-08_std-11`]: { month: '2026-08', studentId: 'std-11', monthlyFee: 4000, paidAmount: 4000, status: 'Paid', paidDate: '2026-08-01', paymentMethod: 'Cash' },
-  [`2026-08_std-12`]: { month: '2026-08', studentId: 'std-12', monthlyFee: 4000, paidAmount: 0, status: 'Unpaid', paidDate: '', paymentMethod: '' },
-  [`2026-08_std-13`]: { month: '2026-08', studentId: 'std-13', monthlyFee: 4000, paidAmount: 4000, status: 'Paid', paidDate: '2026-08-08', paymentMethod: 'Cash' },
-  [`2026-08_std-14`]: { month: '2026-08', studentId: 'std-14', monthlyFee: 2500, paidAmount: 2500, status: 'Paid', paidDate: '2026-08-05', paymentMethod: 'Cash' }
-};
+const DEFAULT_FEES = {};
 
-const DEFAULT_FEEDBACKS = [
-  {
-    id: 'fb-1',
-    studentName: 'Ali Ahmed',
-    className: '9th',
-    category: 'Study Material',
-    comment: 'Please upload 9th class Physics solved numerical notes in PDF format.',
-    date: '2026-08-16',
-    status: 'Pending'
-  },
-  {
-    id: 'fb-2',
-    studentName: 'Usman Ghani',
-    className: '10th',
-    category: 'Timetable',
-    comment: 'Is it possible to extend the computer practical lab time by 15 minutes?',
-    date: '2026-08-16',
-    status: 'Pending'
-  }
-];
+const DEFAULT_FEEDBACKS = [];
 
-const DEFAULT_NOTICES = [
-  {
-    id: `ntc-${Date.now()}`,
-    createdAt: Date.now(),
-    title: 'Monthly Test Series Starting Next Monday',
-    category: 'Exam Notice',
-    targetClass: 'All Classes',
-    content: 'Monthly comprehensive tests for 9th, 10th, 11th, and 12th classes will begin from Monday 20th August. Attendance is mandatory.',
-    date: '17 August',
-    isPinned: true
-  },
-  {
-    id: 'ntc-2',
-    title: 'Academy Holiday Notice for Independence Day',
-    category: 'Holiday Notice',
-    targetClass: 'All Classes',
-    content: 'Al-Zia Science Academy will remain closed on 14th August on account of Independence Day celebrations.',
-    date: '14 August',
-    isPinned: false
-  }
-];
+const DEFAULT_NOTICES = [];
 
 export const DEFAULT_FACULTY = [];
 
@@ -290,16 +122,36 @@ export const getInitialData = () => {
         });
     }
 
-    if (!Array.isArray(parsed.students) || parsed.students.length === 0) {
-      parsed.students = DEFAULT_STUDENTS;
+    // Auto-purge any dummy / mock data previously stored in localStorage
+    const hasDummyStudents = Array.isArray(parsed.students) && parsed.students.some(s => s && (s.id === 'std-1' || s.id === 'std-2' || s.name === 'Ali Ahmed'));
+    const hasDummyTests = Array.isArray(parsed.tests) && parsed.tests.some(t => t && (t.id === 'tst-1' || t.title === 'Computer Basics Test 1'));
+    const hasDummyResources = Array.isArray(parsed.resources) && parsed.resources.some(r => r && (r.id === 'res-1' || r.title?.includes('Class 9th Computer Science Complete Text Book')));
+    const hasDummyNotices = Array.isArray(parsed.notices) && parsed.notices.some(n => n && (n.id === 'ntc-2' || n.title?.includes('Monthly Test Series Starting Next Monday')));
+    const hasDummyFeedbacks = Array.isArray(parsed.feedbacks) && parsed.feedbacks.some(f => f && (f.id === 'fb-1' || f.studentName === 'Ali Ahmed'));
+
+    if (hasDummyStudents || hasDummyTests || hasDummyResources || hasDummyNotices || hasDummyFeedbacks) {
+      parsed.students = [];
+      parsed.tests = [];
+      parsed.attendance = {};
+      parsed.fees = {};
+      parsed.resources = [];
+      parsed.feedbacks = [];
+      parsed.notices = [];
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+      } catch (e) {}
+    }
+
+    if (!Array.isArray(parsed.students)) {
+      parsed.students = [];
     } else {
-      parsed.students = parsed.students.filter(s => s && s.classId !== 'cls-boys');
+      parsed.students = parsed.students.filter(s => s && s.classId !== 'cls-boys' && s.id !== 'std-1' && s.id !== 'std-2');
     }
 
     if (!Array.isArray(parsed.tests)) {
-      parsed.tests = DEFAULT_TESTS;
+      parsed.tests = [];
     } else {
-      parsed.tests = parsed.tests.filter(Boolean);
+      parsed.tests = parsed.tests.filter(t => t && t.id !== 'tst-1' && t.id !== 'tst-2');
     }
 
     const isStaleTimetable = !Array.isArray(parsed.timetable) || 
@@ -406,6 +258,26 @@ export const deleteFromFirestore = async (collectionName, docId) => {
     } catch (error) {
       console.warn(`Firestore delete error on ${collectionName}/${docId}:`, error);
     }
+  }
+};
+
+export const purgeAllDummyDataFromCloud = async () => {
+  if (!isFirebaseActive() || !db) return;
+  try {
+    const collectionsToClear = ['students', 'tests', 'resources', 'feedbacks', 'notices'];
+    for (const colName of collectionsToClear) {
+      const snap = await getDocs(collection(db, colName));
+      for (const d of snap.docs) {
+        await deleteDoc(doc(db, colName, d.id));
+      }
+    }
+    await setDoc(doc(db, 'settings', 'attendance'), { map: {} }, { merge: true });
+    await setDoc(doc(db, 'settings', 'fees'), { map: {} }, { merge: true });
+    await setDoc(doc(db, 'settings', 'timetable'), { schedule: DEFAULT_TIMETABLE }, { merge: true });
+    return true;
+  } catch (err) {
+    console.warn('purgeAllDummyDataFromCloud error:', err);
+    return false;
   }
 };
 

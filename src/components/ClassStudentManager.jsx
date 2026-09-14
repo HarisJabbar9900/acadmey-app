@@ -673,8 +673,29 @@ export default function ClassStudentManager({
                 })
               ) : (
                 <tr>
-                  <td colSpan="6" className="py-12 text-center text-slate-500 italic">
-                    No students found matching your criteria.
+                  <td colSpan="6" className="py-14 text-center">
+                    <div className="flex flex-col items-center justify-center max-w-sm mx-auto space-y-3">
+                      <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center border border-indigo-500/20">
+                        <Users className="w-6 h-6" />
+                      </div>
+                      <h4 className="text-sm font-bold text-slate-800 dark:text-white">No Students Enrolled Yet</h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {searchQuery ? 'No students matched your search criteria.' : 'Begin by enrolling your first student into their respective class.'}
+                      </p>
+                      {isAdminLoggedIn && !searchQuery && (
+                        <button
+                          onClick={() => {
+                            if (data.classes.length > 0 && !targetClassId) {
+                              setTargetClassId(filterClassId !== 'ALL' ? filterClassId : data.classes[0].id);
+                            }
+                            setIsAddStudentModalOpen(true);
+                          }}
+                          className="mt-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/30 transition-all cursor-pointer active:scale-95"
+                        >
+                          <UserPlus className="w-4 h-4" /> Enroll First Student
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               )}

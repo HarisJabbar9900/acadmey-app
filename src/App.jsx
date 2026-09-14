@@ -31,7 +31,8 @@ import {
   subscribeToDoc,
   fetchCloudData,
   syncAllDataToCloud,
-  DEFAULT_TIMETABLE
+  DEFAULT_TIMETABLE,
+  purgeAllDummyDataFromCloud
 } from './services/academyService';
 
 export default function App() {
@@ -168,19 +169,32 @@ export default function App() {
       // 2. Fetch fresh cloud data immediately on startup (for mobile & desktop)
       fetchCloudData().then(cloudData => {
         if (cloudData) {
+          const hasDummyInCloud = (cloudData.students && cloudData.students.some(s => s && (s.id === 'std-1' || s.name === 'Ali Ahmed'))) ||
+                                  (cloudData.tests && cloudData.tests.some(t => t && t.id === 'tst-1'));
+          if (hasDummyInCloud) {
+            purgeAllDummyDataFromCloud().catch(() => {});
+            cloudData.students = [];
+            cloudData.tests = [];
+            cloudData.attendance = {};
+            cloudData.fees = {};
+            cloudData.resources = [];
+            cloudData.feedbacks = [];
+            cloudData.notices = [];
+          }
+
           setData(prev => ({
             ...prev,
-            ...(cloudData.tests && cloudData.tests.length > 0 ? { tests: cloudData.tests } : {}),
-            ...(cloudData.students && cloudData.students.length > 0 ? { students: cloudData.students } : {}),
-            ...(cloudData.classes && cloudData.classes.length > 0 ? { classes: cloudData.classes } : {}),
-            ...(cloudData.notices && cloudData.notices.length > 0 ? { notices: cloudData.notices } : {}),
-            ...(cloudData.attendance && Object.keys(cloudData.attendance).length > 0 ? { attendance: { ...prev.attendance, ...cloudData.attendance } } : {}),
-            ...(cloudData.fees && Object.keys(cloudData.fees).length > 0 ? { fees: { ...prev.fees, ...cloudData.fees } } : {}),
-            ...(cloudData.resources && cloudData.resources.length > 0 ? { resources: cloudData.resources } : {}),
-            ...(cloudData.feedbacks && cloudData.feedbacks.length > 0 ? { feedbacks: cloudData.feedbacks } : {}),
-            ...(Array.isArray(cloudData.timetable) && cloudData.timetable.length > 0 && !cloudData.timetable.some(t => JSON.stringify(t).includes('Combined') || JSON.stringify(t).includes('Jalab') || !t.boys) 
-              ? { timetable: cloudData.timetable } 
-              : { timetable: DEFAULT_TIMETABLE }),
+            tests: cloudData.tests || [],
+            students: cloudData.students || [],
+            classes: cloudData.classes && cloudData.classes.length > 0 ? cloudData.classes : prev.classes,
+            notices: cloudData.notices || [],
+            attendance: cloudData.attendance || {},
+            fees: cloudData.fees || {},
+            resources: cloudData.resources || [],
+            feedbacks: cloudData.feedbacks || [],
+            timetable: (Array.isArray(cloudData.timetable) && cloudData.timetable.length > 0 && !cloudData.timetable.some(t => JSON.stringify(t).includes('Combined') || JSON.stringify(t).includes('Jalab') || !t.boys))
+              ? cloudData.timetable 
+              : DEFAULT_TIMETABLE,
             ...(Array.isArray(cloudData.faculty) ? { faculty: cloudData.faculty } : {})
           }));
 
@@ -593,6 +607,27 @@ export default function App() {
     syncWithFirestore(newData, 'aiRules');
   };
 
+  // Handler: Purge All Sample/Dummy Data & Start Clean for Real Data
+  const handlePurgeAllData = async () => {
+    if (!window.confirm('⚠️ ATTENTION: Are you sure you want to permanently clear all sample records (students, tests, marks, fees, attendance, notices)?\n\nOfficial classes (9th-12th) and your official timetable will be safely kept. This gives you a 100% clean system to start fresh with your real data.')) {
+      return;
+    }
+    await purgeAllDummyDataFromCloud();
+    const cleanData = {
+      ...data,
+      students: [],
+      tests: [],
+      attendance: {},
+      fees: {},
+      resources: [],
+      feedbacks: [],
+      notices: []
+    };
+    setData(cleanData);
+    saveLocalData(cleanData);
+    alert('✅ All sample records have been permanently cleared!\n\nAl-Zia Science Academy portal is now completely clean and ready for real data.');
+  };
+
   const tabDetails = {
     dashboard: { 
       title: isAdminLoggedIn ? 'Admin Management Dashboard' : 'Student & Academy Portal', 
@@ -764,6 +799,8 @@ export default function App() {
                 selectedClassId={selectedClassId}
                 isAdminLoggedIn={isAdminLoggedIn}
                 onlineUsers={onlineUsers}
+                onPurgeAllData={handlePurgeAllData}
+                onNavigate={setActiveTab}
               />
             </>
           )}

@@ -304,7 +304,7 @@ export default function CommandPalette({
                           <span>Father: {item.fname || 'N/A'}</span>
                           {item.phone && (
                             <span className="font-mono text-[11px] text-slate-500 flex items-center gap-1">
-                              <Phone className="w-3 h-3" /> {item.phone}
+                              <Phone className="w-3 h-3" /> {isAdminLoggedIn ? item.phone : '••••••••••'}
                             </span>
                           )}
                         </p>

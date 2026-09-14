@@ -551,8 +551,18 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                 })
               ) : (
                 <tr>
-                  <td colSpan="6" className="py-12 text-center text-slate-500 italic">
-                    No student records matching filter.
+                  <td colSpan="6" className="py-14 text-center">
+                    <div className="flex flex-col items-center justify-center max-w-sm mx-auto space-y-2">
+                      <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center border border-indigo-500/20 mb-1">
+                        <CreditCard className="w-6 h-6" />
+                      </div>
+                      <h4 className="text-sm font-bold text-slate-800 dark:text-white">No Fee Records Found</h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {data.students.length === 0 
+                          ? 'No students enrolled yet. Once students are enrolled, their monthly fee ledger will automatically appear here.' 
+                          : 'No students matched your active filter or search query.'}
+                      </p>
+                    </div>
                   </td>
                 </tr>
               )}
