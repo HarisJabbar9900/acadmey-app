@@ -11,12 +11,18 @@ import {
   Filter,
   MessageCircle,
   Lock,
-  Sparkles
+  Sparkles,
+  Copy,
+  Check,
+  X,
+  Send
 } from 'lucide-react';
 
 export default function AttendanceSheet({ data, onSaveAttendance, selectedClassId, isAdminLoggedIn }) {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-  const [activeClassId, setActiveClassId] = useState(selectedClassId !== 'ALL' ? selectedClassId : (data.classes[0]?.id || ''));
+  const [activeClassId, setActiveClassId] = useState(selectedClassId && selectedClassId !== 'ALL' ? selectedClassId : 'ALL');
+  const [smsModal, setSmsModal] = useState(null);
+  const [isCopied, setIsCopied] = useState(false);
 
   if (!isAdminLoggedIn) {
     return (
@@ -97,6 +103,45 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
   const presentCount = Object.values(records).filter(v => v === 'Present').length;
   const absentCount = Object.values(records).filter(v => v === 'Absent').length;
   const lateCount = Object.values(records).filter(v => v === 'Late').length;
+
+  const getAbsentMessage = (student) => {
+    // Clean Urdu date format e.g. "14 ستمبر"
+    const dateObj = new Date(selectedDate);
+    const urduMonths = ['جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون', 'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر'];
+    const day = !isNaN(dateObj) ? dateObj.getDate() : '';
+    const monthUrdu = !isNaN(dateObj) ? urduMonths[dateObj.getMonth()] : '';
+    const formattedDate = !isNaN(dateObj) ? `${day} ${monthUrdu}` : 'آج';
+
+    // Find the student's actual enrolled class
+    const studentClassObj = data.classes.find(c => c.id === student.classId);
+    const studentClassName = studentClassObj ? studentClassObj.name : (currentClass && currentClass.name !== 'All Classes' ? currentClass.name : '');
+    const classText = studentClassName ? `، کلاس: ${studentClassName}` : '';
+
+    return `محترم والدین!\nالسلام علیکم،\nاطلاع دی جاتی ہے کہ آپ کا بچہ/بچی *${student.name}* (رول نمبر: #${student.rollNo}${classText}) آج بتاریخ *${formattedDate}* کو *الضیاء سائنس اکیڈمی* سے *غیر حاضر (Absent)* رہا/رہی ہے۔\nبرائے مہربانی بچے/بچی کی باقاعدہ حاضری کو یقینی بنائیں۔\n\nشکریہ،\n*الضیاء سائنس اکیڈمی (Al-Zia Science Academy)*`;
+  };
+
+  const handleOpenSmsPreview = (student) => {
+    const parentPhone = student.fatherNumber || student.parentContact;
+    if (!parentPhone) {
+      alert(`Parent phone number not found for ${student.name}`);
+      return;
+    }
+    let cleanPhone = parentPhone.replace(/[^0-9]/g, '');
+    if (cleanPhone.startsWith('0')) {
+      cleanPhone = '92' + cleanPhone.slice(1);
+    }
+    const msg = getAbsentMessage(student);
+    setIsCopied(false);
+    setSmsModal({
+      student,
+      phone: cleanPhone,
+      msg
+    });
+  };
+
+  const handleSendWhatsApp = (phone, msg) => {
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+  };
 
   return (
     <div className="space-y-6">
@@ -324,34 +369,9 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
                             {currentStatus === 'Absent' && (
                               <button
                                 type="button"
-                                onClick={() => {
-                                  const parentPhone = student.fatherNumber || student.parentContact;
-                                  if (!parentPhone) {
-                                    alert(`Parent phone number not found for ${student.name}`);
-                                    return;
-                                  }
-                                  let cleanPhone = parentPhone.replace(/[^0-9]/g, '');
-                                  if (cleanPhone.startsWith('0')) {
-                                    cleanPhone = '92' + cleanPhone.slice(1);
-                                  }
-                                  
-                                  // Clean Urdu date format e.g. "14 ستمبر"
-                                  const dateObj = new Date(selectedDate);
-                                  const urduMonths = ['جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون', 'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر'];
-                                  const day = !isNaN(dateObj) ? dateObj.getDate() : '';
-                                  const monthUrdu = !isNaN(dateObj) ? urduMonths[dateObj.getMonth()] : '';
-                                  const formattedDate = !isNaN(dateObj) ? `${day} ${monthUrdu}` : 'آج';
-
-                                  // Find the student's actual enrolled class
-                                  const studentClassObj = data.classes.find(c => c.id === student.classId);
-                                  const studentClassName = studentClassObj ? studentClassObj.name : (currentClass && currentClass.name !== 'All Classes' ? currentClass.name : '');
-                                  const classText = studentClassName ? `، کلاس: ${studentClassName}` : '';
-
-                                  const msg = `محترم والدین!\nالسلام علیکم،\nاطلاع دی جاتی ہے کہ آپ کا بچہ/بچی *${student.name}* (رول نمبر: #${student.rollNo}${classText}) آج بتاریخ *${formattedDate}* کو *الضیاء سائنس اکیڈمی* سے *غیر حاضر (Absent)* رہا ہے۔\nبرائے مہربانی بچے کی باقاعدہ حاضری کو یقینی بنائیں۔\n\nشکریہ،\n*الضیاء سائنس اکیڈمی (Al-Zia Science Academy)*`;
-                                  window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
-                                }}
-                                className="px-3 py-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 hover:border-emerald-500/50 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
-                                title="Send WhatsApp Absent Alert to Parent"
+                                onClick={() => handleOpenSmsPreview(student)}
+                                className="px-3 py-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 border border-emerald-500/30 hover:border-emerald-500/50 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
+                                title="Open WhatsApp SMS Preview (Jameel Noori Nastaleeq)"
                               >
                                 <MessageCircle className="w-3.5 h-3.5" /> WA Alert
                               </button>
@@ -385,6 +405,91 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
           </div>
         )}
       </div>
+
+      {/* WhatsApp Absent SMS Preview Modal (Formatted in Jameel Noori Nastaleeq) */}
+      {smsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
+          <div 
+            className="bg-white dark:bg-slate-900 border border-emerald-500/30 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/30">
+                  <MessageCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                    والدین کے لیے حاضری اطلاع
+                    <span className="text-[10px] px-2 py-0.5 rounded-full font-mono bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                      Jameel Noori Nastaleeq
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    To: {smsModal.student.name} ({smsModal.phone ? `+${smsModal.phone}` : 'No Phone'})
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSmsModal(null)}
+                className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Message Box with Jameel Noori Nastaleeq font and RTL formatting */}
+            <div className="relative">
+              <div 
+                dir="rtl"
+                className="font-nastaleeq p-5 rounded-2xl bg-gradient-to-br from-emerald-950/30 via-slate-900 to-slate-950 border border-emerald-500/30 text-slate-100 text-lg md:text-xl leading-loose shadow-inner select-text whitespace-pre-line text-right"
+              >
+                {smsModal.msg}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-between gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(smsModal.msg);
+                  setIsCopied(true);
+                  setTimeout(() => setIsCopied(false), 2500);
+                }}
+                className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold flex items-center gap-2 transition-all cursor-pointer active:scale-95"
+              >
+                {isCopied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                <span>{isCopied ? 'کاپی ہو گیا!' : 'کاپی میسج'}</span>
+              </button>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSmsModal(null)}
+                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
+                >
+                  کینسل
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleSendWhatsApp(smsModal.phone, smsModal.msg);
+                    setSmsModal(null);
+                  }}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-600/30 transition-all cursor-pointer active:scale-95"
+                >
+                  <Send className="w-4 h-4" />
+                  <span>واٹس ایپ پر بھیجیں</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
