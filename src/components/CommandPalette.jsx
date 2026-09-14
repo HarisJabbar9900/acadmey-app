@@ -52,7 +52,7 @@ export default function CommandPalette({
     { id: 'fees', title: 'Fee Manager & Vouchers', subtitle: 'Tuition fees, payment ledger & printable receipts', icon: CreditCard, tab: 'fees' },
     { id: 'marks', title: 'Monthly Marks Ledger', subtitle: 'Test scores, merit ranks & report cards', icon: Award, tab: 'marks' },
     { id: 'students', title: 'Student Directory', subtitle: 'Manage student records, admission & details', icon: User, tab: 'students' },
-    { id: 'timetable', title: 'Timetable & Class Schedule', subtitle: 'Weekly lectures, teacher & room timings', icon: Calendar, tab: 'timetable' },
+    { id: 'timetable', title: 'Timetable & Class Schedule', subtitle: 'Official 6-period daily class schedule & timings', icon: Calendar, tab: 'timetable' },
     { id: 'material', title: 'Study Material & Notes', subtitle: 'Curriculum PDFs, guides & syllabus', icon: BookOpen, tab: 'library' },
     { id: 'feedback', title: 'Student Feedback & Complaints', subtitle: 'Inquiries, suggestions and reviews', icon: MessageSquare, tab: 'feedback' },
     { id: 'staff', title: 'Faculty & Staff Directory', subtitle: 'Teachers info, subjects taught and qualifications', icon: User, tab: 'staff' },

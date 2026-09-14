@@ -30,7 +30,8 @@ import {
   subscribeToMapCollection,
   subscribeToDoc,
   fetchCloudData,
-  syncAllDataToCloud
+  syncAllDataToCloud,
+  DEFAULT_TIMETABLE
 } from './services/academyService';
 
 export default function App() {
@@ -146,6 +147,18 @@ export default function App() {
     let unsubTimetable = null;
 
     try {
+      // 0. Ensure timetable is migrated immediately if stale or missing boys column
+      setData(prev => {
+        const isStale = !Array.isArray(prev?.timetable) || 
+                        prev.timetable.length === 0 || 
+                        prev.timetable.some(t => !t || !t.boys || t.boys === 'Subject' || JSON.stringify(t).includes('Combined') || JSON.stringify(t).toLowerCase().includes('jalab'));
+        if (isStale) {
+          syncWithFirestore('settings', 'timetable', { schedule: DEFAULT_TIMETABLE });
+          return { ...prev, timetable: DEFAULT_TIMETABLE };
+        }
+        return prev;
+      });
+
       // 1. If local data exists, ensure cloud has all tests & records
       if (data) {
         seedFirestoreData(data).catch(() => {});
@@ -165,9 +178,15 @@ export default function App() {
             ...(cloudData.fees && Object.keys(cloudData.fees).length > 0 ? { fees: { ...prev.fees, ...cloudData.fees } } : {}),
             ...(cloudData.resources && cloudData.resources.length > 0 ? { resources: cloudData.resources } : {}),
             ...(cloudData.feedbacks && cloudData.feedbacks.length > 0 ? { feedbacks: cloudData.feedbacks } : {}),
-            ...(Array.isArray(cloudData.timetable) && cloudData.timetable.length > 0 ? { timetable: cloudData.timetable } : {}),
+            ...(Array.isArray(cloudData.timetable) && cloudData.timetable.length > 0 && !cloudData.timetable.some(t => JSON.stringify(t).includes('Combined') || JSON.stringify(t).includes('Jalab') || !t.boys) 
+              ? { timetable: cloudData.timetable } 
+              : { timetable: DEFAULT_TIMETABLE }),
             ...(Array.isArray(cloudData.faculty) ? { faculty: cloudData.faculty } : {})
           }));
+
+          if (cloudData.timetable && cloudData.timetable.some(t => JSON.stringify(t).includes('Combined') || JSON.stringify(t).includes('Jalab') || !t.boys)) {
+            syncWithFirestore('settings', 'timetable', { schedule: DEFAULT_TIMETABLE });
+          }
         }
       }).catch(() => {});
 
@@ -264,6 +283,12 @@ export default function App() {
       // 12. Real-time listener for timetable
       unsubTimetable = subscribeToDoc('settings', 'timetable', (docData) => {
         if (docData && Array.isArray(docData.schedule) && docData.schedule.length > 0) {
+          const isStale = docData.schedule.some(t => !t || !t.boys || t.boys === 'Subject' || JSON.stringify(t).includes('Combined') || JSON.stringify(t).toLowerCase().includes('jalab'));
+          if (isStale) {
+            syncWithFirestore('settings', 'timetable', { schedule: DEFAULT_TIMETABLE });
+            setData(prev => ({ ...prev, timetable: DEFAULT_TIMETABLE }));
+            return;
+          }
           setData(prev => {
             if (JSON.stringify(prev.timetable) === JSON.stringify(docData.schedule)) return prev;
             return { ...prev, timetable: docData.schedule };
@@ -575,7 +600,7 @@ export default function App() {
     },
     timetable: { 
       title: 'Class Routine & Timetable', 
-      subtitle: 'Daily lecture schedules, class timings, teachers and subject routines' 
+      subtitle: 'Official daily lecture schedules, class timings, and subject routines' 
     },
     fees: { 
       title: 'Tuition Fee Management', 
@@ -691,7 +716,7 @@ export default function App() {
                       ...(fresh.fees && Object.keys(fresh.fees).length > 0 ? { fees: { ...prev.fees, ...fresh.fees } } : {}),
                       ...(fresh.resources && fresh.resources.length > 0 ? { resources: fresh.resources } : {}),
                       ...(fresh.feedbacks && fresh.feedbacks.length > 0 ? { feedbacks: fresh.feedbacks } : {}),
-                      ...(Array.isArray(fresh.timetable) && fresh.timetable.length > 0 ? { timetable: fresh.timetable } : {}),
+                      ...(Array.isArray(fresh.timetable) && fresh.timetable.length > 0 && !fresh.timetable.some(t => JSON.stringify(t).includes('Combined') || JSON.stringify(t).includes('Jalab') || !t.boys) ? { timetable: fresh.timetable } : { timetable: DEFAULT_TIMETABLE }),
                       ...(Array.isArray(fresh.faculty) ? { faculty: fresh.faculty } : {})
                     }));
                   }

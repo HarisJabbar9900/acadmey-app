@@ -120,13 +120,13 @@ const DEFAULT_TESTS = [
   }
 ];
 
-const DEFAULT_TIMETABLE = [
-  { id: 'tt-1', time: '3:00 - 3:35', '9th': 'Bio/Comp (Combined 9th & 10th)', '10th': 'Bio/Comp (Combined 9th & 10th)', '11th': 'English', '12th': 'Math' },
-  { id: 'tt-2', time: '3:35 - 4:10', '9th': 'Urdu', '10th': 'English', '11th': 'Math', '12th': 'Bio/Comp' },
-  { id: 'tt-3', time: '4:10 - 4:45', '9th': 'English', '10th': 'Urdu', '11th': 'Bio/Comp', '12th': 'Physics' },
-  { id: 'tt-4', time: '4:45 - 5:20', '9th': 'Math', '10th': 'Physics', '11th': 'Urdu', '12th': 'English' },
-  { id: 'tt-5', time: '5:20 - 5:55', '9th': 'Chemistry', '10th': 'Math', '11th': 'Physics', '12th': 'Urdu' },
-  { id: 'tt-6', time: '5:55 - 6:30', '9th': 'Physics', '10th': 'Chemistry', '11th': 'Quran Pak', '12th': 'Chemistry' }
+export const DEFAULT_TIMETABLE = [
+  { id: 'tt-1', time: '3:00 – 3:35 PM', '9th': 'Physics', '10th': 'Math', '11th': 'English', '12th': 'Urdu', boys: 'Computer' },
+  { id: 'tt-2', time: '3:35 – 4:10 PM', '9th': 'Chemistry', '10th': 'Physics', '11th': 'Computer', '12th': 'English', boys: 'Urdu / Math' },
+  { id: 'tt-3', time: '4:10 – 4:45 PM', '9th': 'Computer', '10th': 'English', '11th': 'Biology', '12th': 'Physics', boys: 'Chemistry' },
+  { id: 'tt-4', time: '4:45 – 5:20 PM', '9th': 'Urdu', '10th': 'Chemistry', '11th': 'Physics', '12th': 'Computer / Biology', boys: 'English' },
+  { id: 'tt-5', time: '5:20 – 5:55 PM', '9th': 'English', '10th': 'Urdu', '11th': 'Chemistry', '12th': 'Chem / Math', boys: 'Biology' },
+  { id: 'tt-6', time: '5:55 – 6:30 PM', '9th': 'Math', '10th': 'Biology', '11th': 'Urdu', '12th': '-', boys: '-' }
 ];
 
 const DEFAULT_RESOURCES = [
@@ -302,8 +302,15 @@ export const getInitialData = () => {
       parsed.tests = parsed.tests.filter(Boolean);
     }
 
-    if (!Array.isArray(parsed.timetable)) {
+    const isStaleTimetable = !Array.isArray(parsed.timetable) || 
+      parsed.timetable.length === 0 || 
+      parsed.timetable.some(t => !t || !t.boys || t.boys === 'Subject' || JSON.stringify(t).includes('Combined') || JSON.stringify(t).toLowerCase().includes('jalab'));
+
+    if (isStaleTimetable) {
       parsed.timetable = DEFAULT_TIMETABLE;
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+      } catch (e) {}
     } else {
       parsed.timetable = parsed.timetable.filter(Boolean);
     }
