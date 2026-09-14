@@ -442,7 +442,13 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
                                       if (cleanPhone.startsWith('0')) {
                                         cleanPhone = '92' + cleanPhone.slice(1);
                                       }
-                                      const msg = `Respected Parent, Result of *${test.subject}* Test for *${student.name}* (Roll #${student.rollNo}): Marks Obtained: *${score}/${test.maxMarks}* (${percentage}%). - Al-Zia Science Academy`;
+                                      const remark = percentage >= 80 
+                                        ? 'ماشاءاللہ! شاندار کارکردگی۔ 🌟' 
+                                        : percentage >= 50 
+                                        ? 'مناسب کارکردگی، مزید محنت کی ضرورت ہے۔ 📚' 
+                                        : 'توجہ طلب! پڑھائی پر خصوصی توجہ دیں۔ ⚠️';
+
+                                      const msg = `محترم والدین!\nالسلام علیکم،\nطالب علم *${student.name}* (رول نمبر: #${student.rollNo}) کا *${test.subject}* کے ٹیسٹ کا نتیجہ درج ذیل ہے:\n• کل نمبر: *${test.maxMarks}*\n• حاصل کردہ نمبر: *${score}*\n• فیصد: *${percentage}%*\n• کیفیت: ${remark}\n\nشکریہ،\n*الضیاء سائنس اکیڈمی (Al-Zia Science Academy)*`;
                                       window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                                     }}
                                     className="p-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/10 rounded transition-colors cursor-pointer"

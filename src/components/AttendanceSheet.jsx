@@ -335,13 +335,14 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
                                     cleanPhone = '92' + cleanPhone.slice(1);
                                   }
                                   
-                                  // Clean date format e.g. "17 August" without year number
+                                  // Clean Urdu date format e.g. "14 ستمبر"
                                   const dateObj = new Date(selectedDate);
-                                  const formattedDate = !isNaN(dateObj) 
-                                    ? dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'long' })
-                                    : 'today';
+                                  const urduMonths = ['جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون', 'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر'];
+                                  const day = !isNaN(dateObj) ? dateObj.getDate() : '';
+                                  const monthUrdu = !isNaN(dateObj) ? urduMonths[dateObj.getMonth()] : '';
+                                  const formattedDate = !isNaN(dateObj) ? `${day} ${monthUrdu}` : 'آج';
 
-                                  const msg = `Respected Parent, Your child *${student.name}* (Roll #${student.rollNo}, Class ${currentClass?.name}) was *ABSENT* today (${formattedDate}) at Al-Zia Science Academy. Kindly ensure regular attendance. - Al-Zia Science Academy`;
+                                  const msg = `محترم والدین!\nالسلام علیکم،\nاطلاع دی جاتی ہے کہ آپ کا بچہ/بچی *${student.name}* (رول نمبر: #${student.rollNo}، کلاس: ${currentClass?.name || ''}) آج بتاریخ *${formattedDate}* کو *الضیاء سائنس اکیڈمی* سے *غیر حاضر (Absent)* رہا ہے۔\nبرائے مہربانی بچے کی باقاعدہ حاضری کو یقینی بنائیں۔\n\nشکریہ،\n*الضیاء سائنس اکیڈمی (Al-Zia Science Academy)*`;
                                   window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                                 }}
                                 className="px-3 py-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 hover:border-emerald-500/50 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"

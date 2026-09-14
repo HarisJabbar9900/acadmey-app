@@ -515,12 +515,15 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                                         cleanPhone = '92' + cleanPhone.slice(1);
                                       }
                                       
-                                      // Convert '2026-08' to clean month name 'August'
-                                      const monthIndex = selectedMonth ? parseInt(selectedMonth.split('-')[1], 10) - 1 : 7;
-                                      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-                                      const monthName = monthNames[monthIndex] || 'August';
+                                      // Convert '2026-08' to clean Urdu month name
+                                      const monthIndex = selectedMonth ? parseInt(selectedMonth.split('-')[1], 10) - 1 : new Date().getMonth();
+                                      const urduMonths = ['جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون', 'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر'];
+                                      const monthNameUrdu = urduMonths[monthIndex] || 'جاریہ ماہ';
 
-                                      const msg = `Respected Parent, Monthly fee for *${student.name}* (Roll #${student.rollNo}, Class ${studentClassObj?.name}) for the month of *${monthName}* is PENDING. Kindly deposit at your earliest convenience. - Al-Zia Science Academy`;
+                                      const expectedFee = feeRecord?.monthlyFee || feeRecord?.paidAmount;
+                                      const feeDetail = expectedFee ? `\n• فیس واجب الادا: *Rs. ${expectedFee}*` : '';
+
+                                      const msg = `محترم والدین!\nالسلام علیکم،\nاطلاع دی جاتی ہے کہ طالب علم *${student.name}* (رول نمبر: #${student.rollNo}، کلاس: ${studentClassObj?.name || ''}) کی ماہ *${monthNameUrdu}* کی اکیڈمی فیس ابھی تک جمع نہیں ہوئی ہے۔${feeDetail}\nبرائے مہربانی فیس جلد از جلد اکیڈمی کے دفتر میں جمع کروا کر باقاعدہ رسید حاصل کریں۔\n\nشکریہ،\n*الضیاء سائنس اکیڈمی (Al-Zia Science Academy)*`;
                                       window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                                     }}
                                     className="px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/25 active:scale-95 transition-all cursor-pointer"
