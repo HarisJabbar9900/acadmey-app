@@ -448,7 +448,11 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
                                         ? 'مناسب کارکردگی، مزید محنت کی ضرورت ہے۔ 📚' 
                                         : 'توجہ طلب! پڑھائی پر خصوصی توجہ دیں۔ ⚠️';
 
-                                      const msg = `محترم والدین!\nالسلام علیکم،\nطالب علم *${student.name}* (رول نمبر: #${student.rollNo}) کا *${test.subject}* کے ٹیسٹ کا نتیجہ درج ذیل ہے:\n• کل نمبر: *${test.maxMarks}*\n• حاصل کردہ نمبر: *${score}*\n• فیصد: *${percentage}%*\n• کیفیت: ${remark}\n\nشکریہ،\n*الضیاء سائنس اکیڈمی (Al-Zia Science Academy)*`;
+                                      const studentClassObj = data.classes.find(c => c.id === student.classId || c.id === test.classId);
+                                      const studentClassName = studentClassObj ? studentClassObj.name : '';
+                                      const classText = studentClassName ? `، کلاس: ${studentClassName}` : '';
+
+                                      const msg = `محترم والدین!\nالسلام علیکم،\nطالب علم *${student.name}* (رول نمبر: #${student.rollNo}${classText}) کا *${test.subject}* کے ٹیسٹ کا نتیجہ درج ذیل ہے:\n• کل نمبر: *${test.maxMarks}*\n• حاصل کردہ نمبر: *${score}*\n• فیصد: *${percentage}%*\n• کیفیت: ${remark}\n\nشکریہ،\n*الضیاء سائنس اکیڈمی (Al-Zia Science Academy)*`;
                                       window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                                     }}
                                     className="p-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/10 rounded transition-colors cursor-pointer"

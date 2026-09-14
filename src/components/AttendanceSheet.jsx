@@ -342,7 +342,12 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
                                   const monthUrdu = !isNaN(dateObj) ? urduMonths[dateObj.getMonth()] : '';
                                   const formattedDate = !isNaN(dateObj) ? `${day} ${monthUrdu}` : 'آج';
 
-                                  const msg = `محترم والدین!\nالسلام علیکم،\nاطلاع دی جاتی ہے کہ آپ کا بچہ/بچی *${student.name}* (رول نمبر: #${student.rollNo}، کلاس: ${currentClass?.name || ''}) آج بتاریخ *${formattedDate}* کو *الضیاء سائنس اکیڈمی* سے *غیر حاضر (Absent)* رہا ہے۔\nبرائے مہربانی بچے کی باقاعدہ حاضری کو یقینی بنائیں۔\n\nشکریہ،\n*الضیاء سائنس اکیڈمی (Al-Zia Science Academy)*`;
+                                  // Find the student's actual enrolled class
+                                  const studentClassObj = data.classes.find(c => c.id === student.classId);
+                                  const studentClassName = studentClassObj ? studentClassObj.name : (currentClass && currentClass.name !== 'All Classes' ? currentClass.name : '');
+                                  const classText = studentClassName ? `، کلاس: ${studentClassName}` : '';
+
+                                  const msg = `محترم والدین!\nالسلام علیکم،\nاطلاع دی جاتی ہے کہ آپ کا بچہ/بچی *${student.name}* (رول نمبر: #${student.rollNo}${classText}) آج بتاریخ *${formattedDate}* کو *الضیاء سائنس اکیڈمی* سے *غیر حاضر (Absent)* رہا ہے۔\nبرائے مہربانی بچے کی باقاعدہ حاضری کو یقینی بنائیں۔\n\nشکریہ،\n*الضیاء سائنس اکیڈمی (Al-Zia Science Academy)*`;
                                   window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                                 }}
                                 className="px-3 py-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 hover:border-emerald-500/50 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
