@@ -1,5 +1,6 @@
-import { db } from '../firebase/config';
+import { db, storage } from '../firebase/config';
 import { collection, getDocs, getDoc, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp, writeBatch } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const STORAGE_KEY = 'academy_app_data_v2';
 
@@ -223,20 +224,262 @@ export const getInitialData = () => {
   }
 };
 
+// --- IndexedDB for Heavy PDF & Material Files (50MB+ without LocalStorage quota issues) ---
+const IDB_NAME = 'alzia_academy_storage';
+const IDB_VERSION = 1;
+const IDB_STORE = 'study_materials';
+
+const openIDB = () => {
+  return new Promise((resolve, reject) => {
+    if (typeof indexedDB === 'undefined') {
+      return reject(new Error('IndexedDB not supported'));
+    }
+    const req = indexedDB.open(IDB_NAME, IDB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const dbInstance = e.target.result;
+      if (!dbInstance.objectStoreNames.contains(IDB_STORE)) {
+        dbInstance.createObjectStore(IDB_STORE, { keyPath: 'id' });
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+};
+
+export const saveFileToIndexedDB = async (fileId, fileBlobOrData, fileName) => {
+  try {
+    const idb = await openIDB();
+    return new Promise((resolve, reject) => {
+      const tx = idb.transaction(IDB_STORE, 'readwrite');
+      const store = tx.objectStore(IDB_STORE);
+      store.put({ id: fileId, data: fileBlobOrData, name: fileName, timestamp: Date.now() });
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    });
+  } catch (err) {
+    console.warn('IndexedDB save failed:', err);
+    return false;
+  }
+};
+
+export const getFileFromIndexedDB = async (fileId) => {
+  try {
+    const idb = await openIDB();
+    return new Promise((resolve, reject) => {
+      const tx = idb.transaction(IDB_STORE, 'readonly');
+      const store = tx.objectStore(IDB_STORE);
+      const req = store.get(fileId);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+  } catch (err) {
+    console.warn('IndexedDB get failed:', err);
+    return null;
+  }
+};
+
+export const deleteFileFromIndexedDB = async (fileId) => {
+  try {
+    const idb = await openIDB();
+    return new Promise((resolve, reject) => {
+      const tx = idb.transaction(IDB_STORE, 'readwrite');
+      const store = tx.objectStore(IDB_STORE);
+      store.delete(fileId);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+    });
+  } catch (err) {
+    console.warn('IndexedDB delete failed:', err);
+    return false;
+  }
+};
+
+// --- Google Drive & Cloud Link Auto-Resolver ---
+export const parseDriveOrCloudUrl = (rawUrl = '') => {
+  if (!rawUrl || typeof rawUrl !== 'string') return { viewUrl: '', downloadUrl: '', isGoogleDrive: false };
+  const trimmed = rawUrl.trim();
+
+  // Match Google Drive links
+  // e.g. https://drive.google.com/file/d/1A2B3C/view?usp=sharing
+  // or https://drive.google.com/open?id=1A2B3C
+  const driveFileMatch = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  const driveIdMatch = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  const fileId = (driveFileMatch && driveFileMatch[1]) || (driveIdMatch && driveIdMatch[1]);
+
+  if (fileId) {
+    return {
+      viewUrl: `https://drive.google.com/file/d/${fileId}/preview`,
+      downloadUrl: `https://drive.google.com/uc?export=download&id=${fileId}&confirm=t`,
+      isGoogleDrive: true,
+      fileId
+    };
+  }
+
+  // Dropbox direct link
+  if (trimmed.includes('dropbox.com')) {
+    return {
+      viewUrl: trimmed.replace(/[?&]dl=1/, '?dl=0'),
+      downloadUrl: trimmed.replace(/[?&]dl=0/, '?dl=1'),
+      isDropbox: true
+    };
+  }
+
+  return {
+    viewUrl: trimmed,
+    downloadUrl: trimmed,
+    isStandard: true
+  };
+};
+
+// --- Study Material Upload Handler (Firebase Storage with IndexedDB Fallback) ---
+export const uploadStudyMaterialFile = async (file, resourceId) => {
+  if (!file) throw new Error('No file selected.');
+
+  // 1. Try Firebase Storage if active
+  if (storage) {
+    try {
+      const sanitizedName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const storageRef = ref(storage, `materials/${resourceId}_${sanitizedName}`);
+      const snapshot = await uploadBytes(storageRef, file, {
+        contentType: file.type || 'application/pdf'
+      });
+      const downloadUrl = await getDownloadURL(snapshot.ref);
+      if (downloadUrl) {
+        // Also cache in IndexedDB for instant offline access
+        await saveFileToIndexedDB(resourceId, file, file.name);
+        return {
+          success: true,
+          url: downloadUrl,
+          fileName: file.name,
+          source: 'cloud'
+        };
+      }
+    } catch (storageErr) {
+      console.warn('Firebase Storage upload failed, falling back to IndexedDB:', storageErr);
+    }
+  }
+
+  // 2. Fallback: Save to IndexedDB (supports 100MB+ files smoothly)
+  try {
+    await saveFileToIndexedDB(resourceId, file, file.name);
+    return {
+      success: true,
+      url: `idb://${resourceId}`,
+      fileName: file.name,
+      source: 'local_indexeddb'
+    };
+  } catch (idbErr) {
+    console.error('IndexedDB storage failure:', idbErr);
+    throw new Error('Failed to store file locally. Please try a Google Drive link.');
+  }
+};
+
+// --- Robust File Downloader for PDF / Material Files ---
+export const triggerFileDownload = async (fileUrl, fileName = 'document.pdf', resourceId = null) => {
+  // 1. Check IndexedDB first if resourceId exists or if URL is idb://
+  if (resourceId || (fileUrl && fileUrl.startsWith('idb://'))) {
+    const targetId = resourceId || fileUrl.replace('idb://', '');
+    const idbItem = await getFileFromIndexedDB(targetId);
+    if (idbItem && idbItem.data) {
+      const blob = idbItem.data instanceof Blob
+        ? idbItem.data
+        : new Blob([idbItem.data], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = fileName || idbItem.name || 'study-material.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+      return true;
+    }
+  }
+
+  // 2. Base64 Data URL
+  if (fileUrl && fileUrl.startsWith('data:')) {
+    try {
+      const parts = fileUrl.split(',');
+      const mime = parts[0].match(/:(.*?);/)?.[1] || 'application/pdf';
+      const bstr = atob(parts[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      const blob = new Blob([u8arr], { type: mime });
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = fileName || 'study-material.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+      return true;
+    } catch (err) {
+      console.warn('Data URL download error:', err);
+    }
+  }
+
+  // 3. Google Drive Link
+  const parsed = parseDriveOrCloudUrl(fileUrl);
+  if (parsed.isGoogleDrive) {
+    window.open(parsed.downloadUrl, '_blank', 'noopener,noreferrer');
+    return true;
+  }
+
+  // 4. Standard HTTPS URL
+  if (fileUrl && fileUrl.startsWith('http')) {
+    try {
+      // Attempt blob fetch to force download prompt
+      const response = await fetch(fileUrl, { mode: 'cors' });
+      if (response.ok) {
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+        return true;
+      }
+    } catch {
+      // Fallback: Open in new window if CORS forbids direct fetch
+      window.open(fileUrl, '_blank', 'noopener,noreferrer');
+      return true;
+    }
+  }
+
+  if (fileUrl) {
+    window.open(fileUrl, '_blank', 'noopener,noreferrer');
+    return true;
+  }
+
+  throw new Error('No valid file link found.');
+};
+
 export const saveLocalData = (data) => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    // Strip giant base64 or heavy blob URLs before saving to localStorage to prevent QuotaExceededError
+    const safeResources = (data.resources || []).map(r => {
+      const isHuge = r.fileUrl && (r.fileUrl.startsWith('data:') && r.fileUrl.length > 50000);
+      return isHuge ? { ...r, fileUrl: `idb://${r.id}`, hasLocalFile: true } : r;
+    });
+    const safeData = { ...data, resources: safeResources };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(safeData));
   } catch (e) {
-    console.warn('LocalStorage quota exceeded. Sanitizing large file strings...', e);
+    console.warn('LocalStorage quota warning:', e);
     try {
-      const sanitizedResources = (data.resources || []).map(r => ({
+      const minimalResources = (data.resources || []).map(r => ({
         ...r,
-        fileUrl: r.fileUrl && r.fileUrl.length > 500000 ? '' : r.fileUrl
+        fileUrl: r.fileUrl && r.fileUrl.startsWith('http') ? r.fileUrl : `idb://${r.id}`
       }));
-      const sanitizedData = { ...data, resources: sanitizedResources };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitizedData));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...data, resources: minimalResources }));
     } catch (err) {
-      console.error('Critical localStorage error', err);
+      console.error('Critical localStorage save error:', err);
     }
   }
 };
@@ -244,7 +487,12 @@ export const saveLocalData = (data) => {
 export const syncWithFirestore = async (collectionName, docId, data) => {
   if (isFirebaseActive() && db) {
     try {
-      await setDoc(doc(db, collectionName, docId), data, { merge: true });
+      // Guard: Firestore document size limit is 1MB. Do NOT send giant base64 strings.
+      let payload = data;
+      if (collectionName === 'resources' && data.fileUrl && data.fileUrl.startsWith('data:') && data.fileUrl.length > 300000) {
+        payload = { ...data, fileUrl: '' };
+      }
+      await setDoc(doc(db, collectionName, docId), payload, { merge: true });
     } catch (error) {
       console.warn(`Firestore sync error on ${collectionName}/${docId}:`, error);
     }
@@ -255,6 +503,9 @@ export const deleteFromFirestore = async (collectionName, docId) => {
   if (isFirebaseActive() && db) {
     try {
       await deleteDoc(doc(db, collectionName, docId));
+      if (collectionName === 'resources') {
+        await deleteFileFromIndexedDB(docId);
+      }
     } catch (error) {
       console.warn(`Firestore delete error on ${collectionName}/${docId}:`, error);
     }
