@@ -115,8 +115,8 @@ export default function Navbar({
           {/* Logo & Academy Title */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="p-2.5 bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 rounded-xl shadow-md shadow-indigo-500/20 text-white">
-                <GraduationCap className="w-6 h-6" />
+              <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-indigo-500/20 border border-indigo-500/30 flex items-center justify-center bg-slate-950 shrink-0">
+                <img src="/favicon.svg" alt="Al-Zia Emblem" className="w-full h-full object-cover" />
               </div>
               <div>
                 <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight leading-none bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">

@@ -94,8 +94,8 @@ export default function MobileSplashScreen({ onFinish }) {
           <div className="w-32 h-32 rounded-full border-2 border-dashed border-amber-400/40 flex items-center justify-center animate-spin" style={{ animationDuration: '10s' }} />
 
           {/* Inner Glass Emblem Shield */}
-          <div className="absolute w-24 h-24 rounded-3xl bg-gradient-to-tr from-slate-900 via-indigo-950 to-slate-900 border-2 border-amber-400/80 shadow-2xl flex items-center justify-center shadow-indigo-500/30 backdrop-blur-xl">
-            <GraduationCap className="w-12 h-12 text-amber-400 filter drop-shadow-[0_0_12px_rgba(245,158,11,0.6)] animate-bounce" style={{ animationDuration: '2.5s' }} />
+          <div className="absolute w-24 h-24 rounded-3xl bg-gradient-to-tr from-slate-900 via-indigo-950 to-slate-900 border-2 border-amber-400/80 shadow-2xl flex items-center justify-center shadow-indigo-500/30 backdrop-blur-xl overflow-hidden p-2">
+            <img src="/favicon.svg" alt="Al-Zia Science Academy" className="w-full h-full object-contain filter drop-shadow-[0_0_12px_rgba(245,158,11,0.6)] animate-pulse" />
             
             {/* Sparkle Badge */}
             <div className="absolute -top-1.5 -right-1.5 p-1 rounded-full bg-amber-400 text-slate-950 shadow-md">
