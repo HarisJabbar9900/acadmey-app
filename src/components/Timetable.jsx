@@ -122,137 +122,162 @@ export default function Timetable({ timetable = [], selectedClassId, isAdminLogg
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       
-      {/* Header Banner */}
-      <div className="glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-4 overflow-hidden print:shadow-none print:border-none print:p-2">
-        <div>
-          <div className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
-            <Sparkles className="w-4 h-4" /> Official Class Schedule & Timetable (V5)
-          </div>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Al-Zia Science Academy Timetable
-          </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-2">
-            <Clock className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" /> Daily Academy Timing: <strong className="text-slate-900 dark:text-white">3:00 PM – 6:30 PM</strong> | 6 Periods Scheduled
-          </p>
-        </div>
-
-        {/* Filter Buttons & Admin Actions */}
-        <div className="flex flex-wrap items-center gap-2.5 print:hidden">
-          
-          {/* Filter Badges */}
-          {!isEditing && (
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
-              <span className="text-xs font-bold text-slate-600 dark:text-slate-400 shrink-0 mr-1">Class View:</span>
-              {[
-                { key: 'ALL', label: 'All Classes' },
-                { key: '9th', label: '9th Class' },
-                { key: '10th', label: '10th Class' },
-                { key: '11th', label: '11th (1st Year)' },
-                { key: '12th', label: '12th (2nd Year)' },
-                { key: 'boys', label: 'Boys' },
-              ].map(({ key, label }) => (
-                <button
-                  key={key}
-                  onClick={() => setFilterClass(key)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-                    filterClass === key
-                      ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30 scale-105'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white hover:bg-indigo-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 shadow-xs'
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
+      {/* 1. Clean & Lite Control Bar */}
+      <div className="bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3.5 print:hidden">
+        
+        {/* Row 1: Title, Timing Pill & Action Buttons */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/60 dark:border-slate-800/60">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-500/20 shadow-xs shrink-0">
+              <Calendar className="w-5 h-5" />
             </div>
-          )}
-
-          {/* Print Button */}
-          {!isEditing && (
-            <button
-              onClick={handlePrint}
-              className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
-              title="Print Official Timetable"
-            >
-              <Printer className="w-3.5 h-3.5 text-indigo-500" />
-              <span>Print</span>
-            </button>
-          )}
-
-          {/* Admin Edit Controls */}
-          {isAdminLoggedIn ? (
             <div>
-              {isEditing ? (
+              <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
+                Class Schedule &amp; Timetable
+              </h2>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5 text-indigo-500" /> 3:00 PM – 6:30 PM
+                </span>
+                <span className="text-slate-400 dark:text-slate-600">•</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  {draftRows.length} Periods Daily
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Action Tools: Print & Edit */}
+          <div className="flex items-center gap-2 shrink-0">
+            {!isEditing && (
+              <button
+                type="button"
+                onClick={handlePrint}
+                className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
+                title="Print Official Timetable"
+              >
+                <Printer className="w-3.5 h-3.5 text-indigo-500" />
+                <span>Print Schedule</span>
+              </button>
+            )}
+
+            {isAdminLoggedIn ? (
+              isEditing ? (
                 <div className="flex items-center gap-2">
                   <button
+                    type="button"
                     onClick={handleAddRow}
-                    className="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-purple-600/25 active:scale-95 transition-all cursor-pointer"
+                    className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
                   >
                     <PlusCircle className="w-3.5 h-3.5" />
-                    + Add Slot
+                    <span>+ Add Slot</span>
                   </button>
 
                   <button
+                    type="button"
                     onClick={handleResetToDefault}
                     className="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-500/30 rounded-xl text-xs font-bold flex items-center gap-1 transition-all cursor-pointer"
                     title="Restore Official V5 Schedule"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
-                    Reset V5
+                    <span>Reset</span>
                   </button>
 
                   <button
+                    type="button"
                     onClick={handleCancel}
                     className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold flex items-center gap-1 transition-all cursor-pointer shadow-xs"
                   >
-                    <X className="w-3.5 h-3.5" /> Cancel
+                    <X className="w-3.5 h-3.5" />
+                    <span>Cancel</span>
                   </button>
 
                   <button
+                    type="button"
                     onClick={handleSaveAll}
-                    className="px-4 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-emerald-600/30 active:scale-95 transition-all cursor-pointer"
+                    className="px-4 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/30 active:scale-95 transition-all cursor-pointer"
                   >
                     <Save className="w-3.5 h-3.5" />
-                    Save Timetable
+                    <span>Save Changes</span>
                   </button>
                 </div>
               ) : (
                 <button
+                  type="button"
                   onClick={() => setIsEditing(true)}
-                  className="px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-indigo-600/30 transition-all cursor-pointer"
+                  className="px-4 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/30 transition-all cursor-pointer"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
-                  Edit Timetable
+                  <span>Edit Schedule</span>
                 </button>
-              )}
-            </div>
-          ) : (
-            <div className="px-3 py-1.5 bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-sm">
-              <span>👁️ Read Only</span>
-              <span className="text-[10px] text-slate-500">(Admin PIN required)</span>
-            </div>
-          )}
-
+              )
+            ) : (
+              <div className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-xs">
+                <span>👁️ Read Only</span>
+                <span className="text-[10px] text-slate-500">(Admin PIN required)</span>
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* Row 2: Clean Class Filter Tabs */}
+        {!isEditing && (
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-0.5">
+            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 shrink-0 mr-1">
+              Select Class:
+            </span>
+            {[
+              { key: 'ALL', label: 'All Classes' },
+              { key: '9th', label: '9th Class' },
+              { key: '10th', label: '10th Class' },
+              { key: '11th', label: '11th (1st Year)' },
+              { key: '12th', label: '12th (2nd Year)' },
+              { key: 'boys', label: 'Boys Section' },
+            ].map(({ key, label }) => (
+              <button
+                type="button"
+                key={key}
+                onClick={() => setFilterClass(key)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
+                  filterClass === key
+                    ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-sm shadow-indigo-600/30'
+                    : 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white hover:bg-indigo-50 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700/60'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Save Success Alert */}
       {saveAlert && (
-        <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 p-4 rounded-xl flex items-center gap-3 text-sm animate-fade-in font-bold">
-          <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+        <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 p-3.5 rounded-xl flex items-center gap-2.5 text-xs animate-fade-in font-bold">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
           <span>Timetable updated and saved to Cloud Firestore successfully!</span>
         </div>
       )}
 
-      {/* Main Timetable Matrix */}
-      <div className="glass-panel rounded-2xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-800">
-        <div className="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-900/90 flex items-center justify-between">
-          <h3 className="font-bold text-slate-900 dark:text-white text-base flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
-            Class Schedule Matrix {isEditing ? '(EDIT MODE)' : ''}
-          </h3>
-          <span className="text-xs text-slate-500 dark:text-slate-400 font-mono font-medium">{draftRows.length} Periods Scheduled</span>
+      {/* 2. Main Timetable Matrix */}
+      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+        <div className="px-5 py-3.5 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/90 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+              {filterClass === 'ALL' ? 'Weekly Lecture Schedule (All Classes)' : `${filterClass} Class Lecture Schedule`}
+            </span>
+            {isEditing && (
+              <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                EDIT MODE
+              </span>
+            )}
+          </div>
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-mono font-medium">
+            {draftRows.length} Periods Scheduled
+          </span>
         </div>
 
         <div className="overflow-x-auto">
