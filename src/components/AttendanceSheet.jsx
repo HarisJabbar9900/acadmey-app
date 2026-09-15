@@ -117,7 +117,8 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
     const studentClassObj = data.classes.find(c => c.id === student.classId);
     const studentClassName = studentClassObj ? studentClassObj.name : (currentClass && currentClass.name !== 'All Classes' ? currentClass.name : '');
 
-    return `🌟 الضیاء سائنس اکیڈمی 🌟\nAl-Zia Science Academy\n\nمحترم والدین!\nالسلام علیکم ورحمۃ اللہ وبرکاتہ،\n\nآپ کو مطلع کیا جاتا ہے کہ آپ کا بچہ/بچی:\n\n👤 نام: ${student.name}\n🔢 رول نمبر: #${student.rollNo}\n🏫 کلاس: ${studentClassName || 'N/A'}\n📅 تاریخ: ${formattedDate}\n\nآج الضیاء سائنس اکیڈمی میں غیر حاضر (Absent) رہا/رہی ہے۔\n\nبراہِ کرم اپنے بچے/بچی کی باقاعدہ حاضری کو یقینی بنائیں تاکہ تعلیمی سرگرمیوں میں کسی قسم کا خلل نہ آئے۔\n\nآپ کے تعاون کا شکریہ۔\n\nانتظامیہ\nالضیاء سائنس اکیڈمی\nAl-Zia Science Academy\n+92 334 6683236`;
+    const rlm = '\u200F';
+    return `🌟 الضیاء سائنس اکیڈمی 🌟\nAl-Zia Science Academy\n\nمحترم والدین!\nالسلام علیکم ورحمۃ اللہ وبرکاتہ،\n\nآپ کو مطلع کیا جاتا ہے کہ آپ کا بچہ/بچی:\n\n👤 نام:${rlm} ${student.name}\n🔢 رول نمبر:${rlm} #${student.rollNo}\n🏫 کلاس:${rlm} ${studentClassName || 'N/A'}\n📅 تاریخ:${rlm} ${formattedDate}\n\nآج الضیاء سائنس اکیڈمی میں غیر حاضر (Absent) رہا/رہی ہے۔\n\nبراہِ کرم اپنے بچے/بچی کی باقاعدہ حاضری کو یقینی بنائیں تاکہ تعلیمی سرگرمیوں میں کسی قسم کا خلل نہ آئے۔\n\nآپ کے تعاون کا شکریہ۔\n\nانتظامیہ\nالضیاء سائنس اکیڈمی\nAl-Zia Science Academy\n+92 334 6683236`;
   };
 
   const handleOpenSmsPreview = (student) => {
@@ -441,13 +442,13 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
 
       {/* WhatsApp Absent SMS Preview Modal (Formatted in Jameel Noori Nastaleeq) */}
       {smsModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto animate-fade-in">
           <div 
-            className="bg-white dark:bg-slate-900 border border-emerald-500/30 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5 relative"
+            className="bg-white dark:bg-slate-900 border border-emerald-500/30 rounded-2xl sm:rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl space-y-4 my-auto max-h-[92vh] flex flex-col relative overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/30">
                   <MessageCircle className="w-5 h-5" />
@@ -473,11 +474,12 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
               </button>
             </div>
 
-            {/* Message Box with Jameel Noori Nastaleeq font and RTL formatting */}
-            <div className="relative">
+            {/* Message Box with Jameel Noori Nastaleeq font and plaintext RTL formatting */}
+            <div className="relative min-h-0 flex-1 overflow-hidden">
               <div 
                 dir="rtl"
-                className="font-nastaleeq p-5 rounded-2xl bg-gradient-to-br from-emerald-950/30 via-slate-900 to-slate-950 border border-emerald-500/30 text-slate-100 text-lg md:text-xl leading-loose shadow-inner select-text whitespace-pre-line text-right"
+                style={{ unicodeBidi: 'plaintext' }}
+                className="font-nastaleeq p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-emerald-950/30 via-slate-900 to-slate-950 border border-emerald-500/30 text-slate-100 text-base md:text-lg leading-relaxed shadow-inner select-text whitespace-pre-line text-right max-h-[50vh] overflow-y-auto"
               >
                 {smsModal.msg}
               </div>
