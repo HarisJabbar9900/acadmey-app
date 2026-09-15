@@ -283,19 +283,19 @@ export default function Sidebar({
                       : 'text-slate-700 dark:text-slate-300 hover:text-indigo-700 dark:hover:text-white hover:bg-indigo-50/80 dark:hover:bg-slate-800/60'
                   }`}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <div className={`p-1.5 rounded-lg transition-colors ${
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className={`p-1.5 rounded-lg transition-colors shrink-0 ${
                       isActive 
                         ? 'bg-white/20 text-white' 
                         : 'bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-500/10'
                     }`}>
                       <Icon className="w-3.5 h-3.5" />
                     </div>
-                    <span className="tracking-wide truncate">{tab.label}</span>
+                    <span className="tracking-wide truncate text-xs">{tab.label}</span>
                   </div>
 
                   {tab.badge && (
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                    <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider whitespace-nowrap shrink-0 ml-1.5 leading-normal ${
                       isActive
                         ? 'bg-white/20 text-white'
                         : tab.isSpecial 
