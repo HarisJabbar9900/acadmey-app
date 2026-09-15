@@ -197,22 +197,22 @@ export default function Sidebar({
       
       {/* 1. Top Brand Section (Fixed Header) */}
       <div className="shrink-0">
-        <div className="p-4 border-b border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="p-3 border-b border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
             <div className="relative">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25">
-                <GraduationCap className="w-5 h-5" />
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/25">
+                <GraduationCap className="w-4 h-4" />
               </div>
-              <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5">
+              <span className="absolute -bottom-0.5 -right-0.5 flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 border-2 border-white dark:border-slate-900"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 border-2 border-white dark:border-slate-900"></span>
               </span>
             </div>
             <div>
-              <h1 className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white leading-tight">
+              <h1 className="font-extrabold text-xs tracking-tight text-slate-900 dark:text-white leading-tight">
                 Al-Zia Academy
               </h1>
-              <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-0.5">
+              <p className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5">
                 <span>Science Portal</span>
                 <span className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-600 inline-block"></span>
                 <span className="text-indigo-600 dark:text-indigo-400 font-bold">Pro v2.5</span>
@@ -230,13 +230,13 @@ export default function Sidebar({
         </div>
 
         {/* Cloud Status Pill */}
-        <div className="px-4 pt-2.5 pb-1">
-          <div className="flex items-center justify-between px-3 py-1 bg-slate-100/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl text-[11px] shadow-xs">
+        <div className="px-2.5 pt-2 pb-0.5">
+          <div className="flex items-center justify-between px-2.5 py-1 bg-slate-100/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl text-[10px] shadow-xs">
             <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 font-bold">
-              <Database className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <Database className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
               <span>Cloud Sync</span>
             </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/20 shadow-xs">
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/20 shadow-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
               Active
             </span>
@@ -244,19 +244,19 @@ export default function Sidebar({
         </div>
 
         {/* Quick Search Trigger Pill */}
-        <div className="px-3 pt-2">
+        <div className="px-2.5 pt-1.5">
           <button
             onClick={() => {
               setIsMobileMenuOpen(false);
               if (typeof onOpenCommandPalette === 'function') onOpenCommandPalette();
             }}
-            className="w-full flex items-center justify-between px-3 py-2 bg-slate-100 dark:bg-slate-900/80 hover:bg-indigo-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800/90 hover:border-indigo-300 dark:hover:border-indigo-500/40 rounded-xl text-xs text-slate-600 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-slate-200 transition-all shadow-sm group cursor-pointer"
+            className="w-full flex items-center justify-between px-2.5 py-1.5 bg-slate-100 dark:bg-slate-900/80 hover:bg-indigo-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800/90 hover:border-indigo-300 dark:hover:border-indigo-500/40 rounded-xl text-xs text-slate-600 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-slate-200 transition-all shadow-sm group cursor-pointer"
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <Search className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400 group-hover:scale-110 transition-transform" />
-              <span className="font-semibold">Quick Search...</span>
+              <span className="font-semibold text-xs">Search...</span>
             </div>
-            <kbd className="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-mono rounded text-slate-600 dark:text-slate-300 shadow-xs">
+            <kbd className="px-1 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[9px] font-mono rounded text-slate-600 dark:text-slate-300 shadow-xs">
               Ctrl K
             </kbd>
           </button>
@@ -264,10 +264,10 @@ export default function Sidebar({
       </div>
 
       {/* 2. Navigation Menus (Flexible Scrollable Area) */}
-      <nav className="flex-1 min-h-0 overflow-y-auto px-3 py-2 space-y-4 no-scrollbar">
+      <nav className="flex-1 min-h-0 overflow-y-auto px-2 py-2 space-y-3 no-scrollbar">
         {navSections.map((section, idx) => (
-          <div key={idx} className="space-y-1">
-            <div className="px-2.5 pb-1 text-[10px] font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400">
+          <div key={idx} className="space-y-0.5">
+            <div className="px-2 pb-1 text-[9px] font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400">
               {section.title}
             </div>
             {section.items.map((tab) => {
@@ -277,7 +277,7 @@ export default function Sidebar({
                 <button
                   key={tab.id}
                   onClick={() => handleTabClick(tab.id)}
-                  className={`w-full group relative flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
+                  className={`w-full group relative flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
                     isActive
                       ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30'
                       : 'text-slate-700 dark:text-slate-300 hover:text-indigo-700 dark:hover:text-white hover:bg-indigo-50/80 dark:hover:bg-slate-800/60'
@@ -486,7 +486,7 @@ export default function Sidebar({
       )}
 
       {/* 💻 Desktop Left Fixed/Sticky Sidebar */}
-      <aside className="hidden lg:flex flex-col w-72 shrink-0 h-screen max-h-screen sticky top-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border-r border-slate-200 dark:border-slate-800/80 shadow-sm dark:shadow-xl z-20 overflow-hidden">
+      <aside className="hidden lg:flex flex-col w-56 xl:w-60 shrink-0 h-screen max-h-screen sticky top-0 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border-r border-slate-200 dark:border-slate-800/80 shadow-sm dark:shadow-xl z-20 overflow-hidden">
         {renderSidebarContent()}
       </aside>
 

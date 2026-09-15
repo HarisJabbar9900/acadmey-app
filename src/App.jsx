@@ -782,7 +782,7 @@ export default function App() {
         </header>
 
         {/* Main Content Body */}
-        <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+        <main className="relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
           {activeTab === 'dashboard' && (
             <>
               {/* Public Notice Board & Announcement Banner */}
