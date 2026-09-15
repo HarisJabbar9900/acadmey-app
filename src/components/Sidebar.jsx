@@ -130,7 +130,7 @@ export default function Sidebar({
           id: 'students', 
           label: 'Classes & Students', 
           icon: Users,
-          badge: classes.length > 0 ? `${classes.length} Classes` : null
+          badge: null
         }
       ]
     },
