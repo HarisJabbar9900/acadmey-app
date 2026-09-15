@@ -584,7 +584,7 @@ export default function ClassStudentManager({
                                 className="p-1.5 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
                                 title="Generate Monthly Report Card"
                               >
-                                <Award className="w-4 h-4" />
+                                <Printer className="w-4 h-4" />
                               </button>
 
                               {/* Student ID Card Button */}
@@ -594,7 +594,7 @@ export default function ClassStudentManager({
                                 className="p-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
                                 title="Print Student ID Card"
                               >
-                                <IdCard className="w-4 h-4" />
+                                <Contact className="w-4 h-4" />
                               </button>
 
                               {isAdminLoggedIn ? (
