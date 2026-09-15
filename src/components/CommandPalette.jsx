@@ -200,41 +200,41 @@ export default function CommandPalette({
 
   return (
     <div 
-      className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-start justify-center p-4 sm:p-6 md:p-16 overflow-y-auto animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-start justify-center p-4 sm:p-6 md:p-12 overflow-y-auto animate-in fade-in duration-150"
       onClick={onClose}
     >
       <div 
-        className="w-full max-w-2xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden glass-panel flex flex-col max-h-[85vh] my-auto"
+        className="w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] my-auto transition-all"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
       >
         
         {/* 1. Search Bar Header */}
-        <div className="p-4 border-b border-slate-800 flex items-center gap-3 bg-slate-900/90 relative">
-          <Search className="w-5 h-5 text-indigo-400 shrink-0" />
+        <div className="p-3.5 sm:p-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3 bg-slate-50/50 dark:bg-slate-900/90 relative">
+          <Search className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0" />
           <input
             ref={inputRef}
             type="text"
             placeholder="Search student, roll #, class, fees, marks..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="flex-1 bg-transparent text-white placeholder-slate-400 text-base font-medium focus:outline-none"
+            className="flex-1 bg-transparent text-slate-900 dark:text-white placeholder-slate-400 text-sm sm:text-base font-medium focus:outline-none"
           />
           {query && (
             <button 
               onClick={() => setQuery('')}
-              className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+              className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
           )}
-          <span className="px-2 py-0.5 bg-slate-800 border border-slate-700 rounded-md text-[11px] font-mono text-slate-400 select-none">
+          <span className="hidden sm:inline-block px-2 py-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-[10px] font-mono text-slate-500 dark:text-slate-400 select-none">
             ESC
           </span>
         </div>
 
         {/* 2. Category Filter Pills */}
-        <div className="px-4 py-2.5 border-b border-slate-800/80 bg-slate-950/40 flex items-center gap-2 overflow-x-auto no-scrollbar">
+        <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/40 flex items-center gap-2 overflow-x-auto no-scrollbar">
           {[
             { id: 'ALL', label: 'All Results', count: resultsList.length },
             { id: 'STUDENTS', label: 'Students', count: filteredResults.studentsCount },
@@ -246,13 +246,13 @@ export default function CommandPalette({
               onClick={() => setActiveCategory(cat.id)}
               className={`px-3 py-1 rounded-xl text-xs font-semibold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
                 activeCategory === cat.id
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'bg-slate-800/80 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'bg-white dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700/60'
               }`}
             >
               <span>{cat.label}</span>
               <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-                activeCategory === cat.id ? 'bg-indigo-700 text-indigo-100' : 'bg-slate-700 text-slate-300'
+                activeCategory === cat.id ? 'bg-indigo-800 text-indigo-100' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
               }`}>
                 {cat.count}
               </span>
@@ -263,7 +263,7 @@ export default function CommandPalette({
         {/* 3. Results List Container */}
         <div 
           ref={resultsContainerRef}
-          className="flex-1 overflow-y-auto p-2 space-y-1 divide-y divide-slate-800/40 no-scrollbar max-h-96"
+          className="flex-1 overflow-y-auto p-2 space-y-1.5 no-scrollbar max-h-96"
         >
           {resultsList.length > 0 ? (
             resultsList.map((item, index) => {
@@ -278,33 +278,33 @@ export default function CommandPalette({
                     onMouseEnter={() => setSelectedIndex(index)}
                     className={`p-3 rounded-xl transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                       isSelected
-                        ? 'bg-indigo-600/20 border border-indigo-500/40 shadow-md'
-                        : 'hover:bg-slate-800/50 border border-transparent'
+                        ? 'bg-indigo-50/90 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800/60 shadow-xs'
+                        : 'hover:bg-slate-50 dark:hover:bg-slate-800/40 border border-transparent'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
                       <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
                         isSelected 
-                          ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' 
-                          : 'bg-slate-800 text-indigo-400 border border-slate-700'
+                          ? 'bg-indigo-600 text-white shadow-xs' 
+                          : 'bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border border-slate-200 dark:border-slate-700'
                       }`}>
                         <User className="w-4.5 h-4.5" />
                       </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-extrabold text-sm text-white">{item.title}</span>
-                          <span className="font-mono text-xs font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-lg border border-indigo-500/20">
+                      <div className="truncate">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-bold text-sm text-slate-900 dark:text-white">{item.title}</span>
+                          <span className="font-mono text-xs font-bold text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded-md border border-indigo-200 dark:border-indigo-800/50">
                             #{item.rollNo}
                           </span>
-                          <span className="text-[11px] font-semibold text-slate-300 bg-slate-800 px-2 py-0.5 rounded-md border border-slate-700">
+                          <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700">
                             Class {item.className}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-0.5 truncate">
                           <span>Father: {item.fname || 'N/A'}</span>
                           {item.phone && (
-                            <span className="font-mono text-[11px] text-slate-500 flex items-center gap-1">
-                              <Phone className="w-3 h-3" /> {isAdminLoggedIn ? item.phone : '••••••••••'}
+                            <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                              <Phone className="w-3 h-3 text-slate-400" /> {isAdminLoggedIn ? item.phone : '••••••••••'}
                             </span>
                           )}
                         </p>
@@ -315,7 +315,7 @@ export default function CommandPalette({
                     <div className="flex items-center gap-1.5 self-end sm:self-center shrink-0">
                       <button
                         onClick={(e) => { e.stopPropagation(); handleExecuteItem(item, 'fee'); }}
-                        className="px-2.5 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer"
+                        className="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer"
                         title="View Fee Record"
                       >
                         <CreditCard className="w-3 h-3" /> Fee
@@ -323,7 +323,7 @@ export default function CommandPalette({
 
                       <button
                         onClick={(e) => { e.stopPropagation(); handleExecuteItem(item, 'marks'); }}
-                        className="px-2.5 py-1 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer"
+                        className="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-950/40 dark:hover:bg-indigo-900/50 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer"
                         title="View Marks Ledger & Report Card"
                       >
                         <Award className="w-3 h-3" /> Marks
@@ -331,7 +331,7 @@ export default function CommandPalette({
 
                       <button
                         onClick={(e) => { e.stopPropagation(); handleExecuteItem(item, 'attendance'); }}
-                        className="px-2.5 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer"
+                        className="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:hover:bg-amber-900/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer"
                         title="View Attendance Sheet"
                       >
                         <ClipboardCheck className="w-3 h-3" /> Attendance
@@ -349,27 +349,27 @@ export default function CommandPalette({
                     onMouseEnter={() => setSelectedIndex(index)}
                     className={`p-3 rounded-xl transition-all cursor-pointer flex items-center justify-between gap-3 ${
                       isSelected
-                        ? 'bg-indigo-600/20 border border-indigo-500/40 shadow-md'
-                        : 'hover:bg-slate-800/50 border border-transparent'
+                        ? 'bg-indigo-50/90 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800/60 shadow-xs'
+                        : 'hover:bg-slate-50 dark:hover:bg-slate-800/40 border border-transparent'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
                         isSelected 
-                          ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' 
-                          : 'bg-slate-800 text-indigo-400 border border-slate-700'
+                          ? 'bg-indigo-600 text-white shadow-xs' 
+                          : 'bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border border-slate-200 dark:border-slate-700'
                       }`}>
                         <IconComponent className="w-4.5 h-4.5" />
                       </div>
                       <div>
-                        <span className="font-extrabold text-sm text-white block">{item.title}</span>
-                        <span className="text-xs text-slate-400 block">{item.subtitle}</span>
+                        <span className="font-bold text-sm text-slate-900 dark:text-white block">{item.title}</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 block">{item.subtitle}</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-1 text-slate-400 text-xs font-semibold">
+                    <div className="flex items-center gap-1 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 text-xs font-semibold">
                       <span>Jump to Page</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-indigo-400" />
+                      <ArrowRight className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
                     </div>
                   </div>
                 );
@@ -383,27 +383,27 @@ export default function CommandPalette({
                     onMouseEnter={() => setSelectedIndex(index)}
                     className={`p-3 rounded-xl transition-all cursor-pointer flex items-center justify-between gap-3 ${
                       isSelected
-                        ? 'bg-indigo-600/20 border border-indigo-500/40 shadow-md'
-                        : 'hover:bg-slate-800/50 border border-transparent'
+                        ? 'bg-indigo-50/90 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800/60 shadow-xs'
+                        : 'hover:bg-slate-50 dark:hover:bg-slate-800/40 border border-transparent'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
                         isSelected 
-                          ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' 
-                          : 'bg-slate-800 text-indigo-400 border border-slate-700'
+                          ? 'bg-indigo-600 text-white shadow-xs' 
+                          : 'bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border border-slate-200 dark:border-slate-700'
                       }`}>
                         <GraduationCap className="w-4.5 h-4.5" />
                       </div>
                       <div>
-                        <span className="font-extrabold text-sm text-white block">{item.title}</span>
-                        <span className="text-xs text-slate-400 block">{item.subtitle}</span>
+                        <span className="font-bold text-sm text-slate-900 dark:text-white block">{item.title}</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 block">{item.subtitle}</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-1 text-slate-400 text-xs font-semibold">
+                    <div className="flex items-center gap-1 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 text-xs font-semibold">
                       <span>Filter Roster</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-indigo-400" />
+                      <ArrowRight className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
                     </div>
                   </div>
                 );
@@ -413,9 +413,9 @@ export default function CommandPalette({
             })
           ) : (
             <div className="py-12 text-center space-y-2">
-              <Search className="w-8 h-8 text-slate-600 mx-auto" />
-              <p className="text-sm font-bold text-slate-300">No matching results found</p>
-              <p className="text-xs text-slate-500">
+              <Search className="w-8 h-8 text-slate-400 dark:text-slate-600 mx-auto" />
+              <p className="text-sm font-bold text-slate-800 dark:text-slate-200">No matching results found</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Try searching with student name (e.g. "Ali"), Roll # (e.g. "101"), or page name (e.g. "Fee").
               </p>
             </div>
@@ -423,24 +423,24 @@ export default function CommandPalette({
         </div>
 
         {/* 4. Footer Quick Tips */}
-        <div className="p-3 border-t border-slate-800 bg-slate-950/60 flex items-center justify-between text-[11px] text-slate-400">
+        <div className="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/60 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1">
-              <span className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-[10px] font-mono text-slate-300">↑</span>
-              <span className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-[10px] font-mono text-slate-300">↓</span>
+              <span className="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-mono text-slate-700 dark:text-slate-300 shadow-xs">↑</span>
+              <span className="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-mono text-slate-700 dark:text-slate-300 shadow-xs">↓</span>
               <span>Navigate</span>
             </span>
             <span className="flex items-center gap-1">
-              <span className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-[10px] font-mono text-slate-300">↵</span>
+              <span className="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-mono text-slate-700 dark:text-slate-300 shadow-xs">↵</span>
               <span>Select</span>
             </span>
             <span className="flex items-center gap-1">
-              <span className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-[10px] font-mono text-slate-300">ESC</span>
+              <span className="px-1.5 py-0.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-[10px] font-mono text-slate-700 dark:text-slate-300 shadow-xs">ESC</span>
               <span>Close</span>
             </span>
           </div>
 
-          <div className="hidden sm:flex items-center gap-1.5 text-indigo-400 font-semibold">
+          <div className="hidden sm:flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 font-semibold">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Al-Zia Quick Navigator</span>
           </div>
