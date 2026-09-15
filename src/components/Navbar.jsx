@@ -178,13 +178,15 @@ export default function Navbar({
               )}
             </button>
 
-            {/* Firebase Badge */}
-            <div className="hidden lg:block">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-sm">
-                <Database className="w-3.5 h-3.5 text-emerald-400" />
-                Cloud Active
-              </span>
-            </div>
+            {/* Firebase Badge (Admin Only) */}
+            {isAdminLoggedIn && (
+              <div className="hidden lg:block">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-sm">
+                  <Database className="w-3.5 h-3.5 text-emerald-400" />
+                  Cloud Active
+                </span>
+              </div>
+            )}
 
             {/* Online Users Status Badge (Admin Only) */}
             {isAdminLoggedIn && (

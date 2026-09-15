@@ -229,19 +229,21 @@ export default function Sidebar({
           </button>
         </div>
 
-        {/* Cloud Status Pill */}
-        <div className="px-2.5 pt-2 pb-0.5">
-          <div className="flex items-center justify-between px-2.5 py-1 bg-slate-100/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl text-[10px] shadow-xs">
-            <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 font-bold">
-              <Database className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-              <span>Cloud Sync</span>
-            </span>
-            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/20 shadow-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              Active
-            </span>
+        {/* Cloud Status Pill (Admin Only) */}
+        {isAdminLoggedIn && (
+          <div className="px-2.5 pt-2 pb-0.5">
+            <div className="flex items-center justify-between px-2.5 py-1 bg-slate-100/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl text-[10px] shadow-xs">
+              <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 font-bold">
+                <Database className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                <span>Cloud Sync</span>
+              </span>
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 dark:bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/20 shadow-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Active
+              </span>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Quick Search Trigger Pill */}
         <div className="px-2.5 pt-1.5">

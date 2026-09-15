@@ -257,7 +257,7 @@ export default function Timetable({ timetable = [], selectedClassId, isAdminLogg
       {saveAlert && (
         <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 p-3.5 rounded-xl flex items-center gap-2.5 text-xs animate-fade-in font-bold">
           <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-          <span>Timetable updated and saved to Cloud Firestore successfully!</span>
+          <span>Timetable updated and saved successfully!</span>
         </div>
       )}
 

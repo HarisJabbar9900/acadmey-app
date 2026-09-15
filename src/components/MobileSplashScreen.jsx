@@ -40,7 +40,7 @@ export default function MobileSplashScreen({ onFinish }) {
       if (pct < 35) {
         setStatusText('⚡ Initializing Secure Portal...');
       } else if (pct < 70) {
-        setStatusText('☁️ Connecting Cloud Database...');
+        setStatusText('⚡ Loading Academy Portal...');
       } else if (pct < 95) {
         setStatusText('📊 Preparing Student Records...');
       } else {

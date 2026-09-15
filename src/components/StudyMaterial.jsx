@@ -456,7 +456,7 @@ export default function StudyMaterial({ data, selectedClassId, isAdminLoggedIn, 
                     <span className="text-slate-500">{res.date}</span>
                   </div>
 
-                  {parsedUrl.isGoogleDrive && (
+                  {isAdminLoggedIn && parsedUrl.isGoogleDrive && (
                     <div className="mt-2 text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
                       <span>☁️ Cloud Verified (Google Drive)</span>
                     </div>

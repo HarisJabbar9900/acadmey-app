@@ -195,7 +195,7 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
                   type="button"
                   onClick={handleSave}
                   className="px-4 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/30 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
-                  title="Save attendance records to cloud database"
+                  title="Save attendance records"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>Save Attendance</span>
