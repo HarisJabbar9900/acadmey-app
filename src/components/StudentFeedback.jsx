@@ -96,24 +96,25 @@ export default function StudentFeedback({
     <div className="space-y-6">
       
       {/* Top Banner Header */}
-      <div className="glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-4 overflow-hidden">
+      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 text-indigo-500 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
-            <Sparkles className="w-4 h-4" /> Al-Zia Science Academy Feedback Corner
+          <div className="inline-flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Al-Zia Science Academy Feedback Corner</span>
           </div>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
-            <MessageSquare className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
-            Student Suggestions & Feedback
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+            <MessageSquare className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+            <span>Student Suggestions & Feedback</span>
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Submit your valuable suggestions, requests for study material, or feedback directly to the Academy Admin.
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Submit your suggestions, requests for study material, or questions directly to Academy Admin.
           </p>
         </div>
 
         {isAdminLoggedIn && (
-          <div className="flex items-center gap-2 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 px-4 py-2 rounded-xl text-xs text-indigo-700 dark:text-indigo-300 font-bold font-mono shadow-xs">
-            <Inbox className="w-4 h-4" />
-            <span>Admin Inbox: {feedbacksList.length} Messages</span>
+          <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 px-3.5 py-1.5 rounded-xl text-xs text-slate-700 dark:text-slate-300 font-bold font-mono shadow-xs">
+            <Inbox className="w-3.5 h-3.5 text-indigo-500" />
+            <span>{feedbacksList.length} Messages</span>
           </div>
         )}
       </div>
@@ -130,14 +131,15 @@ export default function StudentFeedback({
       )}
 
       {/* Public Student Feedback Submission Form */}
-      <div className="glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl space-y-4 overflow-hidden">
+      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 rounded-2xl shadow-xs space-y-4">
         <div>
-          <div className="inline-flex items-center gap-2 text-indigo-500 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
-            <Sparkles className="w-4 h-4" /> Direct Communication
+          <div className="inline-flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Direct Communication</span>
           </div>
-          <h3 className="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+          <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
-            Send Feedback, Inquiries & Notes to Admin
+            <span>Send Feedback, Inquiries & Notes to Admin</span>
           </h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Have a suggestion or request? Type your message below. (Your message is only visible to Admin).
@@ -222,14 +224,15 @@ export default function StudentFeedback({
 
       {/* Admin Feedback Inbox (Visible ONLY to Logged-in Admin) */}
       {isAdminLoggedIn ? (
-        <div className="glass-panel p-6 rounded-2xl shadow-xl space-y-5">
+        <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 rounded-2xl shadow-xs space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200/80 dark:border-slate-800 pb-3 gap-3">
             <div>
-              <div className="inline-flex items-center gap-1.5 text-indigo-500 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
-                <Inbox className="w-4 h-4" /> Admin Only Section
+              <div className="inline-flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
+                <Inbox className="w-3.5 h-3.5" />
+                <span>Admin Only Section</span>
               </div>
-              <h3 className="text-lg font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-                📥 Received Student Comments & Suggestions
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span>Received Student Comments & Suggestions</span>
               </h3>
             </div>
 

@@ -142,49 +142,35 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
     <div className="space-y-6">
       
       {/* Top Bar & Actions */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl overflow-hidden">
+      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Award className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+          <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <Award className="w-3.5 h-3.5" />
+            <span>Academic Tests & Marks</span>
+          </div>
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
             Subject Tests & Marks Ledger
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Create tests, input student marks, and automatically calculate monthly score totals.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          
-          {/* Class Select */}
-          <div className="hidden items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 shadow-sm">
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-bold">Class:</span>
-            <select
-              value={activeClassId}
-              onChange={(e) => setActiveClassId(e.target.value)}
-              className="bg-transparent text-sm font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer"
-            >
-              {data.classes.map((c) => (
-                <option key={c.id} value={c.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
-                  Class {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Create Test Button */}
+        <div className="flex items-center gap-2.5">
           {isAdminLoggedIn ? (
             <button
+              type="button"
               onClick={() => {
                 setModalClassId(activeClassId || (data.classes[0]?.id || ''));
                 setIsModalOpen(true);
               }}
-              className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-sm font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/30 active:scale-95 transition-all cursor-pointer"
+              className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow-xs transition-all cursor-pointer"
             >
               <PlusCircle className="w-4 h-4" />
-              + Create New Test
+              <span>Create New Test</span>
             </button>
           ) : (
-            <div className="px-3.5 py-2 bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-sm">
+            <div className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-xs">
               <span>👁️ Read Only</span>
             </div>
           )}

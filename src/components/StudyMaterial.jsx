@@ -290,17 +290,18 @@ export default function StudyMaterial({ data, selectedClassId, isAdminLoggedIn, 
     <div className="space-y-6">
 
       {/* Top Banner Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl overflow-hidden">
+      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 text-indigo-500 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
-            <Sparkles className="w-4 h-4" /> Class-Wise Digital Library
+          <div className="inline-flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Class-Wise Digital Library</span>
           </div>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
-            <BookOpen className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
-            Study Material & PDF Downloads
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+            <span>Study Material & PDF Downloads</span>
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Read online 👁️ or download Class Textbooks 📘, Chapter Notes 📝, and Solved MCQs ❓ directly on your phone or laptop.
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Class Textbooks 📘, Chapter Notes 📝, and Solved MCQs ❓ for all classes.
           </p>
         </div>
 
@@ -308,6 +309,7 @@ export default function StudyMaterial({ data, selectedClassId, isAdminLoggedIn, 
         <div>
           {isAdminLoggedIn ? (
             <button
+              type="button"
               onClick={() => {
                 setFileError('');
                 setSelectedFile(null);
@@ -315,15 +317,14 @@ export default function StudyMaterial({ data, selectedClassId, isAdminLoggedIn, 
                 setFileUrl('');
                 setIsModalOpen(true);
               }}
-              className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-sm font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition-all cursor-pointer"
+              className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow-xs transition-all cursor-pointer whitespace-nowrap"
             >
               <Upload className="w-4 h-4" />
-              Upload PDF Resource
+              <span>Upload PDF Resource</span>
             </button>
           ) : (
-            <div className="px-3.5 py-2 bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-sm">
+            <div className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-xs">
               <span>👁️ Student View</span>
-              <span className="text-[10px] text-slate-500">(Admin PIN required to upload new material)</span>
             </div>
           )}
         </div>
@@ -341,7 +342,7 @@ export default function StudyMaterial({ data, selectedClassId, isAdminLoggedIn, 
       )}
 
       {/* Filters & Search Control Bar */}
-      <div className="glass-panel p-4 rounded-2xl space-y-4 shadow-lg">
+      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 p-4 rounded-2xl space-y-3 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
 
           {/* Category Filter Tabs */}

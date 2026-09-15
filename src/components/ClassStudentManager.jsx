@@ -300,19 +300,38 @@ export default function ClassStudentManager({
     <div className="space-y-6">
       
       {/* Top Banner & Header */}
-      <div className="glass-panel glow-accent-indigo p-6 rounded-2xl shadow-xl overflow-hidden">
+      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 text-indigo-500 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
-            <Sparkles className="w-4 h-4" /> Al-Zia Science Academy Roster
+          <div className="inline-flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Al-Zia Science Academy Roster</span>
           </div>
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
-            <Users className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
-            Class & Student Management
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+            <Users className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+            <span>Class & Student Directory</span>
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Manage classes, class-wise subjects 📚, student roll numbers, and parent contact information.
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Manage classes, student enrollments, roll numbers, and parent contacts.
           </p>
         </div>
+
+        {isAdminLoggedIn && (
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                if (data.classes.length > 0 && !targetClassId) {
+                  setTargetClassId(filterClassId !== 'ALL' ? filterClassId : data.classes[0].id);
+                }
+                setIsAddStudentModalOpen(true);
+              }}
+              className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow-xs active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+            >
+              <UserPlus className="w-4 h-4" />
+              <span>+ Add Student</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Dynamic Save/Update Notification Alert Banner */}
@@ -332,7 +351,7 @@ export default function ClassStudentManager({
       )}
 
       {/* Class Filter & Search Bar */}
-      <div className="glass-panel rounded-2xl p-4 space-y-3.5 shadow-lg">
+      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-xs">
         
         {/* Top: Full-Width Sleek Search Bar */}
         <div className="relative w-full">
@@ -440,7 +459,7 @@ export default function ClassStudentManager({
       </div>
 
       {/* Class Subjects Manager Section */}
-      <div className="glass-panel rounded-2xl p-5 shadow-xl space-y-4">
+      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
           <div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -559,7 +578,7 @@ export default function ClassStudentManager({
       </div>
 
       {/* Student List Table */}
-      <div className="glass-panel rounded-2xl p-5 shadow-xl space-y-4">
+      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
         
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
           <div>
