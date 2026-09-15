@@ -228,37 +228,25 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
       <div className="dashboard-layout-main space-y-6 print:hidden">
 
         {/* 1. Dashboard Control Header: Title, Subtitle, Clear Data & Month Filter */}
-        <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <div className="inline-flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
               <Sparkles className="w-3.5 h-3.5" />
               <span>{isAdminLoggedIn ? 'Admin Management & Analytics' : 'Al-Zia Academy Portal'}</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               {isAdminLoggedIn ? 'Admin Dashboard' : 'Academy Dashboard'}
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-2xl">
               {isAdminLoggedIn 
                 ? 'Track student attendance, fee collections, test score accumulations, and overall class performance.'
                 : 'Welcome to Al-Zia Science Academy portal. View latest announcement notices, class wall of honor, and monthly performance.'}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
-            {isAdminLoggedIn && onPurgeAllData && (
-              <button
-                type="button"
-                onClick={onPurgeAllData}
-                className="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
-                title="Permanently wipe all sample/dummy records"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>Clear Sample Data</span>
-              </button>
-            )}
-
+          <div className="flex items-center gap-2.5 shrink-0 flex-wrap sm:flex-nowrap">
             {/* Month Picker */}
-            <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-xl px-3 py-1.5 shadow-xs">
+            <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3 py-1.5 shadow-xs">
               <Calendar className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
               <span className="text-xs text-slate-500 dark:text-slate-400 font-bold">Month:</span>
               <input
@@ -268,6 +256,18 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
                 className="bg-transparent text-xs font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer"
               />
             </div>
+
+            {isAdminLoggedIn && onPurgeAllData && (
+              <button
+                type="button"
+                onClick={onPurgeAllData}
+                className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-900/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95 whitespace-nowrap"
+                title="Permanently wipe all sample/dummy records"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Clear Sample Data</span>
+              </button>
+            )}
           </div>
         </div>
 
