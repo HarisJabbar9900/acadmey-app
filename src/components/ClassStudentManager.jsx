@@ -294,13 +294,16 @@ export default function ClassStudentManager({
   const totalPages = Math.ceil(filteredStudents.length / itemsPerPage) || 1;
   const paginatedStudents = filteredStudents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  const selectedClassObj = data.classes.find(c => c.id === filterClassId);
+  const [activeTab, setActiveTab] = useState('students'); // 'students' | 'classes'
+  const [subjectManageClassId, setSubjectManageClassId] = useState('');
+
+  const activeSubjectClass = data.classes.find(c => c.id === (subjectManageClassId || (filterClassId !== 'ALL' ? filterClassId : ''))) || data.classes[0];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       
       {/* Top Banner & Header */}
-      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
             <Sparkles className="w-3.5 h-3.5" />
@@ -311,12 +314,47 @@ export default function ClassStudentManager({
             <span>Class & Student Directory</span>
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Manage classes, student enrollments, roll numbers, and parent contacts.
+            Manage student enrollments, roll numbers, classes, and subjects curriculum.
           </p>
         </div>
 
-        {isAdminLoggedIn && (
-          <div className="flex items-center gap-2">
+        {/* View Switcher Tabs & Primary Action */}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center bg-slate-100 dark:bg-slate-800/90 p-1 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
+            <button
+              type="button"
+              onClick={() => setActiveTab('students')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                activeTab === 'students'
+                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Users className="w-3.5 h-3.5" />
+              <span>Students</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-200 dark:bg-slate-800 font-mono">
+                {data.students.length}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('classes')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                activeTab === 'classes'
+                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Classes & Subjects</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-200 dark:bg-slate-800 font-mono">
+                {data.classes.length}
+              </span>
+            </button>
+          </div>
+
+          {isAdminLoggedIn && activeTab === 'students' && (
             <button
               type="button"
               onClick={() => {
@@ -325,20 +363,41 @@ export default function ClassStudentManager({
                 }
                 setIsAddStudentModalOpen(true);
               }}
-              className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow-xs active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+              className="px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer whitespace-nowrap"
             >
               <UserPlus className="w-4 h-4" />
               <span>+ Add Student</span>
             </button>
-          </div>
-        )}
+          )}
+
+          {isAdminLoggedIn && activeTab === 'classes' && (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setIsClassModalOpen(true)}
+                className="px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+              >
+                <FolderPlus className="w-3.5 h-3.5" />
+                <span>+ Add Class</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsManageClassesModalOpen(true)}
+                className="px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+              >
+                <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                <span>Manage</span>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Dynamic Save/Update Notification Alert Banner */}
       {notification && (
-        <div className="bg-emerald-500/20 border border-emerald-500/40 text-emerald-800 dark:text-emerald-200 px-5 py-3.5 rounded-2xl flex items-center justify-between text-sm font-semibold shadow-xl shadow-emerald-950/40 animate-pulse">
-          <div className="flex items-center gap-3">
-            <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+        <div className="bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-200 px-4 py-3 rounded-2xl flex items-center justify-between text-xs sm:text-sm font-semibold shadow-xs animate-pulse">
+          <div className="flex items-center gap-2.5">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span>{notification}</span>
           </div>
           <button 
@@ -350,421 +409,483 @@ export default function ClassStudentManager({
         </div>
       )}
 
-      {/* Class Filter & Search Bar */}
-      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 space-y-3 shadow-xs">
-        
-        {/* Top: Full-Width Sleek Search Bar */}
-        <div className="relative w-full">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-          <input
-            type="text"
-            placeholder="Search student by name, father name, or roll # (e.g. 101, Ali)..."
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="w-full pl-9.5 pr-8 py-2.5 bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 shadow-inner transition-all"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 cursor-pointer"
-              title="Clear Search"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          )}
-        </div>
-
-        {/* Bottom: Class Filter Badges & Admin Actions in 1 Row */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-1 border-t border-slate-200/60 dark:border-slate-800/80">
-          
-          {/* Class Filter Badges */}
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
-            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mr-1 shrink-0">
-              <Filter className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" /> Filter:
-            </span>
-
-            <button
-              onClick={() => {
-                setFilterClassId('ALL');
-                setCurrentPage(1);
-              }}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 ${
-                filterClassId === 'ALL'
-                  ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30'
-                  : 'bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60'
-              }`}
-            >
-              <span>All Classes</span>
-              <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono ${
-                filterClassId === 'ALL' ? 'bg-indigo-950/60 text-indigo-100' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
-              }`}>
-                {data.students.length}
-              </span>
-            </button>
-
-            {data.classes.map(c => {
-              const count = data.students.filter(s => s.classId === c.id).length;
-              const isSelected = filterClassId === c.id;
-              return (
+      {/* VIEW 1: STUDENTS DIRECTORY */}
+      {activeTab === 'students' && (
+        <div className="space-y-4">
+          {/* Class Filter & Search Bar */}
+          <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-xs space-y-3">
+            {/* Top: Search Bar */}
+            <div className="relative w-full">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search student by name, father name, or roll # (e.g. 101, Ali)..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="w-full pl-9.5 pr-8 py-2.5 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all"
+              />
+              {searchQuery && (
                 <button
-                  key={c.id}
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 cursor-pointer"
+                  title="Clear Search"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* Bottom: Class Filter Pills */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1 mr-1 shrink-0">
+                  <Filter className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" /> Class:
+                </span>
+
+                <button
                   onClick={() => {
-                    setFilterClassId(c.id);
+                    setFilterClassId('ALL');
                     setCurrentPage(1);
                   }}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer shrink-0 ${
-                    isSelected
-                      ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/30'
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 ${
+                    filterClassId === 'ALL'
+                      ? 'bg-indigo-600 text-white shadow-xs'
                       : 'bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60'
                   }`}
                 >
-                  <span>Class {c.name}</span>
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono ${
-                    isSelected ? 'bg-indigo-950/60 text-indigo-100' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
+                  <span>All Classes</span>
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                    filterClassId === 'ALL' ? 'bg-indigo-800 text-indigo-100' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
                   }`}>
-                    {count}
+                    {data.students.length}
                   </span>
                 </button>
-              );
-            })}
-          </div>
 
-          {/* Admin Class Management Actions */}
-          {isAdminLoggedIn && (
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                onClick={() => setIsClassModalOpen(true)}
-                className="px-3.5 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-md shadow-purple-600/25 active:scale-95 cursor-pointer whitespace-nowrap"
-              >
-                <FolderPlus className="w-3.5 h-3.5" />
-                + Add Class
-              </button>
-
-              <button
-                onClick={() => setIsManageClassesModalOpen(true)}
-                className="px-3.5 py-1.5 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-md shadow-rose-600/25 active:scale-95 cursor-pointer whitespace-nowrap"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                ⚙️ Edit / Delete Classes
-              </button>
-            </div>
-          )}
-
-        </div>
-
-      </div>
-
-      {/* Class Subjects Manager Section */}
-      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
-          <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
-              Class Subjects Management {selectedClassObj ? `(Class ${selectedClassObj.name})` : '(Select a class to add/edit subjects)'}
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Customize subjects for each class. (e.g. 9th has Pak Studies, 10th has Quran Pak, First Year has Computer Science).
-            </p>
-          </div>
-
-          {isAdminLoggedIn && selectedClassObj && (
-            <form 
-              onSubmit={(e) => handleAddSubjectToClass(e, selectedClassObj)} 
-              className="flex items-center gap-2 shrink-0"
-            >
-              <input
-                type="text"
-                placeholder="New Subject Name (e.g. English)"
-                value={newSubjectName}
-                onChange={(e) => setNewSubjectName(e.target.value)}
-                className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 w-44 sm:w-56"
-              />
-              <button
-                type="submit"
-                onClick={(e) => handleAddSubjectToClass(e, selectedClassObj)}
-                className="px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-xs font-bold shrink-0 flex items-center gap-1 shadow-md shadow-indigo-600/30 transition-all cursor-pointer"
-              >
-                <Plus className="w-3.5 h-3.5" /> Add Subject
-              </button>
-            </form>
-          )}
-        </div>
-
-        {/* Subjects Badges Pills List */}
-        {selectedClassObj ? (
-          <>
-            <div className="flex flex-wrap gap-2 pt-1">
-              {(selectedClassObj.subjects || []).map((sub, idx) => {
-                const isEditingThis = editingSubjectIndex === `${selectedClassObj.id}-${idx}`;
-
-                return (
-                  <div key={idx} className="bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 group hover:border-indigo-500/50 transition-all shadow-sm">
-                    {isEditingThis ? (
-                      <input
-                        type="text"
-                        defaultValue={sub}
-                        autoFocus
-                        onBlur={(e) => handleRenameSubject(selectedClassObj, idx, e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') handleRenameSubject(selectedClassObj, idx, e.currentTarget.value);
-                        }}
-                        className="bg-white dark:bg-slate-950 px-2 py-0.5 rounded text-slate-900 dark:text-white text-xs font-bold border border-indigo-500 focus:outline-none w-28"
-                      />
-                    ) : (
-                      <span>{sub}</span>
-                    )}
-
-                    {isAdminLoggedIn && (
-                      <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEditingSubjectIndex(`${selectedClassObj.id}-${idx}`);
-                            setEditingSubjectText(sub);
-                          }}
-                          className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 p-0.5 cursor-pointer"
-                          title="Rename Subject"
-                        >
-                          <Edit2 className="w-3 h-3" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteSubjectFromClass(selectedClassObj, sub)}
-                          className="text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 p-0.5 cursor-pointer"
-                          title="Delete Subject"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            {selectedClassObj && (
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200/80 dark:border-slate-800/80 mt-2">
-                <span className="text-xs text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1.5">
-                  <span>Class <strong className="text-indigo-600 dark:text-indigo-400 font-extrabold">{selectedClassObj.name}</strong> Settings:</span>
-                </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleOpenEditClass(selectedClassObj)}
-                    className="px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/25 active:scale-95 transition-all cursor-pointer"
-                  >
-                    <Edit3 className="w-3.5 h-3.5" /> Edit Class Name
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteClassWithConfirm(selectedClassObj)}
-                    className="px-3.5 py-1.5 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-rose-600/25 active:scale-95 transition-all cursor-pointer"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" /> Delete Class {selectedClassObj.name}
-                  </button>
-                </div>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="text-xs text-slate-500 dark:text-slate-400 italic bg-slate-100/70 dark:bg-slate-950/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800/80">
-            💡 Select any specific Class filter above (e.g. <strong className="text-indigo-600 dark:text-indigo-400 font-bold">Class 9th</strong> or <strong className="text-indigo-600 dark:text-indigo-400 font-bold">Class 10th</strong>) to add, rename or delete subjects for that class!
-          </div>
-        )}
-      </div>
-
-      {/* Student List Table */}
-      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
-        
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
-          <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <Users className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
-              All Students List
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Showing {paginatedStudents.length} of {filteredStudents.length} enrolled students
-            </p>
-          </div>
-
-          {isAdminLoggedIn && (
-            <button
-              onClick={() => {
-                if (data.classes.length > 0 && !targetClassId) {
-                  setTargetClassId(filterClassId !== 'ALL' ? filterClassId : data.classes[0].id);
-                }
-                setIsAddStudentModalOpen(true);
-              }}
-              className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/30 active:scale-95 transition-all cursor-pointer shrink-0"
-            >
-              <UserPlus className="w-4 h-4" />
-              + Add New Student
-            </button>
-          )}
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-800/50 text-slate-700 dark:text-slate-400 text-xs uppercase font-bold tracking-wider">
-                <th className="py-3.5 px-4 whitespace-nowrap">Roll #</th>
-                <th className="py-3.5 px-4 whitespace-nowrap">Student Name</th>
-                <th className="py-3.5 px-4 whitespace-nowrap">Father Name</th>
-                <th className="py-3.5 px-4 whitespace-nowrap">Father Number</th>
-                <th className="py-3.5 px-4 whitespace-nowrap min-w-[110px]">Class</th>
-                <th className="py-3.5 px-4 text-center whitespace-nowrap min-w-[210px]">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800/60 text-slate-900 dark:text-slate-200">
-              {paginatedStudents.length > 0 ? (
-                paginatedStudents.map(student => {
-                  const studentClassObj = data.classes.find(c => c.id === student.classId);
-                  const classNameDisplay = studentClassObj ? studentClassObj.name : 'Unassigned';
-
+                {data.classes.map(c => {
+                  const count = data.students.filter(s => s.classId === c.id).length;
+                  const isSelected = filterClassId === c.id;
                   return (
-                    <tr key={student.id} className="hover:bg-indigo-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                      <td className="py-3.5 px-4 font-mono text-xs text-indigo-700 dark:text-indigo-400 font-extrabold whitespace-nowrap">#{student.rollNo}</td>
-                      <td className="py-3.5 px-4 font-bold text-slate-900 dark:text-white whitespace-nowrap">{student.name}</td>
-                      <td className="py-3.5 px-4 text-xs text-slate-700 dark:text-slate-300 font-medium whitespace-nowrap">{student.fname || 'N/A'}</td>
-                      <td className="py-3.5 px-4 text-xs font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap">
-                        {isAdminLoggedIn ? (
-                          <div className="flex items-center gap-1.5">
-                            <Phone className="w-3.5 h-3.5 text-slate-400" />
-                            <span>{student.fatherNumber || 'N/A'}</span>
+                    <button
+                      key={c.id}
+                      onClick={() => {
+                        setFilterClassId(c.id);
+                        setCurrentPage(1);
+                      }}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer shrink-0 ${
+                        isSelected
+                          ? 'bg-indigo-600 text-white shadow-xs'
+                          : 'bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60'
+                      }`}
+                    >
+                      <span>Class {c.name}</span>
+                      <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                        isSelected ? 'bg-indigo-800 text-indigo-100' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
+                      }`}>
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {filterClassId !== 'ALL' && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSubjectManageClassId(filterClassId);
+                    setActiveTab('classes');
+                  }}
+                  className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 shrink-0 cursor-pointer"
+                >
+                  <span>Class {data.classes.find(c => c.id === filterClassId)?.name} Subjects →</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Student List Table */}
+          <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+            
+            <div className="flex items-center justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
+              <div>
+                <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <Users className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+                  {filterClassId === 'ALL' ? 'All Enrolled Students' : `Class ${data.classes.find(c => c.id === filterClassId)?.name || ''} Students`}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Showing {paginatedStudents.length} of {filteredStudents.length} enrolled students
+                </p>
+              </div>
+
+              {isAdminLoggedIn && (
+                <button
+                  onClick={() => {
+                    if (data.classes.length > 0 && !targetClassId) {
+                      setTargetClassId(filterClassId !== 'ALL' ? filterClassId : data.classes[0].id);
+                    }
+                    setIsAddStudentModalOpen(true);
+                  }}
+                  className="hidden sm:inline-flex px-3.5 py-1.5 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/50 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 rounded-xl text-xs font-bold items-center gap-1.5 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  + Add Student
+                </button>
+              )}
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-400 text-xs uppercase font-bold tracking-wider">
+                    <th className="py-3 px-4 whitespace-nowrap">Roll #</th>
+                    <th className="py-3 px-4 whitespace-nowrap">Student Name</th>
+                    <th className="py-3 px-4 whitespace-nowrap">Father Name</th>
+                    <th className="py-3 px-4 whitespace-nowrap">Father Number</th>
+                    <th className="py-3 px-4 whitespace-nowrap min-w-[110px]">Class</th>
+                    <th className="py-3 px-4 text-center whitespace-nowrap min-w-[200px]">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800/60 text-slate-900 dark:text-slate-200">
+                  {paginatedStudents.length > 0 ? (
+                    paginatedStudents.map(student => {
+                      const studentClassObj = data.classes.find(c => c.id === student.classId);
+                      const classNameDisplay = studentClassObj ? studentClassObj.name : 'Unassigned';
+
+                      return (
+                        <tr key={student.id} className="hover:bg-indigo-50/40 dark:hover:bg-slate-800/30 transition-colors">
+                          <td className="py-3 px-4 font-mono text-xs text-indigo-700 dark:text-indigo-400 font-extrabold whitespace-nowrap">#{student.rollNo}</td>
+                          <td className="py-3 px-4 font-bold text-slate-900 dark:text-white whitespace-nowrap">{student.name}</td>
+                          <td className="py-3 px-4 text-xs text-slate-700 dark:text-slate-300 font-medium whitespace-nowrap">{student.fname || 'N/A'}</td>
+                          <td className="py-3 px-4 text-xs font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                            {isAdminLoggedIn ? (
+                              <div className="flex items-center gap-1.5">
+                                <Phone className="w-3.5 h-3.5 text-slate-400" />
+                                <span>{student.fatherNumber || 'N/A'}</span>
+                              </div>
+                            ) : (
+                              <span className="text-slate-500 font-mono text-[11px] italic">🔒 Admin Only</span>
+                            )}
+                          </td>
+                          <td className="py-3 px-4 whitespace-nowrap">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60">
+                              Class {classNameDisplay}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-center whitespace-nowrap">
+                            <div className="inline-flex items-center gap-1.5">
+                              {/* Printable Report Card Button */}
+                              <button
+                                type="button"
+                                onClick={() => setSelectedReportStudent(student)}
+                                className="p-1.5 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
+                                title="Generate Monthly Report Card"
+                              >
+                                <Award className="w-4 h-4" />
+                              </button>
+
+                              {/* Student ID Card Button */}
+                              <button
+                                type="button"
+                                onClick={() => setSelectedIdCardStudent(student)}
+                                className="p-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
+                                title="Print Student ID Card"
+                              >
+                                <IdCard className="w-4 h-4" />
+                              </button>
+
+                              {isAdminLoggedIn ? (
+                                <>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleOpenEdit(student)}
+                                    className="p-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
+                                    title="Edit Student Profile"
+                                  >
+                                    <Edit2 className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      onDeleteStudent(student.id);
+                                    }}
+                                    className="p-1.5 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-300 hover:bg-rose-600 hover:text-white dark:hover:bg-rose-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
+                                    title="Delete Student"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </>
+                              ) : (
+                                <span className="text-[11px] text-slate-400 font-mono">🔒 View Only</span>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan="6" className="py-12 text-center">
+                        <div className="flex flex-col items-center justify-center max-w-sm mx-auto space-y-3">
+                          <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-200 dark:border-indigo-800/50">
+                            <Users className="w-6 h-6" />
                           </div>
-                        ) : (
-                          <span className="text-slate-500 font-mono text-[11px] italic">🔒 Admin Only</span>
-                        )}
-                      </td>
-                      <td className="py-3.5 px-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-3 py-1 rounded-xl text-xs font-bold bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/20 whitespace-nowrap shadow-sm">
-                          Class {classNameDisplay}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-4 text-center whitespace-nowrap">
-                        {isAdminLoggedIn ? (
-                          <div className="flex items-center justify-center gap-2">
-                            {/* Student ID Card Button (Admin Only) */}
-                            <button
-                              onClick={() => setSelectedIdCardStudent(student)}
-                              className="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 active:scale-95 text-slate-950 rounded-xl text-xs font-black inline-flex items-center gap-1.5 shadow-md shadow-amber-500/25 transition-all whitespace-nowrap cursor-pointer"
-                              title="Generate Student Identity Card"
-                            >
-                              <Contact className="w-3.5 h-3.5" /> ID Card
-                            </button>
-
-                            {/* Report Card Button (Admin Only) */}
-                            <button
-                              onClick={() => setSelectedReportStudent(student)}
-                              className="px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-md shadow-indigo-600/25 transition-all whitespace-nowrap cursor-pointer"
-                              title="Print Student Monthly Progress Report Card"
-                            >
-                              <Printer className="w-3.5 h-3.5" /> Report
-                            </button>
-
-                            <button
-                              onClick={() => handleOpenEdit(student)}
-                              className="p-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
-                              title="Edit Student"
-                            >
-                              <Edit3 className="w-4 h-4" />
-                            </button>
+                          <h4 className="text-sm font-bold text-slate-800 dark:text-white">No Students Found</h4>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            {searchQuery ? 'No students matched your search criteria.' : 'Begin by enrolling your first student into their respective class.'}
+                          </p>
+                          {isAdminLoggedIn && !searchQuery && (
                             <button
                               onClick={() => {
-                                onDeleteStudent(student.id);
+                                if (data.classes.length > 0 && !targetClassId) {
+                                  setTargetClassId(filterClassId !== 'ALL' ? filterClassId : data.classes[0].id);
+                                }
+                                setIsAddStudentModalOpen(true);
                               }}
-                              className="p-1.5 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-300 hover:bg-rose-600 hover:text-white dark:hover:bg-rose-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
-                              title="Delete Student"
+                              className="mt-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-xs transition-all cursor-pointer active:scale-95"
                             >
-                              <Trash2 className="w-4 h-4" />
+                              <UserPlus className="w-4 h-4" /> Enroll First Student
                             </button>
-                          </div>
-                        ) : (
-                          <span className="text-xs text-slate-500 font-mono">🔒 Admin Only</span>
-                        )}
+                          )}
+                        </div>
                       </td>
                     </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan="6" className="py-14 text-center">
-                    <div className="flex flex-col items-center justify-center max-w-sm mx-auto space-y-3">
-                      <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center border border-indigo-500/20">
-                        <Users className="w-6 h-6" />
-                      </div>
-                      <h4 className="text-sm font-bold text-slate-800 dark:text-white">No Students Enrolled Yet</h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
-                        {searchQuery ? 'No students matched your search criteria.' : 'Begin by enrolling your first student into their respective class.'}
-                      </p>
-                      {isAdminLoggedIn && !searchQuery && (
-                        <button
-                          onClick={() => {
-                            if (data.classes.length > 0 && !targetClassId) {
-                              setTargetClassId(filterClassId !== 'ALL' ? filterClassId : data.classes[0].id);
-                            }
-                            setIsAddStudentModalOpen(true);
-                          }}
-                          className="mt-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-indigo-600/30 transition-all cursor-pointer active:scale-95"
-                        >
-                          <UserPlus className="w-4 h-4" /> Enroll First Student
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination Pager Controls (Max 10 per page) */}
-        {filteredStudents.length > 0 && (
-          <div className="p-4 border-t border-slate-800 bg-slate-900/90 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="text-xs text-slate-400 font-medium">
-              Showing <strong className="text-white">{(currentPage - 1) * itemsPerPage + 1}</strong> to <strong className="text-white">{Math.min(currentPage * itemsPerPage, filteredStudents.length)}</strong> of <strong className="text-indigo-400">{filteredStudents.length}</strong> Students
+                  )}
+                </tbody>
+              </table>
             </div>
 
-            {totalPages > 1 && (
-              <div className="flex items-center gap-1.5">
-                <button
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                  className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
-                >
-                  ◀ Previous
-                </button>
+            {/* Pagination Pager Controls (Max 10 per page) */}
+            {filteredStudents.length > 0 && (
+              <div className="p-3.5 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  Showing <strong className="text-slate-900 dark:text-white">{(currentPage - 1) * itemsPerPage + 1}</strong> to <strong className="text-slate-900 dark:text-white">{Math.min(currentPage * itemsPerPage, filteredStudents.length)}</strong> of <strong className="text-indigo-600 dark:text-indigo-400">{filteredStudents.length}</strong> Students
+                </div>
 
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`w-8 h-8 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      currentPage === page
-                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                        : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
+                {totalPages > 1 && (
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                    >
+                      ◀ Previous
+                    </button>
 
-                <button
-                  disabled={currentPage === totalPages}
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                  className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
-                >
-                  Next ▶
-                </button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`w-7 h-7 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          currentPage === page
+                            ? 'bg-indigo-600 text-white shadow-xs'
+                            : 'bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+
+                    <button
+                      disabled={currentPage === totalPages}
+                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                      className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+                    >
+                      Next ▶
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      {/* VIEW 2: CLASS SUBJECTS & SETTINGS */}
+      {activeTab === 'classes' && (
+        <div className="space-y-4">
+          {/* Class Selection Pills Bar */}
+          <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mr-1 shrink-0">
+                  <BookOpen className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" /> Select Class:
+                </span>
+                {data.classes.map(c => {
+                  const isSelected = (activeSubjectClass?.id === c.id);
+                  const enrolledCount = data.students.filter(s => s.classId === c.id).length;
+
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => setSubjectManageClassId(c.id)}
+                      className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 shrink-0 ${
+                        isSelected
+                          ? 'bg-indigo-600 text-white shadow-xs'
+                          : 'bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60'
+                      }`}
+                    >
+                      <span>Class {c.name}</span>
+                      <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                        isSelected ? 'bg-indigo-800 text-indigo-100' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
+                      }`}>
+                        {(c.subjects || []).length} subs · {enrolledCount} st
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {isAdminLoggedIn && (
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setIsClassModalOpen(true)}
+                    className="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/50 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
+                  >
+                    <FolderPlus className="w-3.5 h-3.5" />
+                    + Add Class
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsManageClassesModalOpen(true)}
+                    className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+                  >
+                    <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                    Edit/Delete Classes
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Selected Class Subjects Details Card */}
+          {activeSubjectClass ? (
+            <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+                    Class {activeSubjectClass.name} Subjects ({activeSubjectClass.subjects?.length || 0})
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Customize syllabus subjects for tests, marks ledger, and report cards.
+                  </p>
+                </div>
+
+                {isAdminLoggedIn && (
+                  <form 
+                    onSubmit={(e) => handleAddSubjectToClass(e, activeSubjectClass)} 
+                    className="flex items-center gap-2 shrink-0"
+                  >
+                    <input
+                      type="text"
+                      placeholder="Subject name (e.g. Physics)"
+                      value={newSubjectName}
+                      onChange={(e) => setNewSubjectName(e.target.value)}
+                      className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 w-44 sm:w-56"
+                    />
+                    <button
+                      type="submit"
+                      className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white rounded-xl text-xs font-bold shrink-0 flex items-center gap-1 shadow-xs transition-all cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" /> Add
+                    </button>
+                  </form>
+                )}
+              </div>
+
+              {/* Subjects Badges Pills List */}
+              <div className="flex flex-wrap gap-2 pt-1 min-h-[44px] items-center">
+                {(activeSubjectClass.subjects || []).length > 0 ? (
+                  (activeSubjectClass.subjects || []).map((sub, idx) => {
+                    const isEditingThis = editingSubjectIndex === `${activeSubjectClass.id}-${idx}`;
+
+                    return (
+                      <div key={idx} className="bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 group hover:border-indigo-500/50 transition-all shadow-xs">
+                        {isEditingThis ? (
+                          <input
+                            type="text"
+                            defaultValue={sub}
+                            autoFocus
+                            onBlur={(e) => handleRenameSubject(activeSubjectClass, idx, e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleRenameSubject(activeSubjectClass, idx, e.currentTarget.value);
+                            }}
+                            className="bg-white dark:bg-slate-950 px-2 py-0.5 rounded text-slate-900 dark:text-white text-xs font-bold border border-indigo-500 focus:outline-none w-28"
+                          />
+                        ) : (
+                          <span>{sub}</span>
+                        )}
+
+                        {isAdminLoggedIn && (
+                          <div className="flex items-center gap-1 opacity-70 group-hover:opacity-100">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditingSubjectIndex(`${activeSubjectClass.id}-${idx}`);
+                                setEditingSubjectText(sub);
+                              }}
+                              className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 p-0.5 cursor-pointer"
+                              title="Rename Subject"
+                            >
+                              <Edit2 className="w-3 h-3" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteSubjectFromClass(activeSubjectClass, sub)}
+                              className="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 p-0.5 cursor-pointer"
+                              title="Delete Subject"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="text-xs text-slate-400 italic py-2">
+                    No subjects configured yet for Class {activeSubjectClass.name}. Enter a subject name above to add.
+                  </div>
+                )}
+              </div>
+
+              {isAdminLoggedIn && (
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200/80 dark:border-slate-800/80 mt-2">
+                  <span className="text-xs text-slate-600 dark:text-slate-400 font-semibold">
+                    Class <strong className="text-indigo-600 dark:text-indigo-400 font-bold">{activeSubjectClass.name}</strong> Quick Actions:
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenEditClass(activeSubjectClass)}
+                      className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+                    >
+                      <Edit3 className="w-3.5 h-3.5 text-indigo-500" /> Rename Class
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteClassWithConfirm(activeSubjectClass)}
+                      className="px-3 py-1.5 bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Delete Class
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-8 text-center text-slate-500 text-xs">
+              No classes found. Please add a class to get started.
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Printable Report Card Modal */}
       {selectedReportStudent && (
