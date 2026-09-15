@@ -908,11 +908,8 @@ export default function App() {
                     <img src="/favicon.svg" alt="Al-Zia Logo" className="w-full h-full object-contain" />
                   </div>
                   <div>
-                    <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center justify-center lg:justify-start gap-2">
+                    <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white tracking-tight">
                       Al-Zia Science Academy
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-mono bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 font-bold">
-                        EST. 2026
-                      </span>
                     </h3>
                     <p className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400">
                       Center for Conceptual Learning &amp; Academic Distinction
@@ -982,8 +979,8 @@ export default function App() {
 
                     {/* Tech Stack Pills */}
                     <div className="pt-2 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-wrap items-center gap-1.5">
-                      {['React 19', 'Vite', 'Tailwind CSS', 'Cloud Firestore', 'WhatsApp API'].map((tech, i) => (
-                        <span key={i} className="text-[9px] px-2 py-0.5 rounded-md font-mono font-semibold bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60">
+                      {['React', 'Next.js', 'Firebase', 'Node.js', 'Express', 'REST APIs', 'Tailwind CSS'].map((tech, i) => (
+                        <span key={i} className="text-[9px] px-2.5 py-1 rounded-lg font-mono font-semibold bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 shadow-xs">
                           {tech}
                         </span>
                       ))}
