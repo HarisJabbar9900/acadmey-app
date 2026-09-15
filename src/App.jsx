@@ -725,49 +725,51 @@ export default function App() {
 
           <div className="flex items-center gap-3">
             {/* Real-time Date Indicator */}
-            <div className="px-3.5 py-1.5 bg-slate-900/80 border border-slate-800 rounded-xl text-xs flex items-center gap-2 shadow-sm">
+            <div className="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl text-xs flex items-center gap-2 shadow-xs">
               <span className="flex h-2 w-2 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              <span className="text-slate-300 font-medium">
+              <span className="text-slate-700 dark:text-slate-300 font-medium">
                 {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
               </span>
             </div>
 
-            {/* Live Cloud Real-time Status & Sync Button */}
-            <button
-              onClick={async () => {
-                try {
-                  await syncAllDataToCloud(data);
-                  const fresh = await fetchCloudData();
-                  if (fresh) {
-                    setData(prev => ({
-                      ...prev,
-                      ...(fresh.tests && fresh.tests.length > 0 ? { tests: fresh.tests } : {}),
-                      ...(fresh.students && fresh.students.length > 0 ? { students: fresh.students } : {}),
-                      ...(fresh.classes && fresh.classes.length > 0 ? { classes: fresh.classes } : {}),
-                      ...(fresh.notices && fresh.notices.length > 0 ? { notices: fresh.notices } : {}),
-                      ...(fresh.attendance && Object.keys(fresh.attendance).length > 0 ? { attendance: { ...prev.attendance, ...fresh.attendance } } : {}),
-                      ...(fresh.fees && Object.keys(fresh.fees).length > 0 ? { fees: { ...prev.fees, ...fresh.fees } } : {}),
-                      ...(fresh.resources && fresh.resources.length > 0 ? { resources: fresh.resources } : {}),
-                      ...(fresh.feedbacks && fresh.feedbacks.length > 0 ? { feedbacks: fresh.feedbacks } : {}),
-                      ...(Array.isArray(fresh.timetable) && fresh.timetable.length > 0 && !fresh.timetable.some(t => JSON.stringify(t).includes('Combined') || JSON.stringify(t).includes('Jalab') || !t.boys) ? { timetable: fresh.timetable } : { timetable: DEFAULT_TIMETABLE }),
-                      ...(Array.isArray(fresh.faculty) ? { faculty: fresh.faculty } : {})
-                    }));
+            {/* Sync Button (Admin Only) */}
+            {isAdminLoggedIn && (
+              <button
+                onClick={async () => {
+                  try {
+                    await syncAllDataToCloud(data);
+                    const fresh = await fetchCloudData();
+                    if (fresh) {
+                      setData(prev => ({
+                        ...prev,
+                        ...(fresh.tests && fresh.tests.length > 0 ? { tests: fresh.tests } : {}),
+                        ...(fresh.students && fresh.students.length > 0 ? { students: fresh.students } : {}),
+                        ...(fresh.classes && fresh.classes.length > 0 ? { classes: fresh.classes } : {}),
+                        ...(fresh.notices && fresh.notices.length > 0 ? { notices: fresh.notices } : {}),
+                        ...(fresh.attendance && Object.keys(fresh.attendance).length > 0 ? { attendance: { ...prev.attendance, ...fresh.attendance } } : {}),
+                        ...(fresh.fees && Object.keys(fresh.fees).length > 0 ? { fees: { ...prev.fees, ...fresh.fees } } : {}),
+                        ...(fresh.resources && fresh.resources.length > 0 ? { resources: fresh.resources } : {}),
+                        ...(fresh.feedbacks && fresh.feedbacks.length > 0 ? { feedbacks: fresh.feedbacks } : {}),
+                        ...(Array.isArray(fresh.timetable) && fresh.timetable.length > 0 && !fresh.timetable.some(t => JSON.stringify(t).includes('Combined') || JSON.stringify(t).includes('Jalab') || !t.boys) ? { timetable: fresh.timetable } : { timetable: DEFAULT_TIMETABLE }),
+                        ...(Array.isArray(fresh.faculty) ? { faculty: fresh.faculty } : {})
+                      }));
+                    }
+                    alert('All tests, marks, attendance, and records have been synced successfully.');
+                  } catch (e) {
+                    console.error(e);
                   }
-                  alert('☁️ Live Cloud Synced! All tests, marks, toppers, attendance, fees, and staff are updated across Laptop and Mobile.');
-                } catch (e) {
-                  console.error(e);
-                }
-              }}
-              className="px-2.5 sm:px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-all active:scale-95"
-              title="Click to sync data with Cloud / All Devices"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="hidden sm:inline">☁️ Cloud Live</span>
-              <span className="sm:hidden">☁️ Sync</span>
-            </button>
+                }}
+                className="px-2.5 sm:px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-all active:scale-95"
+                title="Sync data across devices"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="hidden sm:inline">Sync Data</span>
+                <span className="sm:hidden">Sync</span>
+              </button>
+            )}
 
             {isAdminLoggedIn ? (
               <span className="px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">
