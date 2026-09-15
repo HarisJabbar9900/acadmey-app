@@ -577,28 +577,28 @@ export default function ClassStudentManager({
                           </td>
                           <td className="py-3 px-4 text-center whitespace-nowrap">
                             <div className="inline-flex items-center gap-1.5">
-                              {/* Printable Report Card Button */}
-                              <button
-                                type="button"
-                                onClick={() => setSelectedReportStudent(student)}
-                                className="p-1.5 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
-                                title="Generate Monthly Report Card"
-                              >
-                                <Printer className="w-4 h-4" />
-                              </button>
-
-                              {/* Student ID Card Button */}
-                              <button
-                                type="button"
-                                onClick={() => setSelectedIdCardStudent(student)}
-                                className="p-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
-                                title="Print Student ID Card"
-                              >
-                                <Contact className="w-4 h-4" />
-                              </button>
-
                               {isAdminLoggedIn ? (
                                 <>
+                                  {/* Printable Report Card Button (Admin Only) */}
+                                  <button
+                                    type="button"
+                                    onClick={() => setSelectedReportStudent(student)}
+                                    className="p-1.5 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
+                                    title="Generate Monthly Report Card"
+                                  >
+                                    <Printer className="w-4 h-4" />
+                                  </button>
+
+                                  {/* Student ID Card Button (Admin Only) */}
+                                  <button
+                                    type="button"
+                                    onClick={() => setSelectedIdCardStudent(student)}
+                                    className="p-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white rounded-xl transition-all cursor-pointer shadow-xs"
+                                    title="Print Student ID Card"
+                                  >
+                                    <Contact className="w-4 h-4" />
+                                  </button>
+
                                   <button
                                     type="button"
                                     onClick={() => handleOpenEdit(student)}
@@ -619,7 +619,9 @@ export default function ClassStudentManager({
                                   </button>
                                 </>
                               ) : (
-                                <span className="text-[11px] text-slate-400 font-mono">🔒 View Only</span>
+                                <span className="inline-flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400 font-mono py-1 px-2.5 rounded-lg bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
+                                  🔒 Admin Protected
+                                </span>
                               )}
                             </div>
                           </td>
@@ -887,8 +889,8 @@ export default function ClassStudentManager({
         </div>
       )}
 
-      {/* Printable Report Card Modal */}
-      {selectedReportStudent && (
+      {/* Printable Report Card Modal (Admin Authenticated Only) */}
+      {selectedReportStudent && isAdminLoggedIn && (
         <ReportCardModal
           student={selectedReportStudent}
           month={new Date().toISOString().slice(0, 7)}
@@ -897,11 +899,12 @@ export default function ClassStudentManager({
         />
       )}
 
-      {/* Printable Student ID Card Modal */}
-      {selectedIdCardStudent && (
+      {/* Printable Student ID Card Modal (Admin Authenticated Only) */}
+      {selectedIdCardStudent && isAdminLoggedIn && (
         <IdCardModal
           student={selectedIdCardStudent}
           data={data}
+          isAdminLoggedIn={isAdminLoggedIn}
           onClose={() => setSelectedIdCardStudent(null)}
         />
       )}

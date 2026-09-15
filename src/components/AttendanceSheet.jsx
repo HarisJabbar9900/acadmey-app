@@ -106,7 +106,7 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
   const lateCount = Object.values(records).filter(v => v === 'Late').length;
 
   const getAbsentMessage = (student) => {
-    // Clean Urdu date format e.g. "14 ستمبر"
+    // Clean Urdu date format e.g. "15 ستمبر"
     const dateObj = new Date(selectedDate);
     const urduMonths = ['جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون', 'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر'];
     const day = !isNaN(dateObj) ? dateObj.getDate() : '';
@@ -116,9 +116,8 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
     // Find the student's actual enrolled class
     const studentClassObj = data.classes.find(c => c.id === student.classId);
     const studentClassName = studentClassObj ? studentClassObj.name : (currentClass && currentClass.name !== 'All Classes' ? currentClass.name : '');
-    const classText = studentClassName ? `، کلاس: ${studentClassName}` : '';
 
-    return `محترم والدین!\nالسلام علیکم،\nاطلاع دی جاتی ہے کہ آپ کا بچہ/بچی *${student.name}* (رول نمبر: #${student.rollNo}${classText}) آج بتاریخ *${formattedDate}* کو *الضیاء سائنس اکیڈمی* سے *غیر حاضر (Absent)* رہا/رہی ہے۔\nبرائے مہربانی بچے/بچی کی باقاعدہ حاضری کو یقینی بنائیں۔\n\nشکریہ،\n*الضیاء سائنس اکیڈمی (Al-Zia Science Academy)*`;
+    return `🌟 الضیاء سائنس اکیڈمی 🌟\nAl-Zia Science Academy\n\nمحترم والدین!\nالسلام علیکم ورحمۃ اللہ وبرکاتہ،\n\nآپ کو مطلع کیا جاتا ہے کہ آپ کا بچہ/بچی:\n\n👤 نام: ${student.name}\n🔢 رول نمبر: #${student.rollNo}\n🏫 کلاس: ${studentClassName || 'N/A'}\n📅 تاریخ: ${formattedDate}\n\nآج الضیاء سائنس اکیڈمی میں غیر حاضر (Absent) رہا/رہی ہے۔\n\nبراہِ کرم اپنے بچے/بچی کی باقاعدہ حاضری کو یقینی بنائیں تاکہ تعلیمی سرگرمیوں میں کسی قسم کا خلل نہ آئے۔\n\nآپ کے تعاون کا شکریہ۔\n\nانتظامیہ\nالضیاء سائنس اکیڈمی\nAl-Zia Science Academy\n+92 334 6683236`;
   };
 
   const handleOpenSmsPreview = (student) => {

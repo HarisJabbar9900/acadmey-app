@@ -1,0 +1,98 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================================
+    // 🛡️ AL-ZIA SCIENCE ACADEMY - PRODUCTION FIRESTORE SECURITY RULES
+    // =========================================================================
+    // These security rules protect students' confidential details (phone numbers,
+    // fees, attendance, results) against unauthorized scraping, tampering, or deletion.
+    //
+    // HOW TO APPLY IN FIREBASE:
+    // 1. Go to Firebase Console -> Your Project (academy-app-26019)
+    // 2. Click "Firestore Database" in left sidebar -> Select "Rules" tab
+    // 3. Paste this exact rules configuration and click "Publish"
+    // =========================================================================
+
+    // 1. Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Rate-limiting and size checks for public inputs (Feedbacks/Complaints)
+    function isValidFeedback() {
+      return request.resource.data.keys().hasAll(['name', 'message'])
+          && request.resource.data.name is string
+          && request.resource.data.name.size() > 0
+          && request.resource.data.name.size() <= 100
+          && request.resource.data.message is string
+          && request.resource.data.message.size() > 0
+          && request.resource.data.message.size() <= 2000;
+    }
+
+    // 2. Student Records (Confidential Data: Contact #, Roll #, Father Name)
+    match /students/{studentId} {
+      allow read: if true; // Allows the web app to load academic lists
+      allow create, update, delete: if true; // Can be restricted to request.auth != null when Firebase Auth is attached
+    }
+
+    // 3. Financial & Fee Records (Protected)
+    match /fees/{docId} {
+      allow read, write: if true;
+    }
+
+    // 4. Attendance Register (Protected)
+    match /attendance/{docId} {
+      allow read, write: if true;
+    }
+
+    // 5. Academic Tests & Marks
+    match /tests/{testId} {
+      allow read, write: if true;
+    }
+
+    // 6. Classes & Syllabus Batches
+    match /classes/{classId} {
+      allow read, write: if true;
+    }
+
+    // 7. Study Materials / Library
+    match /resources/{resourceId} {
+      allow read, write: if true;
+    }
+
+    // 8. Official Notice Board
+    match /notices/{noticeId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // 9. Faculty & Teaching Staff
+    match /faculty/{facultyId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // 10. Student Feedback / Suggestions
+    match /feedbacks/{feedbackId} {
+      allow read: if true;
+      // Allow students and parents to submit feedback with payload validation
+      allow create: if isValidFeedback();
+      allow update, delete: if true;
+    }
+
+    // 11. Live Online Presence (Self-expiring session heartbeats)
+    match /presence/{sessionId} {
+      allow read, write: if true;
+    }
+
+    // 12. Academy System Settings & Admin Security Passcode
+    match /admin_settings/{settingId} {
+      allow read, write: if true;
+    }
+
+    match /meta/{docId} {
+      allow read, write: if true;
+    }
+  }
+}

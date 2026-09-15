@@ -1,8 +1,31 @@
 import React, { useState } from 'react';
 import { Printer, GraduationCap, User, Phone, ShieldCheck, QrCode, X, Sparkles } from 'lucide-react';
 
-export default function IdCardModal({ student, data, onClose }) {
+export default function IdCardModal({ student, data, onClose, isAdminLoggedIn = false }) {
   if (!student) return null;
+
+  // Security Guard: Prevent unauthorized access to student emergency contact info
+  if (!isAdminLoggedIn) {
+    return (
+      <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl">
+          <div className="w-12 h-12 bg-rose-500/10 text-rose-400 rounded-2xl flex items-center justify-center mx-auto border border-rose-500/20">
+            <ShieldCheck className="w-6 h-6" />
+          </div>
+          <h3 className="text-lg font-bold text-white">Confidential Identity Document</h3>
+          <p className="text-xs text-slate-400 leading-relaxed">
+            Student Identity Cards contain personal emergency contacts and are strictly restricted to authorized Academy Administration.
+          </p>
+          <button 
+            onClick={onClose} 
+            className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all cursor-pointer"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const studentClass = data.classes.find(c => c.id === student.classId);
 

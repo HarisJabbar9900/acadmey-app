@@ -19,7 +19,9 @@ import {
   FileText,
   Sparkles,
   Sun,
-  Moon
+  Moon,
+  ShieldAlert,
+  AlertCircle
 } from 'lucide-react';
 import { isFirebaseActive } from '../services/academyService';
 
@@ -49,6 +51,42 @@ export default function Navbar({
   
   const [pinInput, setPinInput] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [lockoutSecondsLeft, setLockoutSecondsLeft] = useState(0);
+
+  // Reset Login Modal inputs when opened
+  useEffect(() => {
+    if (isLoginModalOpen) {
+      setPinInput('');
+      setErrorMessage('');
+    }
+  }, [isLoginModalOpen]);
+
+  // Reset Change PIN Modal inputs when opened
+  useEffect(() => {
+    if (isChangePinModalOpen) {
+      setOldPinInput('');
+      setNewPinInput('');
+      setChangePinError('');
+      setChangePinSuccess(false);
+    }
+  }, [isChangePinModalOpen]);
+
+  // Active Security Lockout Countdown
+  useEffect(() => {
+    const checkLockout = () => {
+      try {
+        const storedLock = parseInt(sessionStorage.getItem('academy_pin_lockout_until') || '0', 10);
+        const remaining = Math.max(0, Math.ceil((storedLock - Date.now()) / 1000));
+        setLockoutSecondsLeft(remaining);
+      } catch (e) {
+        setLockoutSecondsLeft(0);
+      }
+    };
+
+    checkLockout();
+    const interval = setInterval(checkLockout, 1000);
+    return () => clearInterval(interval);
+  }, [isLoginModalOpen]);
 
   // Change PIN form state
   const [oldPinInput, setOldPinInput] = useState('');
@@ -69,13 +107,42 @@ export default function Navbar({
 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
+    const now = Date.now();
+    const storedLock = parseInt(sessionStorage.getItem('academy_pin_lockout_until') || '0', 10);
+    if (storedLock > now) {
+      const remaining = Math.ceil((storedLock - now) / 1000);
+      setErrorMessage(`⏳ Security Lockout Active! Please wait ${remaining}s before trying again.`);
+      return;
+    }
+
     if (pinInput === adminPin) {
       setIsAdminLoggedIn(true);
       setIsLoginModalOpen(false);
       setPinInput('');
       setErrorMessage('');
+      try {
+        sessionStorage.removeItem('academy_pin_failed_attempts');
+        sessionStorage.removeItem('academy_pin_lockout_until');
+      } catch (err) {}
     } else {
-      setErrorMessage(`Incorrect Admin Passcode. Please enter your valid PIN.`);
+      setPinInput(''); // Clear input so user gets empty box to re-type
+      let failedAttempts = 1;
+      try {
+        failedAttempts = (parseInt(sessionStorage.getItem('academy_pin_failed_attempts') || '0', 10)) + 1;
+        sessionStorage.setItem('academy_pin_failed_attempts', String(failedAttempts));
+      } catch (err) {}
+
+      if (failedAttempts >= 5) {
+        const lockUntil = now + 60000; // 60 seconds lockout
+        try {
+          sessionStorage.setItem('academy_pin_lockout_until', String(lockUntil));
+        } catch (err) {}
+        setLockoutSecondsLeft(60);
+        setErrorMessage('🚫 Security Alert: 5 failed attempts! Login temporarily locked for 60 seconds.');
+      } else {
+        const attemptsLeft = 5 - failedAttempts;
+        setErrorMessage(`Incorrect Passcode! ${attemptsLeft} attempt${attemptsLeft > 1 ? 's' : ''} remaining before security lockout.`);
+      }
     }
   };
 
@@ -287,14 +354,26 @@ export default function Navbar({
                   type="password"
                   required
                   autoFocus
-                  placeholder="••••••••"
+                  autoComplete="new-password"
+                  disabled={lockoutSecondsLeft > 0}
+                  placeholder={lockoutSecondsLeft > 0 ? `Locked for ${lockoutSecondsLeft}s` : '••••••••'}
                   value={pinInput}
                   onChange={(e) => setPinInput(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 font-mono tracking-widest text-center"
+                  className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-red-500 font-mono tracking-widest text-center disabled:opacity-50 disabled:cursor-not-allowed"
                 />
-                {errorMessage && (
-                  <p className="text-rose-400 text-xs mt-2 font-medium">{errorMessage}</p>
-                )}
+
+                {lockoutSecondsLeft > 0 ? (
+                  <div className="mt-3 p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-xs font-bold flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4 shrink-0 text-red-400" />
+                    <span>Temporary Security Lock active. Try again in <strong>{lockoutSecondsLeft}s</strong>.</span>
+                  </div>
+                ) : errorMessage ? (
+                  <div className="mt-3 p-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl text-xs font-bold flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+                    <span>{errorMessage}</span>
+                  </div>
+                ) : null}
+
                 <p className="text-[11px] text-slate-500 mt-2">
                   🔒 Passcode enables full access to add, edit, or delete students, attendance & marks.
                 </p>
@@ -310,7 +389,8 @@ export default function Navbar({
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-indigo-600/30 flex items-center gap-1.5"
+                  disabled={lockoutSecondsLeft > 0}
+                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl text-xs font-semibold shadow-lg shadow-indigo-600/30 flex items-center gap-1.5 cursor-pointer"
                 >
                   Unlock Admin Controls
                 </button>

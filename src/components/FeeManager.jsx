@@ -498,13 +498,43 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                           {isAdminLoggedIn ? (
                             <>
                               {isPaid ? (
-                                <button
-                                  onClick={() => handleMarkUnpaid(student)}
-                                  className="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-amber-500/20 active:scale-95 transition-all cursor-pointer"
-                                  title="Mark as Unpaid"
-                                >
-                                  <RotateCcw className="w-3.5 h-3.5" /> Mark Unpaid
-                                </button>
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    onClick={() => handleMarkUnpaid(student)}
+                                    className="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-amber-500/20 active:scale-95 transition-all cursor-pointer"
+                                    title="Mark as Unpaid"
+                                  >
+                                    <RotateCcw className="w-3.5 h-3.5" /> Mark Unpaid
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const parentPhone = student.fatherNumber || student.parentContact;
+                                      if (!parentPhone) {
+                                        alert(`Parent contact number not found for ${student.name}`);
+                                        return;
+                                      }
+                                      let cleanPhone = parentPhone.replace(/[^0-9]/g, '');
+                                      if (cleanPhone.startsWith('0')) {
+                                        cleanPhone = '92' + cleanPhone.slice(1);
+                                      }
+                                      
+                                      const monthIndex = selectedMonth ? parseInt(selectedMonth.split('-')[1], 10) - 1 : new Date().getMonth();
+                                      const urduMonths = ['جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون', 'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر'];
+                                      const monthNameUrdu = urduMonths[monthIndex] || 'جاریہ ماہ';
+
+                                      const paidAmount = feeRecord?.paidAmount || feeRecord?.monthlyFee || 0;
+
+                                      const msg = `🌟 الضیاء سائنس اکیڈمی 🌟\nAl-Zia Science Academy\n\nمحترم والدین!\nالسلام علیکم ورحمۃ اللہ وبرکاتہ،\n\nآپ کو مطلع کیا جاتا ہے کہ آپ کے بچے/بچی:\n\n👤 نام: ${student.name}\n🔢 رول نمبر: #${student.rollNo}\n🏫 کلاس: ${studentClassObj?.name || 'N/A'}\n📅 مہینہ: ${monthNameUrdu}\n💰 ادا شدہ فیس: Rs. ${paidAmount}\n📊 سٹیٹس: ادا شدہ (Paid ✅)\n\nفیس کی ادائیگی باقاعدہ موصول ہو چکی ہے۔ بروقت ادائیگی پر آپ کے تعاون کا شکریہ۔\n\nانتظامیہ\nالضیاء سائنس اکیڈمی\nAl-Zia Science Academy\n+92 334 6683236`;
+                                      window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+                                    }}
+                                    className="px-2.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-xl text-xs font-bold flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+                                    title="Send Paid Receipt via WhatsApp"
+                                  >
+                                    <MessageCircle className="w-3.5 h-3.5" /> WA Slip
+                                  </button>
+                                </div>
                               ) : (
                                 <div className="flex items-center gap-2">
                                   <button
@@ -533,9 +563,9 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                                       const monthNameUrdu = urduMonths[monthIndex] || 'جاریہ ماہ';
 
                                       const expectedFee = feeRecord?.monthlyFee || feeRecord?.paidAmount;
-                                      const feeDetail = expectedFee ? `\n• فیس واجب الادا: *Rs. ${expectedFee}*` : '';
+                                      const feeDetail = expectedFee ? `\n💰 فیس کی رقم: Rs. ${expectedFee}` : '';
 
-                                      const msg = `محترم والدین!\nالسلام علیکم،\nاطلاع دی جاتی ہے کہ طالب علم *${student.name}* (رول نمبر: #${student.rollNo}، کلاس: ${studentClassObj?.name || ''}) کی ماہ *${monthNameUrdu}* کی اکیڈمی فیس ابھی تک جمع نہیں ہوئی ہے۔${feeDetail}\nبرائے مہربانی فیس جلد از جلد اکیڈمی کے دفتر میں جمع کروا کر باقاعدہ رسید حاصل کریں۔\n\nشکریہ،\n*الضیاء سائنس اکیڈمی (Al-Zia Science Academy)*`;
+                                      const msg = `🌟 الضیاء سائنس اکیڈمی 🌟\nAl-Zia Science Academy\n\nمحترم والدین!\nالسلام علیکم ورحمۃ اللہ وبرکاتہ،\n\nآپ کو مطلع کیا جاتا ہے کہ آپ کا بچہ/بچی:\n\n👤 نام: ${student.name}\n🔢 رول نمبر: #${student.rollNo}\n🏫 کلاس: ${studentClassObj?.name || 'N/A'}\n📅 مہینہ: ${monthNameUrdu}${feeDetail}\n📊 سٹیٹس: واجب الادا (Pending / Unpaid)\n\nبراہِ کرم ماہانہ فیس بروقت اکیڈمی کے دفتر میں جمع کروا دیں تاکہ بچے کی تعلیمی سرگرمیاں بلا تعطل جاری رہ سکیں۔\n\nآپ کے تعاون کا شکریہ۔\n\nانتظامیہ\nالضیاء سائنس اکیڈمی\nAl-Zia Science Academy\n+92 334 6683236`;
                                       window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                                     }}
                                     className="px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-600/25 active:scale-95 transition-all cursor-pointer"

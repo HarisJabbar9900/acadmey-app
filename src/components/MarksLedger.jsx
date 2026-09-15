@@ -436,9 +436,8 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
 
                                       const studentClassObj = data.classes.find(c => c.id === student.classId || c.id === test.classId);
                                       const studentClassName = studentClassObj ? studentClassObj.name : '';
-                                      const classText = studentClassName ? `، کلاس: ${studentClassName}` : '';
 
-                                      const msg = `محترم والدین!\nالسلام علیکم،\nطالب علم *${student.name}* (رول نمبر: #${student.rollNo}${classText}) کا *${test.subject}* کے ٹیسٹ کا نتیجہ درج ذیل ہے:\n• کل نمبر: *${test.maxMarks}*\n• حاصل کردہ نمبر: *${score}*\n• فیصد: *${percentage}%*\n• کیفیت: ${remark}\n\nشکریہ،\n*الضیاء سائنس اکیڈمی (Al-Zia Science Academy)*`;
+                                      const msg = `🌟 الضیاء سائنس اکیڈمی 🌟\nAl-Zia Science Academy\n\nمحترم والدین!\nالسلام علیکم ورحمۃ اللہ وبرکاتہ،\n\nآپ کو مطلع کیا جاتا ہے کہ آپ کے بچے/بچی:\n\n👤 نام: ${student.name}\n🔢 رول نمبر: #${student.rollNo}\n🏫 کلاس: ${studentClassName || 'N/A'}\n📚 مضمون: ${test.subject}\n📝 کل نمبر: ${test.maxMarks}\n🎯 حاصل کردہ نمبر: ${score}\n📊 فیصد: ${percentage}%\n⭐ کیفیت: ${remark}\n\nآپ کے تعاون کا شکریہ۔\n\nانتظامیہ\nالضیاء سائنس اکیڈمی\nAl-Zia Science Academy\n+92 334 6683236`;
                                       window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
                                     }}
                                     className="p-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-500/10 rounded transition-colors cursor-pointer"
