@@ -283,10 +283,15 @@ export default function ClassStudentManager({
   // Filter students based on Class filter and search query
   const filteredStudents = data.students.filter(student => {
     const isClassMatch = filterClassId === 'ALL' || student.classId === filterClassId;
+    const query = (searchQuery || '').trim();
+    if (!query) return isClassMatch;
+    const lowerQuery = query.toLowerCase();
+    const digitsOnly = query.replace(/\D/g, ''); // extract only digits for phone search
     const isSearchMatch = 
-      student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (student.fname && student.fname.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (student.rollNo && student.rollNo.includes(searchQuery));
+      (student.name && student.name.toLowerCase().includes(lowerQuery)) ||
+      (student.fname && student.fname.toLowerCase().includes(lowerQuery)) ||
+      (student.rollNo && String(student.rollNo).includes(query)) ||
+      (digitsOnly.length >= 3 && student.fatherNumber && student.fatherNumber !== 'N/A' && student.fatherNumber.replace(/\D/g, '').includes(digitsOnly));
     
     return isClassMatch && isSearchMatch;
   });
@@ -419,7 +424,7 @@ export default function ClassStudentManager({
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
-                placeholder="Search student by name, father name, or roll # (e.g. 101, Ali)..."
+                placeholder="Search by name, father name, roll #, or father number..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
