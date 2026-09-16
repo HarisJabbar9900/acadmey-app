@@ -25,12 +25,14 @@ import {
   Cell 
 } from 'recharts';
 import ReportCardModal from './ReportCardModal';
+import BatchReportCardModal from './BatchReportCardModal';
 import CertificateModal from './CertificateModal';
 
 export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn, onlineUsers = [], onPurgeAllData, onNavigate }) {
   const [selectedMonth, setSelectedMonth] = useState(() => new Date().toISOString().slice(0, 7));
   const [selectedReportStudent, setSelectedReportStudent] = useState(null);
   const [selectedCertificateScorer, setSelectedCertificateScorer] = useState(null);
+  const [isBatchPrintOpen, setIsBatchPrintOpen] = useState(false);
   const [attendanceViewMode, setAttendanceViewMode] = useState('today'); // 'today' | 'all'
   const getMonthTitle = (monthStr) => {
     if (!monthStr) return '';
@@ -610,9 +612,20 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">Total marks obtained vs maximum marks for {formattedMonthName}</p>
             </div>
-            <span className="text-xs font-semibold px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/20 rounded-full w-fit shadow-xs">
-              {monthlyTests.length} Subject Test(s) Evaluated
-            </span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={() => setIsBatchPrintOpen(true)}
+                className="text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 flex items-center gap-1.5 cursor-pointer px-3.5 py-1.5 rounded-xl shadow-xs transition-all"
+                title="Print Report Cards for the whole class"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>Batch Print Report Cards</span>
+              </button>
+              <span className="text-xs font-semibold px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/20 rounded-full w-fit shadow-xs">
+                {monthlyTests.length} Subject Test(s) Evaluated
+              </span>
+            </div>
           </div>
 
           {/* Class-Wise 1st Rank Toppers Mini Bar */}
@@ -837,6 +850,16 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
             month={selectedMonth}
             data={data}
             onClose={() => setSelectedReportStudent(null)}
+          />
+        )}
+
+        {/* Batch Printable Report Cards Modal */}
+        {isBatchPrintOpen && (
+          <BatchReportCardModal
+            data={data}
+            initialClassId={selectedClassId !== 'ALL' ? selectedClassId : undefined}
+            initialMonth={selectedMonth}
+            onClose={() => setIsBatchPrintOpen(false)}
           />
         )}
 

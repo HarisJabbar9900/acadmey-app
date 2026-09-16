@@ -21,6 +21,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import ReportCardModal from './ReportCardModal';
+import BatchReportCardModal from './BatchReportCardModal';
 import IdCardModal from './IdCardModal';
 
 export default function ClassStudentManager({ 
@@ -36,6 +37,7 @@ export default function ClassStudentManager({
 }) {
   const [selectedReportStudent, setSelectedReportStudent] = useState(null);
   const [selectedIdCardStudent, setSelectedIdCardStudent] = useState(null);
+  const [isBatchPrintOpen, setIsBatchPrintOpen] = useState(false);
   // Class Filter State inside the component (defaults to global selectedClassId or 'ALL')
   const [filterClassId, setFilterClassId] = useState(selectedClassId || 'ALL');
 
@@ -498,7 +500,7 @@ export default function ClassStudentManager({
           {/* Student List Table */}
           <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
             
-            <div className="flex items-center justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
+            <div className="flex items-center justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800/80 pb-3 flex-wrap">
               <div>
                 <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   <Users className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
@@ -508,6 +510,18 @@ export default function ClassStudentManager({
                   Showing {paginatedStudents.length} of {filteredStudents.length} enrolled students
                 </p>
               </div>
+
+              {isAdminLoggedIn && (
+                <button
+                  type="button"
+                  onClick={() => setIsBatchPrintOpen(true)}
+                  className="text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 flex items-center gap-1.5 cursor-pointer px-3.5 py-2 rounded-xl shadow-xs transition-all"
+                  title="Print Report Cards for the class"
+                >
+                  <Printer className="w-3.5 h-3.5" />
+                  <span>Batch Print Report Cards</span>
+                </button>
+              )}
             </div>
 
             <div className="overflow-x-auto">
@@ -869,6 +883,15 @@ export default function ClassStudentManager({
           month={new Date().toISOString().slice(0, 7)}
           data={data}
           onClose={() => setSelectedReportStudent(null)}
+        />
+      )}
+
+      {/* Batch Printable Report Cards Modal */}
+      {isBatchPrintOpen && isAdminLoggedIn && (
+        <BatchReportCardModal
+          data={data}
+          initialClassId={filterClassId !== 'ALL' ? filterClassId : undefined}
+          onClose={() => setIsBatchPrintOpen(false)}
         />
       )}
 

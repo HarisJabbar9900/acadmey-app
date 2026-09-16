@@ -14,8 +14,10 @@ import {
   ChevronDown,
   ChevronUp,
   GraduationCap,
-  Users
+  Users,
+  Printer
 } from 'lucide-react';
+import BatchReportCardModal from './BatchReportCardModal';
 
 export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedClassId, isAdminLoggedIn }) {
   const initialClassId = (selectedClassId && selectedClassId !== 'ALL' && data.classes.some(c => c.id === selectedClassId))
@@ -25,6 +27,7 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
   const [activeClassId, setActiveClassId] = useState(initialClassId);
   const [modalClassId, setModalClassId] = useState(initialClassId);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBatchPrintOpen, setIsBatchPrintOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [expandedTestIds, setExpandedTestIds] = useState({});
 
@@ -266,18 +269,31 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
               Showing tests exclusively for Class {currentClass?.name}. Click any class above to switch view.
             </p>
           </div>
-          {isAdminLoggedIn && (
-            <button
-              onClick={() => {
-                setModalClassId(activeClassId);
-                setIsModalOpen(true);
-              }}
-              className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1.5 cursor-pointer bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 px-3 py-1.5 rounded-xl border border-indigo-200 dark:border-indigo-500/30 transition-all shadow-xs"
-            >
-              <PlusCircle className="w-3.5 h-3.5" />
-              + Add Test to Class {currentClass?.name}
-            </button>
-          )}
+          <div className="flex items-center gap-2 flex-wrap">
+            {isAdminLoggedIn && (
+              <button
+                type="button"
+                onClick={() => setIsBatchPrintOpen(true)}
+                className="text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 flex items-center gap-1.5 cursor-pointer px-3.5 py-1.5 rounded-xl shadow-xs transition-all"
+                title="Print Report Cards for the whole class"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>Batch Print Report Cards (رزلٹ کارڈز)</span>
+              </button>
+            )}
+            {isAdminLoggedIn && (
+              <button
+                onClick={() => {
+                  setModalClassId(activeClassId);
+                  setIsModalOpen(true);
+                }}
+                className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1.5 cursor-pointer bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 px-3 py-1.5 rounded-xl border border-indigo-200 dark:border-indigo-500/30 transition-all shadow-xs"
+              >
+                <PlusCircle className="w-3.5 h-3.5" />
+                + Add Test to Class {currentClass?.name}
+              </button>
+            )}
+          </div>
         </div>
 
         {classTests.length > 0 ? (
@@ -693,6 +709,15 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
 
           </div>
         </div>
+      )}
+
+      {/* Batch Print Report Cards Modal */}
+      {isBatchPrintOpen && (
+        <BatchReportCardModal
+          data={data}
+          initialClassId={activeClassId}
+          onClose={() => setIsBatchPrintOpen(false)}
+        />
       )}
 
     </div>
