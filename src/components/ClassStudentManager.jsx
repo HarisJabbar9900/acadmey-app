@@ -524,21 +524,6 @@ export default function ClassStudentManager({
                   Showing {paginatedStudents.length} of {filteredStudents.length} enrolled students
                 </p>
               </div>
-
-              {isAdminLoggedIn && (
-                <button
-                  onClick={() => {
-                    if (data.classes.length > 0 && !targetClassId) {
-                      setTargetClassId(filterClassId !== 'ALL' ? filterClassId : data.classes[0].id);
-                    }
-                    setIsAddStudentModalOpen(true);
-                  }}
-                  className="hidden sm:inline-flex px-3.5 py-1.5 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/50 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 rounded-xl text-xs font-bold items-center gap-1.5 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
-                >
-                  <UserPlus className="w-3.5 h-3.5" />
-                  + Add Student
-                </button>
-              )}
             </div>
 
             <div className="overflow-x-auto">
