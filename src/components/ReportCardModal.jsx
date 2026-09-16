@@ -63,8 +63,13 @@ export default function ReportCardModal({ student, month, data, onClose }) {
   let lateDays = 0;
 
   Object.entries(data.attendance || {}).forEach(([key, record]) => {
-    if (key.startsWith(month) && record.classId === student.classId) {
-      if (record.records && record.records[student.id]) {
+    const recDate = record?.date || key.split('_')[0];
+    const recClassId = record?.classId || key.split('_').slice(1).join('_');
+    const isMonthMatch = (recDate && recDate.startsWith(month)) || (key && key.startsWith(month));
+    const isClassMatch = (record?.classId === student.classId) || (recClassId === student.classId);
+
+    if (isMonthMatch && isClassMatch) {
+      if (record?.records && record.records[student.id]) {
         totalDays++;
         const st = record.records[student.id];
         if (st === 'Present') presentDays++;
