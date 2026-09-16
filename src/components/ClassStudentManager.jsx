@@ -287,11 +287,12 @@ export default function ClassStudentManager({
     if (!query) return isClassMatch;
     const lowerQuery = query.toLowerCase();
     const digitsOnly = query.replace(/\D/g, ''); // extract only digits for phone search
+    const phoneField = student.fatherNumber || student.parentContact || '';
     const isSearchMatch = 
       (student.name && student.name.toLowerCase().includes(lowerQuery)) ||
       (student.fname && student.fname.toLowerCase().includes(lowerQuery)) ||
       (student.rollNo && String(student.rollNo).includes(query)) ||
-      (digitsOnly.length >= 3 && student.fatherNumber && student.fatherNumber !== 'N/A' && student.fatherNumber.replace(/\D/g, '').includes(digitsOnly));
+      (digitsOnly.length >= 3 && phoneField && phoneField !== 'N/A' && phoneField.replace(/\D/g, '').includes(digitsOnly));
     
     return isClassMatch && isSearchMatch;
   });
@@ -569,7 +570,7 @@ export default function ClassStudentManager({
                             {isAdminLoggedIn ? (
                               <div className="flex items-center gap-1.5">
                                 <Phone className="w-3.5 h-3.5 text-slate-400" />
-                                <span>{student.fatherNumber || 'N/A'}</span>
+                                <span>{student.fatherNumber || student.parentContact || 'N/A'}</span>
                               </div>
                             ) : (
                               <span className="text-slate-500 font-mono text-[11px] italic">🔒 Admin Only</span>
