@@ -112,92 +112,158 @@ export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty, onUp
   // AI Knowledge Base & Response Engine
   const generateBotReply = (userQuery) => {
     const query = userQuery.toLowerCase().trim();
-    const currentFaculty = data?.faculty || facultyList;
+    const cleanQuery = query.replace(/[?.,!/\\()_#\-"':;]/g, ' ');
+    const queryWords = cleanQuery.split(/\s+/).filter(Boolean);
+
+    // 1. Get real active faculty from academy database (ignoring legacy dummy records if real ones exist)
+    const rawFaculty = Array.isArray(data?.faculty) && data.faculty.length > 0 ? data.faculty : (facultyList || []);
+    const userDefinedFaculty = rawFaculty.filter(f => f && !['fac-1', 'fac-2', 'fac-3', 'fac-4', 'fac-5', 'fac-6'].includes(f.id));
+    const effectiveFaculty = userDefinedFaculty.length > 0 ? userDefinedFaculty : rawFaculty;
     const currentRules = data?.aiRules || aiRulesList;
 
-    // 2. Faculty & Teachers Info
-    if (query.includes('teacher') || query.includes('faculty') || query.includes('sir') || query.includes('prof') || query.includes('perhata') || query.includes('parhata') || query.includes('teach') || query.includes('education') || query.includes('qualification') || query.includes('deg') || query.includes('computer') || query.includes('physics') || query.includes('math') || query.includes('chemistry') || query.includes('biology')) {
-      
-      // Computer Science specific query
-      if (query.includes('computer') || query.includes('cs') || query.includes('comp')) {
-        const comp = currentFaculty.find(f => f.subject.toLowerCase().includes('computer'));
-        return `💻 Computer Science Faculty:
-• Teacher: ${comp ? comp.teacher : 'Sir Haris Jabbar'}
-• Education: ${comp?.education || 'BS Computer Science (BSCS - Gold Medalist)'}
-• Experience: ${comp?.experience || '6+ Years Board Specialist'}
-• Classes: ${comp?.classes || '9th, 10th, 11th, 12th'}`;
+    // Subject dictionary with safe whole-word aliases (prevents "physics" matching "cs")
+    const subjectAliases = {
+      'computer': ['computer', 'computer science', 'comp', 'computers', 'coding', 'programming'],
+      'physics': ['physics', 'phy', 'fiziks', 'tabiyat'],
+      'chemistry': ['chemistry', 'chem', 'kemistry', 'kimiya'],
+      'mathematics': ['mathematics', 'math', 'maths', 'riyazi', 'algebra'],
+      'biology': ['biology', 'bio', 'botany', 'zoology', 'medical'],
+      'english': ['english', 'eng', 'angrezi', 'grammar'],
+      'urdu': ['urdu'],
+      'islamiat': ['islamiat', 'islamiyat', 'islamic education', 'islam'],
+      'pak studies': ['pak studies', 'pak study', 'pakistan studies', 'mutalia pakistan'],
+      'tarjuma': ['tarjuma', 'quran', 'tarjuma-tul-quran', 'tarjumatul quran']
+    };
+
+    // 2. CHECK DYNAMIC SUBJECT MATCH AGAINST REGISTERED FACULTY
+    const matchedTeachers = [];
+
+    effectiveFaculty.forEach(fac => {
+      if (!fac || !fac.subject) return;
+      const facSub = (fac.subject || '').toLowerCase();
+      const facTeacher = (fac.teacher || '').toLowerCase();
+
+      let isMatch = false;
+
+      // (a) Exact or substring match of subject name
+      if (facSub.length >= 3 && cleanQuery.includes(facSub)) {
+        isMatch = true;
       }
 
-      // Physics specific query
-      if (query.includes('physics')) {
-        const phy = currentFaculty.find(f => f.subject.toLowerCase().includes('physics'));
-        return `🔬 Physics Faculty:
-• Teacher: ${phy ? phy.teacher : 'Prof. Malik Umar'}
-• Education: ${phy?.education || 'M.Sc Physics (Gold Medalist)'}
-• Experience: ${phy?.experience || '10+ Years Board Examiner'}`;
+      // (b) Word-level match against subject words
+      const subWords = facSub.replace(/[()&,/-]/g, ' ').split(/\s+/).filter(w => w.length >= 3);
+      if (subWords.some(w => queryWords.includes(w) || cleanQuery.includes(w))) {
+        isMatch = true;
       }
 
-      // Chemistry specific query
-      if (query.includes('chemistry') || query.includes('chem')) {
-        const chem = currentFaculty.find(f => f.subject.toLowerCase().includes('chemistry'));
-        return `🧪 Chemistry Faculty:
-• Teacher: ${chem ? chem.teacher : 'Sir Hassan Raza'}
-• Education: ${chem?.education || 'M.Sc Applied Chemistry'}
-• Experience: ${chem?.experience || '7+ Years Teaching'}`;
+      // (c) Word-boundary Alias check (prevents physics matching cs!)
+      for (const [canonicalKey, aliases] of Object.entries(subjectAliases)) {
+        if (facSub.includes(canonicalKey) || canonicalKey.includes(facSub)) {
+          const aliasHit = aliases.some(alias => {
+            if (alias.length <= 4) {
+              // Word boundary check for short abbreviations
+              return queryWords.includes(alias);
+            }
+            return cleanQuery.includes(alias);
+          });
+          if (aliasHit) {
+            isMatch = true;
+            break;
+          }
+        }
       }
 
-      // Math specific query
-      if (query.includes('math') || query.includes('mathematics')) {
-        const math = currentFaculty.find(f => f.subject.toLowerCase().includes('math'));
-        return `📐 Mathematics Faculty:
-• Teacher: ${math ? math.teacher : 'Prof. Abdul Ghani'}
-• Education: ${math?.education || 'M.Sc Mathematics'}
-• Experience: ${math?.experience || '12+ Years Mathematics Specialist'}`;
+      // Special check: if user typed "cs" as a standalone word
+      if (queryWords.includes('cs') && facSub.includes('computer')) {
+        isMatch = true;
       }
 
-      // Biology specific query
-      if (query.includes('bio') || query.includes('biology')) {
-        const bio = currentFaculty.find(f => f.subject.toLowerCase().includes('bio'));
-        return `🧬 Biology Faculty:
-• Teacher: ${bio ? bio.teacher : 'Dr. Ghulam Hussain'}
-• Education: ${bio?.education || 'MBBS / M.Phil Biology'}
-• Experience: ${bio?.experience || '8+ Years Medical Prep Specialist'}`;
+      // (d) Teacher Name search: user asked e.g. "Irfan", "Zain", "Haris"
+      const teacherWords = facTeacher.replace(/[()&,.-]/g, ' ').split(/\s+/).filter(w => w.length >= 4 && !['sir', 'prof', 'doctor', 'malik'].includes(w));
+      if (teacherWords.some(w => cleanQuery.includes(w))) {
+        isMatch = true;
       }
 
-      // General Faculty List with Education
-      const facultyText = currentFaculty.map(f => 
-        `• ${f.subject}: ${f.teacher}
-  🎓 Qualification: ${f.education || 'Master Degree Holder'}
-  ⭐ Experience: ${f.experience || 'Senior Subject Specialist'}`
-      ).join('\n\n');
+      if (isMatch && !matchedTeachers.some(t => t.id === fac.id)) {
+        matchedTeachers.push(fac);
+      }
+    });
 
-      return `👨‍🏫 Al-Zia Science Academy Teaching Faculty & Education:
+    // If one or more teachers matched the query
+    if (matchedTeachers.length > 0) {
+      const teacherCards = matchedTeachers.map(fac => {
+        const subLower = (fac.subject || '').toLowerCase();
+        const icon = subLower.includes('physics') ? '🔬' 
+          : subLower.includes('chem') ? '🧪'
+          : subLower.includes('math') ? '📐'
+          : subLower.includes('bio') ? '🧬'
+          : subLower.includes('computer') ? '💻'
+          : subLower.includes('english') || subLower.includes('urdu') ? '📖'
+          : '📚';
 
-${facultyText}
+        return `${icon} Subject / مضمون: ${fac.subject}
+👨‍🏫 Teacher / استاد: ${fac.teacher}
+🎓 Qualification: ${fac.education || 'Senior Subject Specialist'}
+⭐ Experience: ${fac.experience || 'Experienced Faculty'}
+🏫 Classes: ${fac.classes || '9th, 10th, 11th, 12th'}${fac.phone ? `\n📞 Contact: ${fac.phone}` : ''}`;
+      }).join('\n\n────────────────\n\n');
 
-All faculty members are highly qualified board examiners and subject specialists!`;
+      return `🌟 Al-Zia Science Academy Faculty:\n\n${teacherCards}\n\n💡 Mazeed kisi subject ya admission ki maloomat k liye aap sawal puch sakty hain!`;
     }
 
-    // 3. Admin Custom Q&A Rules Check
+    // 3. GENERAL FACULTY DIRECTORY QUERY (e.g. "teachers", "faculty", "kon kon perhata hai", "staff")
+    if (query.includes('teacher') || query.includes('faculty') || query.includes('staff') || query.includes('kon kon') || query.includes('perhata') || query.includes('parhata') || query.includes('who teach') || query.includes('tamam') || query.includes('all')) {
+      if (effectiveFaculty.length > 0) {
+        const listText = effectiveFaculty.map((f, i) => 
+          `${i + 1}. 👨‍🏫 ${f.teacher}
+   📚 Subject: ${f.subject}
+   🎓 Degree: ${f.education || 'Subject Specialist'}
+   🏫 Classes: ${f.classes || '9th, 10th, 11th, 12th'}`
+        ).join('\n\n');
+
+        return `👨‍🏫 Al-Zia Science Academy Teaching Faculty Directory:\n\n${listText}\n\n💡 Kisi specific subject (jaise "Physics", "Math", "Biology", "Computer") ka naam likhein to unke teacher ki mukammal tafseel mil jaye gi!`;
+      }
+    }
+
+    // 4. CHECK IF SUBJECT IS OFFERED IN ACADEMY CURRICULUM (Even if teacher card is not yet added)
+    const allAcademySubjects = Array.from(new Set((data?.classes || []).flatMap(c => c.subjects || [])));
+    const matchingSubject = allAcademySubjects.find(s => {
+      const sLower = s.toLowerCase();
+      return cleanQuery.includes(sLower) || queryWords.some(w => w.length >= 4 && sLower.includes(w));
+    });
+
+    if (matchingSubject) {
+      return `📚 Subject: ${matchingSubject}
+Yeh subject Al-Zia Science Academy me ba-qaida parhaya jata hai (Classes: 9th, 10th, 11th, 12th).
+
+Is subject ke faculty teacher aur batch timings ki mazeed maloomat ke liye aap Admin Office se rabta kar sakte hain:
+📞 0334 6683236
+🏢 Evening Shift: 3:00 PM – 6:30 PM`;
+    }
+
+    // 5. Admin Custom Q&A Rules Check
     for (const rule of currentRules) {
       if (!rule.keywords || !rule.response) continue;
       const kwArray = rule.keywords.toLowerCase().split(',').map(k => k.trim()).filter(Boolean);
-      const isMatch = kwArray.some(kw => query.includes(kw));
+      const isMatch = kwArray.some(kw => {
+        if (kw.length <= 3) return queryWords.includes(kw);
+        return cleanQuery.includes(kw);
+      });
       if (isMatch) {
         return rule.response;
       }
     }
 
-    // Default Fallback Response
-    return `Thank you for your question! 😊 
-You can ask me about:
-• Faculty Teachers & Qualifications (e.g. Who teaches Computer Science?)
-• Academy Timings & Batches
-• Classes & Subjects Offered (9th, 10th, 11th, 12th)
-• Fee Structure & Payment Info
-• Contact Details for Admissions
+    // 6. Default Fallback Response
+    return `Assalamu Alaikum! 😊 
+Aap Al-Zia Science Academy AI Assistant se kisi bhi subject ka naam pooch sakte hain:
 
-Or click one of the quick options below!`;
+• Kisi bhi subject ka naam likhein (e.g. "Physics", "Math", "Biology", "Computer Science", "Chemistry") to pata chal jaye ga k usay kon parhata hai!
+• Academy Timings (3:00 PM – 6:30 PM)
+• Admissions & Contact (+92 334 6683236)
+• Fee Structure (2,000 – 4,000 Rs)
+
+Neeche diye gaye buttons par click karein ya apna sawal likhein!`;
   };
 
   const handleSendMessage = (textToSend = null) => {
