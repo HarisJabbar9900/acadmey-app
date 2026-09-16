@@ -283,16 +283,14 @@ export default function ClassStudentManager({
   // Filter students based on Class filter and search query
   const filteredStudents = data.students.filter(student => {
     const isClassMatch = filterClassId === 'ALL' || student.classId === filterClassId;
-    const query = (searchQuery || '').trim();
-    if (!query) return isClassMatch;
-    const lowerQuery = query.toLowerCase();
-    const digitsOnly = query.replace(/\D/g, ''); // extract only digits for phone search
-    const phoneField = student.fatherNumber || student.parentContact || '';
+    const q = (searchQuery || '').trim().toLowerCase();
+    if (!q) return isClassMatch;
+    const phone = student.fatherNumber || student.parentContact || '';
     const isSearchMatch = 
-      (student.name && student.name.toLowerCase().includes(lowerQuery)) ||
-      (student.fname && student.fname.toLowerCase().includes(lowerQuery)) ||
-      (student.rollNo && String(student.rollNo).includes(query)) ||
-      (digitsOnly.length >= 3 && phoneField && phoneField !== 'N/A' && phoneField.replace(/\D/g, '').includes(digitsOnly));
+      (student.name && student.name.toLowerCase().includes(q)) ||
+      (student.fname && student.fname.toLowerCase().includes(q)) ||
+      String(student.rollNo || '').includes(q) ||
+      (phone && phone.includes(q));
     
     return isClassMatch && isSearchMatch;
   });
