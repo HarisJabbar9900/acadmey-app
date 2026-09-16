@@ -31,6 +31,7 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
   const [selectedMonth, setSelectedMonth] = useState(() => new Date().toISOString().slice(0, 7));
   const [selectedReportStudent, setSelectedReportStudent] = useState(null);
   const [selectedCertificateScorer, setSelectedCertificateScorer] = useState(null);
+  const [attendanceViewMode, setAttendanceViewMode] = useState('today'); // 'today' | 'all'
   const getMonthTitle = (monthStr) => {
     if (!monthStr) return '';
     try {
@@ -64,25 +65,56 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
     ? safeClasses
     : safeClasses.filter(c => c && c.id === selectedClassId);
 
-  // Calculate Attendance Stats
-  let totalAttendanceEntries = 0;
-  let presentEntries = 0;
-  let absentEntries = 0;
-  let lateEntries = 0;
+  // Calculate Attendance Stats (Today vs All-time from Firebase)
+  const now = new Date();
+  const localYear = now.getFullYear();
+  const localMonth = String(now.getMonth() + 1).padStart(2, '0');
+  const localDay = String(now.getDate()).padStart(2, '0');
+  const todayLocalStr = `${localYear}-${localMonth}-${localDay}`;
+  const todayIsoStr = now.toISOString().split('T')[0];
 
-  Object.values(safeData.attendance || {}).forEach(record => {
-    if (record && (selectedClassId === 'ALL' || record.classId === selectedClassId)) {
-      Object.values(record.records || {}).forEach(status => {
-        totalAttendanceEntries++;
-        if (status === 'Present') presentEntries++;
-        else if (status === 'Absent') absentEntries++;
-        else if (status === 'Late') lateEntries++;
-      });
-    }
+  let todayPresent = 0;
+  let todayAbsent = 0;
+  let todayLate = 0;
+  let todayTotal = 0;
+
+  let allTimePresent = 0;
+  let allTimeAbsent = 0;
+  let allTimeLate = 0;
+  let allTimeTotal = 0;
+
+  Object.entries(safeData.attendance || {}).forEach(([key, record]) => {
+    if (!record) return;
+    const recClassId = record.classId || (typeof key === 'string' && key.includes('_') ? key.split('_')[1] : null);
+    const isClassMatch = selectedClassId === 'ALL' || recClassId === selectedClassId;
+    if (!isClassMatch) return;
+
+    const recDate = record.date || (typeof key === 'string' && key.includes('_') ? key.split('_')[0] : '');
+    const isToday = recDate === todayLocalStr || recDate === todayIsoStr;
+
+    Object.values(record.records || {}).forEach(status => {
+      // All-time accumulation
+      allTimeTotal++;
+      if (status === 'Present') allTimePresent++;
+      else if (status === 'Absent') allTimeAbsent++;
+      else if (status === 'Late') allTimeLate++;
+
+      // Today accumulation
+      if (isToday) {
+        todayTotal++;
+        if (status === 'Present') todayPresent++;
+        else if (status === 'Absent') todayAbsent++;
+        else if (status === 'Late') todayLate++;
+      }
+    });
   });
 
-  const attendancePercentage = totalAttendanceEntries > 0
-    ? Math.round(((presentEntries + (lateEntries * 0.5)) / totalAttendanceEntries) * 100)
+  const todayPercentage = todayTotal > 0
+    ? Math.round(((todayPresent + (todayLate * 0.5)) / todayTotal) * 100)
+    : 0;
+
+  const allTimePercentage = allTimeTotal > 0
+    ? Math.round(((allTimePresent + (allTimeLate * 0.5)) / allTimeTotal) * 100)
     : 100;
 
   // Calculate Monthly Test Performance (Student-wise accumulated totals)
@@ -297,28 +329,121 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
               </div>
             </div>
 
-            {/* Card 2: Attendance Rate */}
+            {/* Card 2: Today's vs All-Time Attendance Rate */}
             <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-xs hover:border-emerald-500/40 transition-all group">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500"></div>
-              <div className="flex items-center justify-between mb-2.5">
-                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Avg Attendance
-                </span>
-                <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-500/20 flex items-center justify-center shadow-xs">
-                  <CheckCircle className="w-4 h-4" />
+              
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    {attendanceViewMode === 'today' ? "Today's Attendance" : 'All-Time Attendance'}
+                  </span>
+                  {attendanceViewMode === 'today' && todayTotal > 0 && (
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      Live
+                    </span>
+                  )}
+                </div>
+
+                {/* View Mode Toggle: Today vs All */}
+                <div className="flex items-center bg-slate-100 dark:bg-slate-800/90 p-0.5 rounded-lg text-[10px] font-bold">
+                  <button
+                    type="button"
+                    onClick={() => setAttendanceViewMode('today')}
+                    className={`px-2 py-0.5 rounded-md transition-all ${
+                      attendanceViewMode === 'today'
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                    title="Show Today's Attendance from Firebase"
+                  >
+                    Today
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAttendanceViewMode('all')}
+                    className={`px-2 py-0.5 rounded-md transition-all ${
+                      attendanceViewMode === 'all'
+                        ? 'bg-slate-700 text-white shadow-xs'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                    title="Show All-Time History"
+                  >
+                    All
+                  </button>
                 </div>
               </div>
-              <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-                {attendancePercentage}%
-              </div>
-              <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
-                <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1 text-[11px]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> {presentEntries} Present
-                </span>
-                <span className="text-rose-500 dark:text-rose-400 font-semibold flex items-center gap-1 text-[11px]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> {absentEntries} Absent
-                </span>
-              </div>
+
+              {/* Attendance Stats */}
+              {attendanceViewMode === 'today' ? (
+                todayTotal > 0 ? (
+                  <div>
+                    <div className="flex items-baseline gap-2">
+                      <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                        {todayPercentage}%
+                      </div>
+                      <span className="text-xs text-slate-500 font-medium">
+                        ({todayTotal} marked)
+                      </span>
+                    </div>
+                    <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+                      <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1 text-[11px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> {todayPresent} Present
+                      </span>
+                      {todayLate > 0 && (
+                        <span className="text-amber-500 font-semibold flex items-center gap-1 text-[11px]">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> {todayLate} Late
+                        </span>
+                      )}
+                      <span className="text-rose-500 dark:text-rose-400 font-semibold flex items-center gap-1 text-[11px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> {todayAbsent} Absent
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="flex items-baseline gap-2">
+                      <div className="text-xl sm:text-2xl font-black text-slate-400 dark:text-slate-500 tracking-tight">
+                        Not Marked
+                      </div>
+                    </div>
+                    <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+                      <span className="text-slate-400 text-[11px]">
+                        Today's register pending
+                      </span>
+                      {onNavigate && (
+                        <button
+                          type="button"
+                          onClick={() => onNavigate('attendance')}
+                          className="text-emerald-600 dark:text-emerald-400 hover:underline font-bold text-[11px]"
+                        >
+                          Mark Now →
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )
+              ) : (
+                <div>
+                  <div className="flex items-baseline gap-2">
+                    <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                      {allTimePercentage}%
+                    </div>
+                    <span className="text-xs text-slate-500 font-medium">
+                      ({allTimeTotal} total entries)
+                    </span>
+                  </div>
+                  <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1 text-[11px]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> {allTimePresent} Present
+                    </span>
+                    <span className="text-rose-500 dark:text-rose-400 font-semibold flex items-center gap-1 text-[11px]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> {allTimeAbsent} Absent
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Card 3: Fee Revenue */}
