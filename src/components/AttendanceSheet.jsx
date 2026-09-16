@@ -368,7 +368,7 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
       
       {/* 🌟 TOP VIEW SWITCHER: Daily Register vs Attendance Summary */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/80 dark:border-slate-800 rounded-2xl p-2.5 sm:p-3 shadow-xs">
-        <div className="flex items-center gap-2 p-1 bg-slate-100 dark:bg-slate-800/90 rounded-xl w-full sm:w-auto">
+        <div className="inline-flex items-center p-1 bg-slate-100 dark:bg-slate-800/90 rounded-xl w-full sm:w-auto border border-slate-200/60 dark:border-slate-700/50">
           <button
             type="button"
             onClick={() => setActiveView('daily')}
@@ -379,7 +379,8 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
             }`}
           >
             <ClipboardCheck className="w-4 h-4" />
-            <span>روزانہ حاضری (Daily Register)</span>
+            <span>Daily Roll Call</span>
+            <span className="text-[10px] opacity-75 font-normal">روزانہ حاضری</span>
           </button>
 
           <button
@@ -392,7 +393,8 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
             }`}
           >
             <BarChart3 className="w-4 h-4" />
-            <span>چھٹیاں و حاضری خلاصہ (Leave & Attendance Summary)</span>
+            <span>Attendance & Leave Summary</span>
+            <span className="text-[10px] opacity-85 font-normal">چھٹیاں و خلاصہ</span>
           </button>
         </div>
 
@@ -404,7 +406,7 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
             title="Print Attendance Summary Report"
           >
             <Printer className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-            <span>پرنٹ رپورٹ (Print Report)</span>
+            <span>Print Report</span>
           </button>
         )}
       </div>
@@ -699,150 +701,82 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
             </div>
           </div>
 
-          {/* 1. Control, Date Range Presets & Class Filter Bar */}
-          <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4 print:hidden">
+          {/* 1. Executive Analytics & Filter Control Center */}
+          <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4 print:hidden">
             
-            {/* Top Row: Title & Range Preset Buttons */}
+            {/* Top Row: Title + Duration Segmented Control + Current Date Pill */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-3.5 border-b border-slate-200/60 dark:border-slate-800/60">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-500/20 shadow-xs shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/15 to-indigo-600/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-500/20 shadow-xs shrink-0">
                   <BarChart3 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-base font-extrabold text-slate-900 dark:text-white leading-tight">
-                    Attendance & Leaves Tracker (طلباء کی چھٹیاں اور حاضری رپورٹ)
-                  </h2>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    Track total absences (چھٹیاں), presence records and attendance percentage over 10 days, monthly or custom dates
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white tracking-tight">
+                      Attendance & Leave Analytics
+                    </h2>
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-500/20 font-nastaleeq">
+                      حاضری و چھٹیاں تجزیہ
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Comprehensive student attendance logs, leave patterns, and consistency tracking
                   </p>
                 </div>
               </div>
 
-              {/* Range Presets */}
-              <div className="flex items-center flex-wrap gap-2">
-                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1 shrink-0">
-                  <CalendarDays className="w-3.5 h-3.5 text-indigo-500" /> Duration:
-                </span>
+              {/* Right Side: Sleek Segmented Duration Control */}
+              <div className="flex items-center flex-wrap gap-2.5">
+                <div className="inline-flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/60 shadow-xs">
+                  {[
+                    { id: 'last10', label: 'Last 10 Days' },
+                    { id: 'last7', label: '7 Days' },
+                    { id: 'month', label: 'This Month' },
+                    { id: 'last30', label: '30 Days' },
+                    { id: 'custom', label: 'Custom' }
+                  ].map(tab => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setSummaryRange(tab.id)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                        summaryRange === tab.id
+                          ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => setSummaryRange('last10')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    summaryRange === 'last10'
-                      ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  ⚡ پچھلے 10 دن (Last 10 Days)
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setSummaryRange('last7')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    summaryRange === 'last7'
-                      ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  7 دن (Last 7 Days)
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setSummaryRange('month')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    summaryRange === 'month'
-                      ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  موجودہ مہینہ (This Month)
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setSummaryRange('last30')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    summaryRange === 'last30'
-                      ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  30 دن (Last 30 Days)
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setSummaryRange('custom')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    summaryRange === 'custom'
-                      ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  مخصوص تاریخیں (Custom)
-                </button>
+                {/* Date Range Badge */}
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/70 text-slate-700 dark:text-slate-300 text-xs font-mono font-bold shrink-0">
+                  <Calendar className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
+                  <span>{startDate}</span>
+                  <span className="text-slate-400">➔</span>
+                  <span>{endDate}</span>
+                </div>
               </div>
             </div>
 
-            {/* Middle Row: Custom Dates (if selected) + Class Selection */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              {/* Class Tabs */}
-              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 shrink-0 mr-1">
-                  <Filter className="w-3 h-3 text-indigo-500 dark:text-indigo-400" /> Class:
+            {/* Custom Date Pickers (Shown only if Custom is selected) */}
+            {summaryRange === 'custom' && (
+              <div className="flex items-center flex-wrap gap-2.5 p-3 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 text-xs">
+                <span className="font-bold text-indigo-900 dark:text-indigo-300 flex items-center gap-1.5">
+                  <CalendarDays className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> Select Custom Date Range:
                 </span>
-
-                <button
-                  type="button"
-                  onClick={() => setActiveClassId('ALL')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-2 cursor-pointer shrink-0 ${
-                    activeClassId === 'ALL'
-                      ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-sm shadow-indigo-600/30'
-                      : 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700/60'
-                  }`}
-                >
-                  <span>All Students</span>
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-mono ${activeClassId === 'ALL' ? 'bg-indigo-950/60 text-indigo-100' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'}`}>
-                    {data?.students?.length || 0}
-                  </span>
-                </button>
-
-                {(data?.classes || []).map(c => {
-                  const isSelected = activeClassId === c.id;
-                  const count = (data?.students || []).filter(s => s.classId === c.id).length;
-                  return (
-                    <button
-                      type="button"
-                      key={c.id}
-                      onClick={() => setActiveClassId(c.id)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-2 cursor-pointer shrink-0 ${
-                        isSelected
-                          ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-sm shadow-indigo-600/30'
-                          : 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700/60'
-                      }`}
-                    >
-                      <span>Class {c.name}</span>
-                      <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-mono ${isSelected ? 'bg-indigo-950/60 text-indigo-100' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'}`}>
-                        {count}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Date Interval Preview / Custom Picker */}
-              {summaryRange === 'custom' ? (
-                <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                  <span className="text-[11px] font-bold text-slate-500 px-1">From:</span>
+                <div className="flex items-center gap-2 bg-white dark:bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <span className="text-[11px] font-semibold text-slate-400">From:</span>
                   <input
                     type="date"
                     value={customStartDate}
                     onChange={(e) => setCustomStartDate(e.target.value)}
                     className="bg-transparent text-xs font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer"
                   />
-                  <span className="text-[11px] font-bold text-slate-500 px-1">To:</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white dark:bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <span className="text-[11px] font-semibold text-slate-400">To:</span>
                   <input
                     type="date"
                     value={customEndDate}
@@ -850,29 +784,73 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
                     className="bg-transparent text-xs font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer"
                   />
                 </div>
-              ) : (
-                <div className="text-xs font-mono text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700/70">
-                  📅 <strong>Selected Period:</strong> {startDate} ➔ {endDate}
-                </div>
-              )}
+              </div>
+            )}
+
+            {/* Middle Row: Clean Class Pills Navigation */}
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+              <span className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 shrink-0 mr-1">
+                <Filter className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" /> Class:
+              </span>
+
+              <button
+                type="button"
+                onClick={() => setActiveClassId('ALL')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer shrink-0 ${
+                  activeClassId === 'ALL'
+                    ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30'
+                    : 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700/60'
+                }`}
+              >
+                <span>All Students</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-mono ${
+                  activeClassId === 'ALL' ? 'bg-indigo-950/60 text-indigo-100' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
+                }`}>
+                  {data?.students?.length || 0}
+                </span>
+              </button>
+
+              {(data?.classes || []).map(c => {
+                const isSelected = activeClassId === c.id;
+                const count = (data?.students || []).filter(s => s.classId === c.id).length;
+                return (
+                  <button
+                    type="button"
+                    key={c.id}
+                    onClick={() => setActiveClassId(c.id)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer shrink-0 ${
+                      isSelected
+                        ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30'
+                        : 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700/60'
+                    }`}
+                  >
+                    <span>Class {c.name}</span>
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-mono ${
+                      isSelected ? 'bg-indigo-950/60 text-indigo-100' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
+                    }`}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
 
-            {/* Bottom Row: Search Box & Sort Filter */}
+            {/* Bottom Row: Search Box & Professional Sort Selector */}
             <div className="flex flex-col sm:flex-row items-center gap-3 pt-1">
               <div className="relative flex-1 w-full">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
-                  placeholder="Search student by name, roll #, father name, or phone number..."
+                  placeholder="Search student by name, roll #, father name, or contact number..."
                   value={summarySearch}
                   onChange={(e) => setSummarySearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                  className="w-full pl-9 pr-4 py-2 bg-slate-100/90 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
                 />
                 {summarySearch && (
                   <button 
                     type="button" 
                     onClick={() => setSummarySearch('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -880,18 +858,20 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
               </div>
 
               <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
-                <ArrowUpDown className="w-4 h-4 text-slate-400 shrink-0" />
-                <select
-                  value={summarySort}
-                  onChange={(e) => setSummarySort(e.target.value)}
-                  className="bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer w-full sm:w-auto"
-                >
-                  <option value="absent-desc">🔥 سب سے زیادہ چھٹیاں پہلے (Most Absents)</option>
-                  <option value="pct-asc">📉 کم ترین فیصد پہلے (Lowest Attendance %)</option>
-                  <option value="pct-desc">📈 بہترین حاضری پہلے (Highest Attendance %)</option>
-                  <option value="roll-asc">🔢 رول نمبر ترتیب (Roll #)</option>
-                  <option value="name-asc">🔤 نام ترتیب (Name A-Z)</option>
-                </select>
+                <div className="relative w-full sm:w-auto">
+                  <ArrowUpDown className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <select
+                    value={summarySort}
+                    onChange={(e) => setSummarySort(e.target.value)}
+                    className="pl-8.5 pr-8 py-2 bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 cursor-pointer w-full sm:w-auto"
+                  >
+                    <option value="absent-desc">Most Absences (Highest First)</option>
+                    <option value="pct-asc">Lowest Attendance %</option>
+                    <option value="pct-desc">Highest Attendance %</option>
+                    <option value="roll-asc">Roll Number (1, 2, 3...)</option>
+                    <option value="name-asc">Student Name (A to Z)</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
