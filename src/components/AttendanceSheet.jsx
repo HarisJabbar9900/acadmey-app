@@ -812,7 +812,7 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
                 <h4 className="text-base font-bold text-slate-800 dark:text-slate-200 mb-1">
-                  {dailyStatusFilter === 'Absent' ? 'Alhamdulillah! No Absent Students Today' : `No ${dailyStatusFilter} Students`}
+                  {dailyStatusFilter === 'Absent' ? 'No Absent Students Today' : `No ${dailyStatusFilter} Students`}
                 </h4>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
                   {dailyStatusFilter === 'Absent' 
