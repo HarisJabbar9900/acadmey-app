@@ -245,7 +245,7 @@ export default function StaffInfo({ faculty = [], isAdminLoggedIn, onUpdateFacul
             <h3 className="text-lg sm:text-xl font-black tracking-tight mt-0.5">
               Sir Zia — {SIR_ZIA_PHONE}
             </h3>
-            <p className="text-xs text-emerald-100/90 mt-0.5">
+            <p className="text-sm sm:text-base font-nastaleeq text-emerald-100/95 mt-1 leading-relaxed" dir="rtl">
               تمام کلاسز، اساتذہ، اور امتحانی رہنمائی کے لیے صرف سر ضیاء سے براہِ راست رابطہ کیا جا سکتا ہے۔
             </p>
           </div>
@@ -420,69 +420,38 @@ export default function StaffInfo({ faculty = [], isAdminLoggedIn, onUpdateFacul
 
                       {/* Classes Taught */}
                       {fac.classes && (
-                        <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 mb-2">
+                        <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400">
                           <BookOpen className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                           <span className="font-bold text-slate-700 dark:text-slate-300">Classes:</span>
                           <span className="font-mono text-slate-800 dark:text-slate-200">{fac.classes}</span>
                         </div>
                       )}
+                    </div>
 
-                      {/* Official Contact Hotline Display (Sir Zia) */}
-                      <div className="flex items-center justify-between text-xs text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2.5 py-1.5 rounded-xl font-mono mb-2">
-                        <span className="flex items-center gap-1.5 font-bold">
-                          <Phone className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                          <span>Contact Sir Zia:</span>
-                        </span>
-                        <span className="font-extrabold">{SIR_ZIA_PHONE}</span>
+                    {/* Admin Actions Footer (Only when Admin is logged in) */}
+                    {isAdminLoggedIn && (
+                      <div className="pt-3 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center justify-end gap-2 mt-3">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenEditModal(fac)}
+                          className="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-600 hover:text-white text-indigo-700 dark:text-indigo-400 rounded-xl border border-indigo-200 dark:border-indigo-500/20 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
+                          title="Edit Faculty Profile"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                          <span>Edit</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteFaculty(fac)}
+                          className="px-3 py-1.5 bg-rose-50 dark:bg-rose-500/10 hover:bg-rose-600 hover:text-white text-rose-700 dark:text-rose-400 rounded-xl border border-rose-200 dark:border-rose-500/20 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
+                          title="Delete Faculty Member"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Delete</span>
+                        </button>
                       </div>
-                    </div>
-
-                    {/* Footer Actions */}
-                    <div className="pt-3 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between gap-2 mt-2">
-                      {/* WhatsApp Inquiry to Sir Zia regarding this teacher */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const msg = `Assalamu Alaikum Sir Zia! I am a student of Al-Zia Science Academy. I have an academic inquiry regarding Sir ${fac.teacher} (${fac.subject}) classes.`;
-                          window.open(`https://wa.me/${SIR_ZIA_WA}?text=${encodeURIComponent(msg)}`, '_blank');
-                        }}
-                        className="flex-1 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black flex items-center justify-center gap-1.5 shadow-sm shadow-emerald-600/20 transition-all cursor-pointer active:scale-95"
-                        title={`Inquire about Sir ${fac.teacher} via Sir Zia on WhatsApp`}
-                      >
-                        <MessageSquare className="w-3.5 h-3.5" />
-                        <span>Inquire via Sir Zia (WhatsApp)</span>
-                      </button>
-
-                      {/* Direct Call Button to Sir Zia */}
-                      <a
-                        href={`tel:${SIR_ZIA_TEL}`}
-                        className="p-2 bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-all cursor-pointer border border-slate-200 dark:border-slate-700/60"
-                        title={`Call Sir Zia (${SIR_ZIA_PHONE})`}
-                      >
-                        <Phone className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                      </a>
-
-                      {/* Admin Edit & Delete Actions */}
-                      {isAdminLoggedIn && (
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          <button
-                            onClick={() => handleOpenEditModal(fac)}
-                            className="p-1.5 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-600 hover:text-white text-indigo-700 dark:text-indigo-400 rounded-lg border border-indigo-200 dark:border-indigo-500/20 transition-all cursor-pointer"
-                            title="Edit Faculty Profile"
-                          >
-                            <Edit3 className="w-3.5 h-3.5" />
-                          </button>
-
-                          <button
-                            onClick={() => handleDeleteFaculty(fac)}
-                            className="p-1.5 bg-rose-50 dark:bg-rose-500/10 hover:bg-rose-600 hover:text-white text-rose-700 dark:text-rose-400 rounded-lg border border-rose-200 dark:border-rose-500/20 transition-all cursor-pointer"
-                            title="Delete Faculty Member"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                    )}
                   </div>
                 );
               })}
@@ -613,7 +582,7 @@ export default function StaffInfo({ faculty = [], isAdminLoggedIn, onUpdateFacul
               {/* Privacy Notice: Inquiries Exclusively Through Sir Zia */}
               <div className="p-3 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2.5">
                 <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>
+                <span className="font-nastaleeq text-sm leading-relaxed" dir="rtl">
                   اکیڈمی پالیسی کے مطابق تمام طلباء اور والدین کے رابطے اور واٹس ایپ انکوائریز صرف <strong>سر ضیاء ({SIR_ZIA_PHONE})</strong> کے نمبر پر جائیں گی تاکہ اساتذہ کے ذاتی نمبر محفوظ رہیں۔
                 </span>
               </div>

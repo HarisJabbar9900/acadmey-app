@@ -55,9 +55,16 @@
     font-family: var(--font-mono);
   }
 
-  .font-nastaleeq, .font-urdu, [lang="ur"], .nastaleeq-text {
-    font-family: var(--font-nastaleeq);
-    line-height: 1.8;
+  .font-nastaleeq, 
+  .font-urdu, 
+  [lang="ur"], 
+  :lang(ur), 
+  .nastaleeq-text, 
+  .urdu-text, 
+  .urdu, 
+  [dir="rtl"] {
+    font-family: 'Jameel Noori Nastaleeq', 'Jameel Noori Nastaleeq Kasheeda', 'Noto Nastaliq Urdu', 'Urdu Typesetting', Tahoma, serif !important;
+    line-height: 2 !important;
   }
 }
 
