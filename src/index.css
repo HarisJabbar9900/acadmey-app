@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Jameel Noori Nastaleeq';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Jameel Noori Nastaleeq'), 
+       url('https://fonts.cdnfonts.com/s/149204/JameelNooriNastaleeqRegular.woff') format('woff'),
+       url('https://fonts.cdnfonts.com/s/149204/JameelNooriNastaleeqRegular.ttf') format('truetype');
+  font-display: swap;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {

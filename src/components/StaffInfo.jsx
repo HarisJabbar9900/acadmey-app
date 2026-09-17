@@ -242,10 +242,10 @@ export default function StaffInfo({ faculty = [], isAdminLoggedIn, onUpdateFacul
                 Academic Inquiries & Administration
               </span>
             </div>
-            <h3 className="text-lg sm:text-xl font-black tracking-tight mt-0.5">
+            <h3 className="text-lg sm:text-xl font-black tracking-tight mt-0.5 text-white">
               Sir Zia — {SIR_ZIA_PHONE}
             </h3>
-            <p className="text-sm sm:text-base font-nastaleeq text-emerald-100/95 mt-1 leading-relaxed" dir="rtl">
+            <p className="text-sm sm:text-base font-nastaleeq text-white mt-1 leading-relaxed drop-shadow-xs" style={{ color: '#ffffff' }} dir="rtl">
               تمام کلاسز، اساتذہ، اور امتحانی رہنمائی کے لیے صرف سر ضیاء سے براہِ راست رابطہ کیا جا سکتا ہے۔
             </p>
           </div>
