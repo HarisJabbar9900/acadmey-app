@@ -116,11 +116,19 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
   };
 
   const handleSave = () => {
+    // Ensure every enrolled student has a full status saved (defaulting to Present if untouched)
+    const fullRecords = { ...records };
+    classStudents.forEach(s => {
+      if (!fullRecords[s.id]) {
+        fullRecords[s.id] = 'Present';
+      }
+    });
+
     if (activeClassId === 'ALL') {
       (data?.classes || []).forEach(c => {
         const classStudentIds = new Set((data?.students || []).filter(s => s.classId === c.id).map(s => s.id));
         const classSpecificRecords = {};
-        Object.entries(records).forEach(([stdId, status]) => {
+        Object.entries(fullRecords).forEach(([stdId, status]) => {
           if (classStudentIds.has(stdId)) {
             classSpecificRecords[stdId] = status;
           }
@@ -130,8 +138,9 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
         }
       });
     } else {
-      onSaveAttendance(selectedDate, activeClassId, records);
+      onSaveAttendance(selectedDate, activeClassId, fullRecords);
     }
+    setRecords(fullRecords);
     setIsSavedAlert(true);
     setTimeout(() => setIsSavedAlert(false), 3000);
   };
