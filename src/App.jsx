@@ -183,21 +183,47 @@ export default function App() {
             cloudData.notices = [];
           }
 
-          setData(prev => ({
-            ...prev,
-            tests: cloudData.tests || [],
-            students: cloudData.students || [],
-            classes: cloudData.classes && cloudData.classes.length > 0 ? cloudData.classes : prev.classes,
-            notices: cloudData.notices || [],
-            attendance: cloudData.attendance || {},
-            fees: cloudData.fees || {},
-            resources: cloudData.resources || [],
-            feedbacks: cloudData.feedbacks || [],
-            timetable: (Array.isArray(cloudData.timetable) && cloudData.timetable.length > 0 && !cloudData.timetable.some(t => JSON.stringify(t).includes('Combined') || JSON.stringify(t).includes('Jalab') || !t.boys))
-              ? cloudData.timetable 
-              : DEFAULT_TIMETABLE,
-            ...(Array.isArray(cloudData.faculty) ? { faculty: cloudData.faculty } : {})
-          }));
+          setData(prev => {
+            // Helper to merge lists by ID without losing local additions
+            const mergeById = (localList = [], cloudList = []) => {
+              const map = new Map();
+              (localList || []).forEach(item => { if (item?.id) map.set(item.id, item); });
+              (cloudList || []).forEach(item => { if (item?.id) map.set(item.id, item); });
+              return Array.from(map.values());
+            };
+
+            const mergedStudents = mergeById(prev.students, cloudData.students);
+            const mergedTests = mergeById(prev.tests, cloudData.tests);
+            const mergedResources = mergeById(prev.resources, cloudData.resources);
+            const mergedFeedbacks = mergeById(prev.feedbacks, cloudData.feedbacks);
+            const mergedNotices = mergeById(prev.notices, cloudData.notices);
+
+            // Auto-sync any locally discovered students back to cloud if missing in cloud
+            if (cloudData.students && Array.isArray(cloudData.students)) {
+              const cloudIds = new Set(cloudData.students.map(s => s.id));
+              (prev.students || []).forEach(s => {
+                if (s?.id && !cloudIds.has(s.id)) {
+                  syncWithFirestore('students', s.id, s).catch(() => {});
+                }
+              });
+            }
+
+            return {
+              ...prev,
+              tests: mergedTests,
+              students: mergedStudents,
+              classes: cloudData.classes && cloudData.classes.length > 0 ? cloudData.classes : prev.classes,
+              notices: mergedNotices,
+              attendance: { ...prev.attendance, ...(cloudData.attendance || {}) },
+              fees: { ...prev.fees, ...(cloudData.fees || {}) },
+              resources: mergedResources,
+              feedbacks: mergedFeedbacks,
+              timetable: (Array.isArray(cloudData.timetable) && cloudData.timetable.length > 0 && !cloudData.timetable.some(t => JSON.stringify(t).includes('Combined') || JSON.stringify(t).includes('Jalab') || !t.boys))
+                ? cloudData.timetable 
+                : DEFAULT_TIMETABLE,
+              ...(Array.isArray(cloudData.faculty) ? { faculty: cloudData.faculty } : {})
+            };
+          });
 
           if (cloudData.timetable && cloudData.timetable.some(t => JSON.stringify(t).includes('Combined') || JSON.stringify(t).includes('Jalab') || !t.boys)) {
             syncWithFirestore('settings', 'timetable', { schedule: DEFAULT_TIMETABLE });
@@ -209,8 +235,12 @@ export default function App() {
       unsubTests = subscribeToCollection('tests', (remoteTests) => {
         if (Array.isArray(remoteTests) && remoteTests.length > 0) {
           setData(prev => {
-            if (JSON.stringify(prev.tests) === JSON.stringify(remoteTests)) return prev;
-            return { ...prev, tests: remoteTests };
+            const map = new Map();
+            (prev.tests || []).forEach(t => { if (t?.id) map.set(t.id, t); });
+            remoteTests.forEach(t => { if (t?.id) map.set(t.id, t); });
+            const merged = Array.from(map.values());
+            if (JSON.stringify(prev.tests) === JSON.stringify(merged)) return prev;
+            return { ...prev, tests: merged };
           });
         }
       });
@@ -219,8 +249,12 @@ export default function App() {
       unsubStudents = subscribeToCollection('students', (remoteStudents) => {
         if (Array.isArray(remoteStudents) && remoteStudents.length > 0) {
           setData(prev => {
-            if (JSON.stringify(prev.students) === JSON.stringify(remoteStudents)) return prev;
-            return { ...prev, students: remoteStudents };
+            const map = new Map();
+            (prev.students || []).forEach(s => { if (s?.id) map.set(s.id, s); });
+            remoteStudents.forEach(s => { if (s?.id) map.set(s.id, s); });
+            const merged = Array.from(map.values());
+            if (JSON.stringify(prev.students) === JSON.stringify(merged)) return prev;
+            return { ...prev, students: merged };
           });
         }
       });
@@ -366,25 +400,30 @@ export default function App() {
     saveLocalData(data);
   }, [data]);
 
-  // Handler: Save Attendance
-  const handleSaveAttendance = (date, classId, records) => {
+  // Handler: Save Attendance (Cloud-First)
+  const handleSaveAttendance = async (date, classId, records) => {
     const attendanceKey = `${date}_${classId}`;
     const newRecordObj = { date, classId, records };
 
-    setData(prev => {
-      const updatedAttendance = {
+    // 1. Write directly to Cloud Firebase
+    await syncWithFirestore('attendance', attendanceKey, newRecordObj);
+
+    // 2. Update state & local cache
+    setData(prev => ({
+      ...prev,
+      attendance: {
         ...prev.attendance,
         [attendanceKey]: newRecordObj
-      };
-      return { ...prev, attendance: updatedAttendance };
-    });
-
-    // Cloud Sync
-    syncWithFirestore('attendance', attendanceKey, newRecordObj);
+      }
+    }));
   };
 
-  // Handler: Add Test Marks
-  const handleAddTest = (newTest) => {
+  // Handler: Add Test Marks (Cloud-First)
+  const handleAddTest = async (newTest) => {
+    // 1. Write directly to Cloud Firebase
+    await syncWithFirestore('tests', newTest.id, newTest);
+
+    // 2. Update state
     setData(prev => {
       const existingTests = Array.isArray(prev?.tests) ? prev.tests : [];
       return {
@@ -392,13 +431,11 @@ export default function App() {
         tests: [newTest, ...existingTests]
       };
     });
-
-    // Cloud Sync
-    syncWithFirestore('tests', newTest.id, newTest);
   };
 
-  // Handler: Delete Test
-  const handleDeleteTest = (testId) => {
+  // Handler: Delete Test (Cloud-First)
+  const handleDeleteTest = async (testId) => {
+    await deleteFromFirestore('tests', testId);
     setData(prev => {
       const existingTests = Array.isArray(prev?.tests) ? prev.tests : [];
       return {
@@ -406,12 +443,12 @@ export default function App() {
         tests: existingTests.filter(t => t && t.id !== testId)
       };
     });
-
-    deleteFromFirestore('tests', testId);
   };
 
-  // Handler: Add Class
-  const handleAddClass = (newClass) => {
+  // Handler: Add Class (Cloud-First)
+  const handleAddClass = async (newClass) => {
+    await syncWithFirestore('classes', newClass.id, newClass);
+
     setData(prev => {
       const existingClasses = prev.classes || [];
       if (existingClasses.some(c => c.id === newClass.id || c.name.trim().toLowerCase() === newClass.name.trim().toLowerCase())) {
@@ -422,23 +459,23 @@ export default function App() {
         classes: [...existingClasses, newClass]
       };
     });
-
-    syncWithFirestore('classes', newClass.id, newClass);
   };
 
-  // Handler: Delete Class
-  const handleDeleteClass = (classId) => {
+  // Handler: Delete Class (Cloud-First)
+  const handleDeleteClass = async (classId) => {
+    await deleteFromFirestore('classes', classId);
+
     setData(prev => ({
       ...prev,
       classes: prev.classes.filter(c => c.id !== classId),
       students: prev.students.filter(s => s.classId !== classId)
     }));
-
-    deleteFromFirestore('classes', classId);
   };
 
-  // Handler: Update Class (Subjects, description)
-  const handleUpdateClass = (updatedClass) => {
+  // Handler: Update Class (Cloud-First)
+  const handleUpdateClass = async (updatedClass) => {
+    await syncWithFirestore('classes', updatedClass.id, updatedClass);
+
     setData(prev => {
       const updatedClasses = (prev.classes || []).map(c => 
         c.id === updatedClass.id ? { ...c, ...updatedClass, subjects: [...(updatedClass.subjects || [])] } : c
@@ -447,82 +484,88 @@ export default function App() {
       saveLocalData(nextData);
       return nextData;
     });
-
-    syncWithFirestore('classes', updatedClass.id, updatedClass);
   };
 
-  // Handler: Add Student
-  const handleAddStudent = (newStudent) => {
-    setData(prev => ({
-      ...prev,
-      students: [...prev.students, newStudent]
-    }));
+  // Handler: Add Student (Cloud-First - Direct to Firebase)
+  const handleAddStudent = async (newStudent) => {
+    // 1. Immediately push to Firebase Firestore Cloud
+    await syncWithFirestore('students', newStudent.id, newStudent);
 
-    syncWithFirestore('students', newStudent.id, newStudent);
+    // 2. Reflect in UI state
+    setData(prev => {
+      const exists = (prev.students || []).some(s => s.id === newStudent.id);
+      if (exists) return prev;
+      return {
+        ...prev,
+        students: [...prev.students, newStudent]
+      };
+    });
   };
 
-  // Handler: Update Student
-  const handleUpdateStudent = (updatedStudent) => {
+  // Handler: Update Student (Cloud-First - Direct to Firebase)
+  const handleUpdateStudent = async (updatedStudent) => {
+    await syncWithFirestore('students', updatedStudent.id, updatedStudent);
+
     setData(prev => ({
       ...prev,
       students: prev.students.map(s => s.id === updatedStudent.id ? updatedStudent : s)
     }));
-
-    syncWithFirestore('students', updatedStudent.id, updatedStudent);
   };
 
-  // Handler: Delete Student
-  const handleDeleteStudent = (studentId) => {
+  // Handler: Delete Student (Cloud-First - Direct to Firebase)
+  const handleDeleteStudent = async (studentId) => {
+    await deleteFromFirestore('students', studentId);
+
     setData(prev => ({
       ...prev,
       students: prev.students.filter(s => s.id !== studentId)
     }));
-
-    deleteFromFirestore('students', studentId);
   };
 
-  // Handler: Save Timetable
-  const handleSaveTimetable = (newTimetable) => {
+  // Handler: Save Timetable (Cloud-First)
+  const handleSaveTimetable = async (newTimetable) => {
+    await syncWithFirestore('settings', 'timetable', { schedule: newTimetable });
+
     setData(prev => ({
       ...prev,
       timetable: newTimetable
     }));
-
-    syncWithFirestore('settings', 'timetable', { schedule: newTimetable });
   };
 
-  // Handler: Add Resource (PDF / Book / Notes / MCQs)
-  const handleAddResource = (newResource) => {
+  // Handler: Add Resource (Cloud-First)
+  const handleAddResource = async (newResource) => {
+    await syncWithFirestore('resources', newResource.id, newResource);
+
     setData(prev => ({
       ...prev,
       resources: [newResource, ...(prev.resources || [])]
     }));
-
-    syncWithFirestore('resources', newResource.id, newResource);
   };
 
-  // Handler: Update Resource
-  const handleUpdateResource = (updatedResource) => {
+  // Handler: Update Resource (Cloud-First)
+  const handleUpdateResource = async (updatedResource) => {
+    await syncWithFirestore('resources', updatedResource.id, updatedResource);
+
     setData(prev => ({
       ...prev,
       resources: (prev.resources || []).map(r => r.id === updatedResource.id ? updatedResource : r)
     }));
-
-    syncWithFirestore('resources', updatedResource.id, updatedResource);
   };
 
-  // Handler: Delete Resource
-  const handleDeleteResource = (resourceId) => {
+  // Handler: Delete Resource (Cloud-First)
+  const handleDeleteResource = async (resourceId) => {
+    await deleteFromFirestore('resources', resourceId);
+
     setData(prev => ({
       ...prev,
       resources: (prev.resources || []).filter(r => r.id !== resourceId)
     }));
-
-    deleteFromFirestore('resources', resourceId);
   };
 
-  // Handler: Save Fee Record (Paid / Unpaid)
-  const handleSaveFeeRecord = (feeKey, feeRecord) => {
+  // Handler: Save Fee Record (Cloud-First)
+  const handleSaveFeeRecord = async (feeKey, feeRecord) => {
+    await syncWithFirestore('fees', feeKey, feeRecord);
+
     setData(prev => ({
       ...prev,
       fees: {
@@ -530,32 +573,30 @@ export default function App() {
         [feeKey]: feeRecord
       }
     }));
-
-    syncWithFirestore('fees', feeKey, feeRecord);
   };
 
-  // Handler: Add Student Feedback / Suggestion
-  const handleAddFeedback = (newFeedback) => {
+  // Handler: Add Student Feedback (Cloud-First)
+  const handleAddFeedback = async (newFeedback) => {
+    await syncWithFirestore('feedbacks', newFeedback.id, newFeedback);
+
     setData(prev => ({
       ...prev,
       feedbacks: [newFeedback, ...(prev.feedbacks || [])]
     }));
-
-    syncWithFirestore('feedbacks', newFeedback.id, newFeedback);
   };
 
-  // Handler: Delete Feedback
-  const handleDeleteFeedback = (feedbackId) => {
+  // Handler: Delete Feedback (Cloud-First)
+  const handleDeleteFeedback = async (feedbackId) => {
+    await deleteFromFirestore('feedbacks', feedbackId);
+
     setData(prev => ({
       ...prev,
       feedbacks: (prev.feedbacks || []).filter(fb => fb.id !== feedbackId)
     }));
-
-    deleteFromFirestore('feedbacks', feedbackId);
   };
 
-  // Handler: Toggle Feedback Status (Pending <-> Resolved)
-  const handleToggleFeedbackStatus = (feedbackId) => {
+  // Handler: Toggle Feedback Status (Cloud-First)
+  const handleToggleFeedbackStatus = async (feedbackId) => {
     let updatedFb = null;
     setData(prev => ({
       ...prev,
@@ -572,40 +613,42 @@ export default function App() {
     }));
 
     if (updatedFb) {
-      syncWithFirestore('feedbacks', feedbackId, updatedFb);
+      await syncWithFirestore('feedbacks', feedbackId, updatedFb);
     }
   };
-  const handleAddNotice = (newNotice) => {
+
+  // Handler: Add Notice (Cloud-First)
+  const handleAddNotice = async (newNotice) => {
+    await syncWithFirestore('notices', newNotice.id, newNotice);
+
     setData(prev => ({
       ...prev,
       notices: [newNotice, ...(prev.notices || [])]
     }));
-
-    syncWithFirestore('notices', newNotice.id, newNotice);
   };
 
-  // Handler: Delete Announcement Notice
-  const handleDeleteNotice = (noticeId) => {
+  // Handler: Delete Announcement Notice (Cloud-First)
+  const handleDeleteNotice = async (noticeId) => {
+    await deleteFromFirestore('notices', noticeId);
+
     setData(prev => ({
       ...prev,
       notices: (prev.notices || []).filter(n => n.id !== noticeId)
     }));
-
-    deleteFromFirestore('notices', noticeId);
   };
 
-  const handleUpdateFaculty = (updatedFacultyList) => {
+  const handleUpdateFaculty = async (updatedFacultyList) => {
     const newData = { ...data, faculty: updatedFacultyList };
     setData(newData);
     saveLocalData(newData);
-    syncWithFirestore('settings', 'faculty', { list: updatedFacultyList });
+    await syncWithFirestore('settings', 'faculty', { list: updatedFacultyList });
   };
 
-  const handleUpdateAiRules = (updatedRules) => {
+  const handleUpdateAiRules = async (updatedRules) => {
     const newData = { ...data, aiRules: updatedRules };
     setData(newData);
     saveLocalData(newData);
-    syncWithFirestore(newData, 'aiRules');
+    await syncWithFirestore('settings', 'aiRules', { rules: updatedRules });
   };
 
   // Handler: Purge All Sample/Dummy Data & Start Clean for Real Data

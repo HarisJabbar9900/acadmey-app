@@ -15,7 +15,6 @@ import {
   Phone,
   UserCheck,
   Building2,
-  Clock,
   Check,
   RotateCcw,
   Lock,
@@ -232,7 +231,7 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
       )}
 
       {/* KPI Metric Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         
         {/* Card 1: Grand Total Academy Collected Revenue */}
         <div className="bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 rounded-2xl shadow-xs flex flex-col justify-between hover:border-emerald-500/40 transition-all">
@@ -250,23 +249,7 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
           </p>
         </div>
 
-        {/* Card 2: Total Pending Fee */}
-        <div className="bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 rounded-2xl shadow-xs flex flex-col justify-between hover:border-rose-500/40 transition-all">
-          <div className="flex items-center justify-between mb-2.5">
-            <span className="text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-wider">Pending Fee</span>
-            <div className="p-2 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-xl shadow-xs">
-              <Clock className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400 font-mono tracking-tight truncate">
-            Rs. {grandTotalPending.toLocaleString()}
-          </div>
-          <p className="text-[11px] text-slate-400 mt-1 font-mono">
-            Unpaid Dues
-          </p>
-        </div>
-
-        {/* Card 3: Paid Students Count */}
+        {/* Card 2: Paid Students Count */}
         <div className="bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 rounded-2xl shadow-xs flex flex-col justify-between hover:border-indigo-500/40 transition-all">
           <div className="flex items-center justify-between mb-2.5">
             <span className="text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-wider">Paid Students</span>
