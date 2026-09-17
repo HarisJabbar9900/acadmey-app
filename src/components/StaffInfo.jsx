@@ -13,7 +13,8 @@ import {
   Star, 
   ShieldCheck, 
   Users,
-  Briefcase
+  Briefcase,
+  Phone
 } from 'lucide-react';
 
 export default function StaffInfo({ faculty = [], isAdminLoggedIn, onUpdateFaculty }) {
@@ -375,23 +376,67 @@ export default function StaffInfo({ faculty = [], isAdminLoggedIn, onUpdateFacul
                           <span className="font-mono text-slate-800 dark:text-slate-200">{fac.classes}</span>
                         </div>
                       )}
+
+                      {/* WhatsApp / Contact Number Display */}
+                      {fac.phone ? (
+                        <div className="flex items-center justify-between text-xs text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2.5 py-1.5 rounded-xl font-mono mb-2">
+                          <span className="flex items-center gap-1.5 font-bold">
+                            <Phone className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                            <span>WhatsApp:</span>
+                          </span>
+                          <span className="font-extrabold">{fac.phone}</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1.5 text-[11px] text-slate-400 italic mb-2">
+                          <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span>No direct WhatsApp number added</span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Footer Actions */}
                     <div className="pt-3 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between gap-2 mt-2">
-                      {/* WhatsApp Academic Inquiry Button */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const msg = `Assalamu Alaikum Sir ${fac.teacher}, I have an inquiry regarding ${fac.subject} classes at Al-Zia Science Academy.`;
-                          window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-                        }}
-                        className="flex-1 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-600 hover:text-white text-emerald-700 dark:text-emerald-300 dark:hover:bg-emerald-600 dark:hover:text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border border-emerald-200 dark:border-emerald-500/20 transition-all cursor-pointer shadow-xs active:scale-95"
-                        title="Send WhatsApp academic inquiry"
-                      >
-                        <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Academic Inquiry</span>
-                      </button>
+                      {/* 1-Click WhatsApp Chat Button */}
+                      {fac.phone ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            let cleanNum = (fac.phone || '').replace(/[^0-9]/g, '');
+                            if (cleanNum.startsWith('0')) cleanNum = '92' + cleanNum.slice(1);
+                            const msg = `Assalamu Alaikum Sir ${fac.teacher}! I am a student of Al-Zia Science Academy. I have an academic inquiry regarding ${fac.subject}.`;
+                            window.open(`https://wa.me/${cleanNum}?text=${encodeURIComponent(msg)}`, '_blank');
+                          }}
+                          className="flex-1 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black flex items-center justify-center gap-1.5 shadow-sm shadow-emerald-600/20 transition-all cursor-pointer active:scale-95"
+                          title={`Chat directly with ${fac.teacher} on WhatsApp`}
+                        >
+                          <MessageSquare className="w-3.5 h-3.5" />
+                          <span>WhatsApp Chat</span>
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const msg = `Assalamu Alaikum Sir ${fac.teacher}! I am a student of Al-Zia Science Academy. I have an inquiry regarding ${fac.subject} classes.`;
+                            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+                          }}
+                          className="flex-1 px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                          title="Send academic inquiry"
+                        >
+                          <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>Academic Inquiry</span>
+                        </button>
+                      )}
+
+                      {/* Direct Phone Call Button */}
+                      {fac.phone && (
+                        <a
+                          href={`tel:${fac.phone}`}
+                          className="p-2 bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-all cursor-pointer border border-slate-200 dark:border-slate-700/60"
+                          title={`Direct Call to ${fac.teacher}`}
+                        >
+                          <Phone className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                        </a>
+                      )}
 
                       {/* Admin Edit & Delete Actions */}
                       {isAdminLoggedIn && (
@@ -399,7 +444,7 @@ export default function StaffInfo({ faculty = [], isAdminLoggedIn, onUpdateFacul
                           <button
                             onClick={() => handleOpenEditModal(fac)}
                             className="p-1.5 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-600 hover:text-white text-indigo-700 dark:text-indigo-400 rounded-lg border border-indigo-200 dark:border-indigo-500/20 transition-all cursor-pointer"
-                            title="Edit Faculty Info"
+                            title="Edit Faculty Profile & WhatsApp Number"
                           >
                             <Edit3 className="w-3.5 h-3.5" />
                           </button>
@@ -539,6 +584,29 @@ export default function StaffInfo({ faculty = [], isAdminLoggedIn, onUpdateFacul
                   onChange={(e) => setFormData({ ...formData, classes: e.target.value })}
                   className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
+              </div>
+
+              {/* WhatsApp Contact Number */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Phone className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>WhatsApp / Contact Number (واٹس ایپ یا رابطہ نمبر)</span>
+                  </span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-md">
+                    1-Click Chat
+                  </span>
+                </label>
+                <input
+                  type="tel"
+                  placeholder="e.g. 03001234567 or +923001234567"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">
+                  طلباء اس نمبر پر 1 کلک کر کے براہِ راست استاد سے واٹس ایپ پر رابطہ کر سکیں گے۔
+                </p>
               </div>
 
               {/* Actions */}
