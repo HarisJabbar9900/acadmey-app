@@ -31,6 +31,17 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
   const [statusFilter, setStatusFilter] = useState('ALL'); // 'ALL' | 'Paid' | 'Unpaid'
   const [searchQuery, setSearchQuery] = useState('');
 
+  const formatMonthName = (monthStr) => {
+    if (!monthStr) return '';
+    try {
+      const [year, m] = monthStr.split('-');
+      const date = new Date(parseInt(year, 10), parseInt(m, 10) - 1, 1);
+      return date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+    } catch {
+      return monthStr;
+    }
+  };
+
   if (!isAdminLoggedIn) {
     return (
       <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-12 text-center max-w-xl mx-auto space-y-4 my-8 shadow-2xl">
@@ -245,7 +256,7 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
             Rs. {grandTotalCollected.toLocaleString()}
           </div>
           <p className="text-[11px] text-slate-400 mt-1 font-mono">
-            Collected for {selectedMonth}
+            Collected for {formatMonthName(selectedMonth)}
           </p>
         </div>
 
@@ -285,7 +296,7 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
       <div className="space-y-3">
         <h3 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
           <Building2 className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
-          Class-Wise Fee Collection Breakdown ({selectedMonth})
+          Class-Wise Fee Collection Breakdown ({formatMonthName(selectedMonth)})
         </h3>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
