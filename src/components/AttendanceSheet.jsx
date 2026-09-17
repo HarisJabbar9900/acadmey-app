@@ -38,6 +38,7 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
   const [smsModal, setSmsModal] = useState(null);
   const [isCopied, setIsCopied] = useState(false);
   const [isSavedAlert, setIsSavedAlert] = useState(false);
+  const [dailyStatusFilter, setDailyStatusFilter] = useState('ALL'); // 'ALL' | 'Present' | 'Absent' | 'Late'
 
   // --- SUMMARY / HISTORY VIEW STATE ---
   const [summaryRange, setSummaryRange] = useState('last10'); // 'last7' | 'last10' | 'month' | 'last30' | 'custom'
@@ -137,9 +138,16 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
 
   // Compute live stats for current daily sheet
   const totalCount = classStudents.length;
-  const presentCount = Object.values(records).filter(v => v === 'Present').length;
-  const absentCount = Object.values(records).filter(v => v === 'Absent').length;
-  const lateCount = Object.values(records).filter(v => v === 'Late').length;
+  const presentCount = classStudents.filter(s => (records[s.id] || 'Present') === 'Present').length;
+  const absentCount = classStudents.filter(s => records[s.id] === 'Absent').length;
+  const lateCount = classStudents.filter(s => records[s.id] === 'Late').length;
+
+  // Filter students for Daily View according to active status filter (e.g. Absent only)
+  const displayedDailyStudents = classStudents.filter(student => {
+    const status = records[student.id] || 'Present';
+    if (dailyStatusFilter === 'ALL') return true;
+    return status === dailyStatusFilter;
+  });
 
   const getAbsentMessage = (student) => {
     const dateObj = new Date(selectedDate);
@@ -525,65 +533,180 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
             </div>
           )}
 
-          {/* 2. Distinct Metric Stat Cards */}
+          {/* 2. Distinct Metric Stat Cards (Interactive 1-Click Filters) */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-            <div className="bg-white/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 p-3.5 rounded-2xl shadow-xs flex items-center gap-3">
+            {/* Total Students Card */}
+            <button
+              type="button"
+              onClick={() => setDailyStatusFilter('ALL')}
+              className={`p-3.5 rounded-2xl shadow-xs flex items-center gap-3 transition-all text-left cursor-pointer border ${
+                dailyStatusFilter === 'ALL'
+                  ? 'bg-indigo-50/90 dark:bg-indigo-950/50 border-indigo-500/60 ring-2 ring-indigo-500/30'
+                  : 'bg-white/80 dark:bg-slate-900/60 border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-300 dark:hover:border-slate-700'
+              }`}
+              title="Click to view all students"
+            >
               <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
                 <Users className="w-5 h-5" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Total Students</span>
                 <span className="text-xl font-black text-slate-900 dark:text-white font-mono">{totalCount}</span>
               </div>
-            </div>
+            </button>
 
-            <div className="bg-white/80 dark:bg-slate-900/60 border border-emerald-500/20 p-3.5 rounded-2xl shadow-xs flex items-center gap-3">
+            {/* Present Card */}
+            <button
+              type="button"
+              onClick={() => setDailyStatusFilter('Present')}
+              className={`p-3.5 rounded-2xl shadow-xs flex items-center gap-3 transition-all text-left cursor-pointer border ${
+                dailyStatusFilter === 'Present'
+                  ? 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-500/60 ring-2 ring-emerald-500/30 shadow-sm'
+                  : 'bg-white/80 dark:bg-slate-900/60 border-emerald-500/20 hover:border-emerald-500/50'
+              }`}
+              title="Click to view only Present students"
+            >
               <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/30">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block">Present</span>
                 <span className="text-xl font-black text-emerald-600 dark:text-emerald-300 font-mono">{presentCount}</span>
               </div>
-            </div>
+            </button>
 
-            <div className="bg-white/80 dark:bg-slate-900/60 border border-rose-500/20 p-3.5 rounded-2xl shadow-xs flex items-center gap-3">
+            {/* Absent Card (Highlighted 1-Click Absent View) */}
+            <button
+              type="button"
+              onClick={() => setDailyStatusFilter(dailyStatusFilter === 'Absent' ? 'ALL' : 'Absent')}
+              className={`p-3.5 rounded-2xl shadow-xs flex items-center gap-3 transition-all text-left cursor-pointer border relative ${
+                dailyStatusFilter === 'Absent'
+                  ? 'bg-rose-50 dark:bg-rose-950/60 border-rose-500/70 ring-2 ring-rose-500/40 shadow-md shadow-rose-500/10 scale-[1.02]'
+                  : 'bg-white/80 dark:bg-slate-900/60 border-rose-500/25 hover:border-rose-500/50 hover:bg-rose-50/30'
+              }`}
+              title="Click to view ONLY Absent students"
+            >
               <div className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 border border-rose-500/30">
                 <XCircle className="w-5 h-5" />
               </div>
-              <div>
-                <span className="text-[11px] font-semibold text-rose-600 dark:text-rose-400 uppercase tracking-wider block">Absent</span>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[11px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider block">Absent Only</span>
+                  <span className={`text-[9px] px-1.5 py-0.2 rounded-full font-extrabold ${dailyStatusFilter === 'Absent' ? 'bg-rose-600 text-white animate-pulse' : 'bg-rose-500/20 text-rose-700 dark:text-rose-300'}`}>
+                    {dailyStatusFilter === 'Absent' ? 'ACTIVE' : 'VIEW'}
+                  </span>
+                </div>
                 <span className="text-xl font-black text-rose-600 dark:text-rose-300 font-mono">{absentCount}</span>
               </div>
-            </div>
+            </button>
 
-            <div className="bg-white/80 dark:bg-slate-900/60 border border-amber-500/20 p-3.5 rounded-2xl shadow-xs flex items-center gap-3">
+            {/* Late Card */}
+            <button
+              type="button"
+              onClick={() => setDailyStatusFilter('Late')}
+              className={`p-3.5 rounded-2xl shadow-xs flex items-center gap-3 transition-all text-left cursor-pointer border ${
+                dailyStatusFilter === 'Late'
+                  ? 'bg-amber-50 dark:bg-amber-950/50 border-amber-500/60 ring-2 ring-amber-500/30 shadow-sm'
+                  : 'bg-white/80 dark:bg-slate-900/60 border-amber-500/20 hover:border-amber-500/50'
+              }`}
+              title="Click to view only Late students"
+            >
               <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/30">
                 <Clock className="w-5 h-5" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider block">Late</span>
                 <span className="text-xl font-black text-amber-600 dark:text-amber-300 font-mono">{lateCount}</span>
               </div>
-            </div>
+            </button>
           </div>
 
           {/* 3. Class Attendance Register Table */}
           <div className="bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
-            <div className="p-4 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/90 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
+            <div className="p-4 border-b border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5 flex-wrap">
                 <span className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
                   <ClipboardCheck className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
                   {isAllClasses ? 'All Students Attendance Roster' : `Class ${currentClass?.name || ''} Attendance Roster`}
                 </span>
                 <span className="text-[11px] px-2 py-0.5 rounded-md font-mono bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20 font-bold">
-                  {classStudents.length} Students
+                  {displayedDailyStudents.length} of {classStudents.length} Students
                 </span>
+
+                {/* Filter indicator tag */}
+                {dailyStatusFilter !== 'ALL' && (
+                  <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1.5 shadow-xs ${
+                    dailyStatusFilter === 'Absent'
+                      ? 'bg-rose-500/15 text-rose-700 dark:text-rose-300 border border-rose-500/30'
+                      : dailyStatusFilter === 'Present'
+                      ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30'
+                      : 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30'
+                  }`}>
+                    Filtered: {dailyStatusFilter} Only
+                    <button
+                      type="button"
+                      onClick={() => setDailyStatusFilter('ALL')}
+                      className="hover:text-slate-900 dark:hover:text-white text-xs font-black ml-1 cursor-pointer"
+                      title="Clear filter and show all"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                )}
               </div>
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">Date: {selectedDate}</span>
+
+              {/* Status Filter Pill Buttons */}
+              <div className="flex items-center gap-1.5 self-start sm:self-auto flex-wrap">
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mr-1">Filter:</span>
+                <button
+                  type="button"
+                  onClick={() => setDailyStatusFilter('ALL')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    dailyStatusFilter === 'ALL'
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200'
+                  }`}
+                >
+                  All ({totalCount})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDailyStatusFilter('Absent')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    dailyStatusFilter === 'Absent'
+                      ? 'bg-rose-600 text-white shadow-xs shadow-rose-600/30'
+                      : 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 hover:bg-rose-100'
+                  }`}
+                >
+                  <XCircle className="w-3.5 h-3.5" />
+                  <span>Absent Only ({absentCount})</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDailyStatusFilter('Present')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    dailyStatusFilter === 'Present'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200'
+                  }`}
+                >
+                  Present ({presentCount})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDailyStatusFilter('Late')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    dailyStatusFilter === 'Late'
+                      ? 'bg-amber-600 text-white shadow-xs'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200'
+                  }`}
+                >
+                  Late ({lateCount})
+                </button>
+              </div>
             </div>
 
-            {classStudents.length > 0 ? (
+            {displayedDailyStudents.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
                   <thead>
@@ -597,7 +720,7 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800/60 text-slate-900 dark:text-slate-200">
-                    {classStudents.map((student) => {
+                    {displayedDailyStudents.map((student) => {
                       const currentStatus = records[student.id] || 'Present';
                       return (
                         <tr key={student.id} className="hover:bg-indigo-50/50 dark:hover:bg-slate-800/40 transition-colors">
@@ -673,6 +796,27 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
                     })}
                   </tbody>
                 </table>
+              </div>
+            ) : classStudents.length > 0 && dailyStatusFilter !== 'ALL' ? (
+              <div className="p-12 text-center text-slate-500">
+                <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto mb-3">
+                  <CheckCircle2 className="w-6 h-6" />
+                </div>
+                <h4 className="text-base font-bold text-slate-800 dark:text-slate-200 mb-1">
+                  {dailyStatusFilter === 'Absent' ? 'Alhamdulillah! No Absent Students Today' : `No ${dailyStatusFilter} Students`}
+                </h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                  {dailyStatusFilter === 'Absent' 
+                    ? `Selected date (${selectedDate}) par ${isAllClasses ? 'sari academy' : `Class ${currentClass?.name || ''}`} ke tamaam students present hain.`
+                    : `No students found with status "${dailyStatusFilter}".`}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setDailyStatusFilter('ALL')}
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer inline-flex items-center gap-1.5"
+                >
+                  <Users className="w-3.5 h-3.5" /> Show All Students
+                </button>
               </div>
             ) : (
               <div className="p-12 text-center text-slate-500">

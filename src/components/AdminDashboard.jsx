@@ -414,9 +414,20 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
                           <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span> {todayLate} Late
                         </span>
                       )}
-                      <span className="text-rose-500 dark:text-rose-400 font-semibold flex items-center gap-1 text-[11px]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> {todayAbsent} Absent
-                      </span>
+                      {onNavigate ? (
+                        <button
+                          type="button"
+                          onClick={() => onNavigate('attendance')}
+                          className="text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 font-bold flex items-center gap-1 text-[11px] cursor-pointer hover:underline"
+                          title="Click to view today's absent students in Attendance Register"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> {todayAbsent} Absent
+                        </button>
+                      ) : (
+                        <span className="text-rose-500 dark:text-rose-400 font-semibold flex items-center gap-1 text-[11px]">
+                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> {todayAbsent} Absent
+                        </span>
+                      )}
                     </div>
                   </div>
                 ) : (
