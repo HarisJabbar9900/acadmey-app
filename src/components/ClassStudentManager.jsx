@@ -360,22 +360,6 @@ export default function ClassStudentManager({
             </button>
           </div>
 
-          {isAdminLoggedIn && activeTab === 'students' && (
-            <button
-              type="button"
-              onClick={() => {
-                if (data.classes.length > 0) {
-                  setTargetClassId(filterClassId !== 'ALL' ? filterClassId : data.classes[0].id);
-                }
-                setIsAddStudentModalOpen(true);
-              }}
-              className="px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer whitespace-nowrap"
-            >
-              <UserPlus className="w-4 h-4" />
-              <span>+ Add Student</span>
-            </button>
-          )}
-
           {isAdminLoggedIn && activeTab === 'classes' && (
             <div className="flex items-center gap-2">
               <button
