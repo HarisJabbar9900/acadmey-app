@@ -13,7 +13,8 @@ import {
   Trophy,
   Printer,
   FileText,
-  Trash2
+  Trash2,
+  Download
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -27,12 +28,14 @@ import {
 import ReportCardModal from './ReportCardModal';
 import BatchReportCardModal from './BatchReportCardModal';
 import CertificateModal from './CertificateModal';
+import BackupModal from './BackupModal';
 
 export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn, onlineUsers = [], onPurgeAllData, onNavigate }) {
   const [selectedMonth, setSelectedMonth] = useState(() => new Date().toISOString().slice(0, 7));
   const [selectedReportStudent, setSelectedReportStudent] = useState(null);
   const [selectedCertificateScorer, setSelectedCertificateScorer] = useState(null);
   const [isBatchPrintOpen, setIsBatchPrintOpen] = useState(false);
+  const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
   const [attendanceViewMode, setAttendanceViewMode] = useState('today'); // 'today' | 'all'
   const getMonthTitle = (monthStr) => {
     if (!monthStr) return '';
@@ -290,6 +293,19 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
                 className="bg-transparent text-xs font-bold text-slate-900 dark:text-white focus:outline-none cursor-pointer"
               />
             </div>
+
+            {/* 1-Click Backup Button */}
+            {isAdminLoggedIn && (
+              <button
+                type="button"
+                onClick={() => setIsBackupModalOpen(true)}
+                className="px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95 whitespace-nowrap"
+                title="Download Complete Academy Backup (Excel & JSON)"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Backup Data (ایکسل بیک اپ)</span>
+              </button>
+            )}
 
             {isAdminLoggedIn && onPurgeAllData && (
               <button
@@ -869,6 +885,14 @@ export default function AdminDashboard({ data, selectedClassId, isAdminLoggedIn,
             scorer={selectedCertificateScorer}
             month={selectedMonth}
             onClose={() => setSelectedCertificateScorer(null)}
+          />
+        )}
+
+        {/* Full Database & Excel Backup Modal */}
+        {isBackupModalOpen && (
+          <BackupModal
+            data={data}
+            onClose={() => setIsBackupModalOpen(false)}
           />
         )}
       </div>
