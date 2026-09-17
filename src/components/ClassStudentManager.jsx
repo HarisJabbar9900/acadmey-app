@@ -360,6 +360,22 @@ export default function ClassStudentManager({
             </button>
           </div>
 
+          {isAdminLoggedIn && activeTab === 'students' && (
+            <button
+              type="button"
+              onClick={() => {
+                if (data.classes.length > 0) {
+                  setTargetClassId(filterClassId !== 'ALL' ? filterClassId : data.classes[0].id);
+                }
+                setIsAddStudentModalOpen(true);
+              }}
+              className="px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+            >
+              <UserPlus className="w-4 h-4" />
+              <span>+ Add Student</span>
+            </button>
+          )}
+
           {isAdminLoggedIn && activeTab === 'classes' && (
             <div className="flex items-center gap-2">
               <button
@@ -512,15 +528,31 @@ export default function ClassStudentManager({
               </div>
 
               {isAdminLoggedIn && (
-                <button
-                  type="button"
-                  onClick={() => setIsBatchPrintOpen(true)}
-                  className="text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 flex items-center gap-1.5 cursor-pointer px-3.5 py-2 rounded-xl shadow-xs transition-all"
-                  title="Print Report Cards for the class"
-                >
-                  <Printer className="w-3.5 h-3.5" />
-                  <span>Batch Print Report Cards</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (data.classes.length > 0) {
+                        setTargetClassId(filterClassId !== 'ALL' ? filterClassId : data.classes[0].id);
+                      }
+                      setIsAddStudentModalOpen(true);
+                    }}
+                    className="text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 flex items-center gap-1.5 cursor-pointer px-3.5 py-2 rounded-xl shadow-xs transition-all active:scale-95 whitespace-nowrap"
+                  >
+                    <UserPlus className="w-3.5 h-3.5" />
+                    <span>+ Add Student</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsBatchPrintOpen(true)}
+                    className="text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 flex items-center gap-1.5 cursor-pointer px-3.5 py-2 rounded-xl shadow-xs transition-all whitespace-nowrap"
+                    title="Print Report Cards for the class"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>Batch Print Report Cards</span>
+                  </button>
+                </div>
               )}
             </div>
 
