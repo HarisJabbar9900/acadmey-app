@@ -126,7 +126,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
   const handleCopyNotice = (notice) => {
     let textToCopy = `📢 *AL-ZIA SCIENCE ACADEMY OFFICIAL ANNOUNCEMENT*\n` +
       `━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-      `🏛️ *الزیاء سائنس اکیڈمی (رجسٹرڈ)*\n` +
+      `🏛️ *الضیاء سائنس اکیڈمی (رجسٹرڈ)*\n` +
       `📌 *عنوان:* ${notice.title}\n` +
       `🎯 *کلاس / Target:* ${notice.targetClass || 'All Classes'}\n` +
       `📅 *تاریخ:* ${notice.date || 'Active'}\n` +
@@ -153,7 +153,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
     }
 
     textToCopy += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-      `تصدیق شدہ از: ڈائریکٹر و انتظامیہ الزیاء سائنس اکیڈمی`;
+      `تصدیق شدہ از: پرنسپل و انتظامیہ الضیاء سائنس اکیڈمی`;
 
     navigator.clipboard.writeText(textToCopy);
     setCopiedId(notice.id);
@@ -453,7 +453,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
                         style={JAMEEL_FONT} 
                         className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300"
                       >
-                        تصدیق شدہ از: ڈائریکٹر و انتظامیہ الزیاء سائنس اکیڈمی
+                        تصدیق شدہ از: پرنسپل و انتظامیہ الضیاء سائنس اکیڈمی
                       </span>
                     </div>
                   </div>
