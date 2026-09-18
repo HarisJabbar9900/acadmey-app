@@ -540,8 +540,8 @@ export default function ClassStudentManager({
               )}
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
+            <div className="overflow-x-auto -mx-1 sm:mx-0">
+              <table className="w-full text-left text-sm min-w-[620px]">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-400 text-xs uppercase font-bold tracking-wider">
                     <th className="py-3 px-4 whitespace-nowrap">Roll #</th>

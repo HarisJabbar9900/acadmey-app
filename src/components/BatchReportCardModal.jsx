@@ -233,8 +233,11 @@ export default function BatchReportCardModal({
     const cleanClassName = (currentClass?.name || 'Class').replace(/\s+/g, '_');
     const cleanMonth = monthFormatted.replace(/\s+/g, '_');
     document.title = `${cleanClassName}_Class_Report_Cards_${cleanMonth}`;
+    
+    document.body.classList.add('printing-batch-report-active');
     window.print();
     setTimeout(() => {
+      document.body.classList.remove('printing-batch-report-active');
       document.title = oldTitle;
     }, 1000);
   };
@@ -503,16 +506,16 @@ export default function BatchReportCardModal({
                     </div>
 
                     {/* Monthly Attendance Box */}
-                    <div className="bg-slate-100/80 p-2.5 rounded-xl border border-slate-200 flex items-center justify-between text-xs font-mono">
+                    <div className="bg-slate-100/80 p-2.5 sm:p-3 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs font-mono">
                       <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-indigo-700" />
+                        <Calendar className="w-4 h-4 text-indigo-700 shrink-0" />
                         <span className="font-bold text-slate-700 font-sans">Monthly Attendance:</span>
                       </div>
-                      <div className="flex items-center gap-4">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-4">
                         <span>Total Days: <strong>{totalDays}</strong></span>
                         <span className="text-emerald-700 font-bold">Present: {presentDays}</span>
                         <span className="text-rose-700 font-bold">Absent: {absentDays}</span>
-                        <span className="bg-indigo-900 text-white font-bold px-2 py-0.5 rounded text-[11px]">
+                        <span className="bg-indigo-900 text-white font-bold px-2 py-0.5 rounded text-[11px] shrink-0">
                           {attendancePercentage}%
                         </span>
                       </div>
@@ -521,64 +524,66 @@ export default function BatchReportCardModal({
                     {/* Subject-Wise Test Ledger Table */}
                     <div className="space-y-1.5">
                       <h3 className="text-xs font-bold text-indigo-950 uppercase tracking-wider flex items-center gap-1.5 font-sans">
-                        <Award className="w-3.5 h-3.5 text-indigo-700" /> Subject-Wise Test Evaluation Ledger
+                        <Award className="w-3.5 h-3.5 text-indigo-700 shrink-0" /> Subject-Wise Test Evaluation Ledger
                       </h3>
 
-                      <table className="w-full text-left text-xs border-collapse">
-                        <thead>
-                          <tr className="bg-indigo-900 text-white font-sans text-[10px] sm:text-[11px] uppercase">
-                            <th className="p-2 rounded-tl-lg">Subject</th>
-                            <th className="p-2">Date</th>
-                            <th className="p-2 text-center">Obtained</th>
-                            <th className="p-2 text-center">Total</th>
-                            <th className="p-2 text-center">Percentage</th>
-                            <th className="p-2 text-center rounded-tr-lg">Grade</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-200 border-x border-b border-slate-200 font-mono text-xs">
-                          {subjectScores.length > 0 ? (
-                            subjectScores.map((score, idx) => (
-                              <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
-                                <td className="p-2 font-bold font-sans text-slate-900">{score.subject}</td>
-                                <td className="p-2 text-slate-600 text-[11px]">{score.date}</td>
-                                <td className="p-2 text-center font-bold text-indigo-900">{score.obtained}</td>
-                                <td className="p-2 text-center text-slate-600">{score.max}</td>
-                                <td className="p-2 text-center font-bold">{score.pct}%</td>
+                      <div className="overflow-x-auto -mx-1 sm:mx-0 rounded-xl border border-slate-200">
+                        <table className="w-full text-left text-xs border-collapse min-w-[500px] print:min-w-0">
+                          <thead>
+                            <tr className="bg-indigo-900 text-white font-sans text-[10px] sm:text-[11px] uppercase">
+                              <th className="p-2 rounded-tl-lg">Subject</th>
+                              <th className="p-2">Date</th>
+                              <th className="p-2 text-center">Obtained</th>
+                              <th className="p-2 text-center">Total</th>
+                              <th className="p-2 text-center">Percentage</th>
+                              <th className="p-2 text-center rounded-tr-lg">Grade</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-200 border-x border-b border-slate-200 font-mono text-xs">
+                            {subjectScores.length > 0 ? (
+                              subjectScores.map((score, idx) => (
+                                <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
+                                  <td className="p-2 font-bold font-sans text-slate-900">{score.subject}</td>
+                                  <td className="p-2 text-slate-600 text-[11px]">{score.date}</td>
+                                  <td className="p-2 text-center font-bold text-indigo-900">{score.obtained}</td>
+                                  <td className="p-2 text-center text-slate-600">{score.max}</td>
+                                  <td className="p-2 text-center font-bold">{score.pct}%</td>
+                                  <td className="p-2 text-center">
+                                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                      score.grade === 'A+' || score.grade === 'A' ? 'bg-emerald-100 text-emerald-800' :
+                                      score.grade === 'B' || score.grade === 'C' ? 'bg-indigo-100 text-indigo-800' :
+                                      'bg-rose-100 text-rose-800'
+                                    }`}>
+                                      {score.grade}
+                                    </span>
+                                  </td>
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan="6" className="p-4 text-center text-slate-500 italic font-sans text-xs">
+                                  No test records registered for this student in {monthFormatted}.
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                          {subjectScores.length > 0 && (
+                            <tfoot>
+                              <tr className="bg-indigo-50 font-bold border-t-2 border-indigo-900 font-mono text-xs">
+                                <td colSpan="2" className="p-2 font-sans uppercase">Overall Summary:</td>
+                                <td className="p-2 text-center text-indigo-900 font-extrabold">{grandObtained}</td>
+                                <td className="p-2 text-center text-slate-700">{grandMax}</td>
+                                <td className="p-2 text-center text-indigo-950 font-extrabold">{overallPercentage}%</td>
                                 <td className="p-2 text-center">
-                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                                    score.grade === 'A+' || score.grade === 'A' ? 'bg-emerald-100 text-emerald-800' :
-                                    score.grade === 'B' || score.grade === 'C' ? 'bg-indigo-100 text-indigo-800' :
-                                    'bg-rose-100 text-rose-800'
-                                  }`}>
-                                    {score.grade}
+                                  <span className="px-2.5 py-0.5 bg-indigo-900 text-white rounded font-extrabold text-[11px]">
+                                    {overallGrade}
                                   </span>
                                 </td>
                               </tr>
-                            ))
-                          ) : (
-                            <tr>
-                              <td colSpan="6" className="p-4 text-center text-slate-500 italic font-sans text-xs">
-                                No test records registered for this student in {monthFormatted}.
-                              </td>
-                            </tr>
+                            </tfoot>
                           )}
-                        </tbody>
-                        {subjectScores.length > 0 && (
-                          <tfoot>
-                            <tr className="bg-indigo-50 font-bold border-t-2 border-indigo-900 font-mono text-xs">
-                              <td colSpan="2" className="p-2 font-sans uppercase">Overall Summary:</td>
-                              <td className="p-2 text-center text-indigo-900 font-extrabold">{grandObtained}</td>
-                              <td className="p-2 text-center text-slate-700">{grandMax}</td>
-                              <td className="p-2 text-center text-indigo-950 font-extrabold">{overallPercentage}%</td>
-                              <td className="p-2 text-center">
-                                <span className="px-2.5 py-0.5 bg-indigo-900 text-white rounded font-extrabold text-[11px]">
-                                  {overallGrade}
-                                </span>
-                              </td>
-                            </tr>
-                          </tfoot>
-                        )}
-                      </table>
+                        </table>
+                      </div>
                     </div>
 
                     {/* Teacher Remarks & Principal Signature Box */}

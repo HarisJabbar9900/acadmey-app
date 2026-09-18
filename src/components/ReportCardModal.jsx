@@ -99,11 +99,13 @@ export default function ReportCardModal({ student, month, data, onClose }) {
   const monthClean = monthFormatted.replace(/\s+/g, '_');
 
   const handlePrint = () => {
+    document.body.classList.add('printing-report-active');
     const oldTitle = document.title;
     const studentNameClean = (student.name || 'Student').trim();
     document.title = `${studentNameClean} - Report Card ${monthFormatted}`;
     window.print();
     setTimeout(() => {
+      document.body.classList.remove('printing-report-active');
       document.title = oldTitle;
     }, 1000);
   };
@@ -158,39 +160,39 @@ export default function ReportCardModal({ student, month, data, onClose }) {
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 w-full sm:w-auto">
+          <div className="flex flex-wrap items-center justify-end gap-2 w-full sm:w-auto">
             <button
               onClick={handleDownloadImage}
               disabled={isDownloading}
-              className="flex-1 sm:flex-initial px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition-all cursor-pointer disabled:opacity-50"
+              className="flex-1 sm:flex-initial px-3.5 sm:px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/30 transition-all cursor-pointer disabled:opacity-50 whitespace-nowrap active:scale-95"
             >
               {isDownloading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
                   <span>Generating HD...</span>
                 </>
               ) : (
                 <>
-                  <Download className="w-4 h-4 text-white" />
-                  <span>Download PNG Image</span>
+                  <Download className="w-3.5 h-3.5 text-white" />
+                  <span>Download Image</span>
                 </>
               )}
             </button>
 
             <button
               onClick={handlePrint}
-              className="flex-1 sm:flex-initial px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all cursor-pointer"
+              className="flex-1 sm:flex-initial px-3.5 sm:px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 shadow-md shadow-indigo-600/30 transition-all cursor-pointer active:scale-95 whitespace-nowrap"
             >
-              <Printer className="w-4 h-4 text-white" />
-              <span>Print / Save PDF</span>
+              <Printer className="w-3.5 h-3.5 text-white" />
+              <span>Print / PDF</span>
             </button>
 
             <button
               onClick={onClose}
-              className="p-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white rounded-xl transition-all cursor-pointer border border-slate-200 dark:border-slate-700"
+              className="p-2 sm:p-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white rounded-xl transition-all cursor-pointer border border-slate-200 dark:border-slate-700 active:scale-95"
               title="Close Modal"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>
@@ -198,7 +200,7 @@ export default function ReportCardModal({ student, month, data, onClose }) {
         {/* PRINTABLE REPORT CARD CONTAINER (Always Clean Light Mode) */}
         <div 
           id="report-card-print-area"
-          className="relative bg-white text-slate-900 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6 mx-auto print:shadow-none print:w-full print:max-w-none print:p-6 overflow-hidden border border-slate-200"
+          className="relative bg-white text-slate-900 rounded-2xl p-4 sm:p-8 shadow-2xl space-y-6 mx-auto print:shadow-none print:w-full print:max-w-none print:p-6 overflow-hidden border border-slate-200"
         >
           {/* Academy Name Background Watermark */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none z-0 overflow-hidden opacity-[0.05] print:opacity-[0.07]">
@@ -211,14 +213,14 @@ export default function ReportCardModal({ student, month, data, onClose }) {
             </span>
           </div>
 
-          <div className="relative z-10 space-y-6">
+          <div className="relative z-10 space-y-5 sm:space-y-6">
             {/* Header Title Banner */}
             <div className="border-b-2 border-indigo-900 pb-4 text-center space-y-1">
               <div className="flex items-center justify-center gap-2 text-indigo-900">
-                <GraduationCap className="w-8 h-8" />
-                <h1 className="text-2xl font-black uppercase tracking-wider">Al-Zia Science Academy</h1>
+                <GraduationCap className="w-7 h-7 sm:w-8 sm:h-8" />
+                <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wider">Al-Zia Science Academy</h1>
               </div>
-              <p className="text-xs font-bold text-slate-600 uppercase tracking-widest">
+              <p className="text-[10px] sm:text-xs font-bold text-slate-600 uppercase tracking-widest">
                 Official Monthly Student Progress & Performance Report Card
               </p>
               <div className="inline-block bg-indigo-900 text-white text-xs font-mono font-bold px-3.5 py-1 rounded-full mt-1 shadow-xs">
@@ -227,39 +229,39 @@ export default function ReportCardModal({ student, month, data, onClose }) {
             </div>
 
             {/* Student Personal Info Grid */}
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
+            <div className="bg-slate-50 p-3 sm:p-4 rounded-xl border border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 text-xs font-mono">
               <div>
                 <span className="text-slate-500 block text-[10px] uppercase font-sans font-bold">Student Name</span>
-                <span className="font-extrabold text-slate-900 text-sm">{student.name}</span>
+                <span className="font-extrabold text-slate-900 text-xs sm:text-sm truncate block">{student.name}</span>
               </div>
 
               <div>
                 <span className="text-slate-500 block text-[10px] uppercase font-sans font-bold">Father Name</span>
-                <span className="font-bold text-slate-800">{student.fname || 'N/A'}</span>
+                <span className="font-bold text-slate-800 truncate block">{student.fname || 'N/A'}</span>
               </div>
 
               <div>
                 <span className="text-slate-500 block text-[10px] uppercase font-sans font-bold">Roll Number</span>
-                <span className="font-extrabold text-indigo-700 text-sm">#{student.rollNo}</span>
+                <span className="font-extrabold text-indigo-700 text-xs sm:text-sm">#{student.rollNo}</span>
               </div>
 
               <div>
                 <span className="text-slate-500 block text-[10px] uppercase font-sans font-bold">Class</span>
-                <span className="font-bold text-slate-800">Class {studentClass?.name || 'N/A'}</span>
+                <span className="font-bold text-slate-800 truncate block">Class {studentClass?.name || 'N/A'}</span>
               </div>
             </div>
 
-            {/* Monthly Attendance Summary Box */}
-            <div className="bg-slate-100/80 p-3 rounded-xl border border-slate-200 flex items-center justify-between text-xs font-mono">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-indigo-700" />
+            {/* Monthly Attendance Summary Box (Responsive Wrap) */}
+            <div className="bg-slate-100/80 p-3 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs font-mono">
+              <div className="flex items-center gap-2 shrink-0">
+                <Calendar className="w-4 h-4 text-indigo-700 shrink-0" />
                 <span className="font-bold text-slate-700 font-sans">Monthly Attendance:</span>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 text-[11px] sm:text-xs">
                 <span>Total Days: <strong>{totalDays}</strong></span>
                 <span className="text-emerald-700 font-bold">Present: {presentDays}</span>
                 <span className="text-rose-700 font-bold">Absent: {absentDays}</span>
-                <span className="bg-indigo-900 text-white font-bold px-2 py-0.5 rounded text-[11px]">
+                <span className="bg-indigo-900 text-white font-bold px-2.5 py-0.5 rounded text-[11px] shrink-0 shadow-2xs">
                   {attendancePercentage}%
                 </span>
               </div>
@@ -271,7 +273,8 @@ export default function ReportCardModal({ student, month, data, onClose }) {
                 <Award className="w-4 h-4 text-indigo-700" /> Subject-Wise Test Evaluation Ledger
               </h3>
 
-              <table className="w-full text-left text-xs border-collapse">
+              <div className="overflow-x-auto -mx-1 sm:mx-0 rounded-xl border border-slate-200">
+                <table className="w-full text-left text-xs border-collapse min-w-[500px] print:min-w-0">
                 <thead>
                   <tr className="bg-indigo-900 text-white font-sans text-[11px] uppercase">
                     <th className="p-2.5 rounded-tl-lg">Subject Name</th>
@@ -326,6 +329,7 @@ export default function ReportCardModal({ student, month, data, onClose }) {
                   </tfoot>
                 )}
               </table>
+              </div>
             </div>
 
             {/* Teacher Remarks & Principal Signature Box */}

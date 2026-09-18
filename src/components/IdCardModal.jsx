@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { Printer, GraduationCap, User, Phone, ShieldCheck, QrCode, X } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { Printer, GraduationCap, User, Phone, ShieldCheck, QrCode, X, Download, Loader2 } from 'lucide-react';
+import html2canvas from 'html2canvas';
 
 export default function IdCardModal({ student, data, onClose, isAdminLoggedIn = false }) {
   if (!student) return null;
 
   // Security Guard: Prevent unauthorized access to student emergency contact info
   if (!isAdminLoggedIn) {
-    return (
-      <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    return createPortal(
+      <div className="fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl">
           <div className="w-12 h-12 bg-rose-500/10 text-rose-500 dark:text-rose-400 rounded-2xl flex items-center justify-center mx-auto border border-rose-500/20">
             <ShieldCheck className="w-6 h-6" />
@@ -23,20 +25,66 @@ export default function IdCardModal({ student, data, onClose, isAdminLoggedIn = 
             Close
           </button>
         </div>
-      </div>
+      </div>,
+      document.body
     );
   }
 
-  const studentClass = data.classes.find(c => c.id === student.classId);
+  const safeClasses = Array.isArray(data?.classes) ? data.classes : [];
+  const studentClass = safeClasses.find(c => c && c.id === student.classId);
 
   // Editable fields by Admin before printing ID Card
   const [bloodGroup, setBloodGroup] = useState(student.bloodGroup || 'O+');
   const [emergencyPhone, setEmergencyPhone] = useState(student.fatherNumber || student.parentContact || '0334-6683236');
   const [validUntil, setValidUntil] = useState('Aug 2027');
+  const [isDownloading, setIsDownloading] = useState(false);
 
-  return (
-    <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-6 my-auto print:p-0 print:bg-white print:border-0 print:shadow-none">
+  const handlePrint = () => {
+    document.body.classList.add('printing-idcard-active');
+    const oldTitle = document.title;
+    document.title = `${student.name || 'Student'}_ID_Card_Al_Zia`;
+    window.print();
+    setTimeout(() => {
+      document.body.classList.remove('printing-idcard-active');
+      document.title = oldTitle;
+    }, 1000);
+  };
+
+  const handleDownloadImage = async () => {
+    const cardElement = document.getElementById('student-id-card-print-target');
+    if (!cardElement) return;
+
+    const studentNameClean = (student.name || 'Student').trim().replace(/\s+/g, '_');
+    const fileName = `${studentNameClean}_ID_Card_Al_Zia.png`;
+
+    try {
+      setIsDownloading(true);
+      const canvas = await html2canvas(cardElement, {
+        scale: 3,
+        useCORS: true,
+        allowTaint: false,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+
+      const image = canvas.toDataURL('image/png', 1.0);
+      const link = document.createElement('a');
+      link.download = fileName;
+      link.href = image;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error('ID Card PNG Download Error:', err);
+      handlePrint();
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  return createPortal(
+    <div className="idcard-modal-wrapper fixed inset-0 z-[99999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto print:static print:p-0 print:m-0 print:bg-white print:overflow-visible">
+      <div className="idcard-modal-inner bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-4 sm:p-6 shadow-2xl space-y-5 my-auto print:p-0 print:bg-white print:border-0 print:shadow-none print:m-0">
         
         {/* Modal Top Header (Screen Only) */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 print:hidden">
@@ -44,7 +92,7 @@ export default function IdCardModal({ student, data, onClose, isAdminLoggedIn = 
             <span className="text-xs text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5" /> Official Student Identity Card
             </span>
-            <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">Student ID Card Preview</h3>
+            <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">Student ID Card Preview</h3>
           </div>
           <button 
             onClick={onClose} 
@@ -55,13 +103,13 @@ export default function IdCardModal({ student, data, onClose, isAdminLoggedIn = 
         </div>
 
         {/* Admin Quick Editing Options (Screen Only) */}
-        <div className="bg-slate-50 dark:bg-slate-950/60 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 grid grid-cols-2 gap-3 text-xs print:hidden">
+        <div className="bg-slate-50 dark:bg-slate-950/60 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 grid grid-cols-2 gap-2.5 text-xs print:hidden">
           <div>
             <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">Blood Group</label>
             <select
               value={bloodGroup}
               onChange={(e) => setBloodGroup(e.target.value)}
-              className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-slate-900 dark:text-white font-bold focus:outline-none cursor-pointer"
+              className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-slate-900 dark:text-white font-bold focus:outline-none cursor-pointer text-xs"
             >
               {['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'].map(bg => (
                 <option key={bg} value={bg}>{bg}</option>
@@ -80,8 +128,11 @@ export default function IdCardModal({ student, data, onClose, isAdminLoggedIn = 
         </div>
 
         {/* Printable ID Card Container */}
-        <div className="flex justify-center print:m-0">
-          <div className="w-[340px] bg-white border-2 border-slate-300 rounded-2xl shadow-xl overflow-hidden text-slate-900 relative font-sans print:w-[320px] print:border-2 print:border-slate-900 print:shadow-none">
+        <div className="flex justify-center print:m-0 print:p-0">
+          <div 
+            id="student-id-card-print-target"
+            className="idcard-print-target w-[340px] max-w-full bg-white border-2 border-slate-300 rounded-2xl shadow-xl overflow-hidden text-slate-900 relative font-sans print:w-[320px] print:border-2 print:border-slate-900 print:shadow-none print:m-0"
+          >
             
             {/* ID Card Header Banner: Royal Navy with Gold accent */}
             <div className="bg-gradient-to-r from-slate-950 via-[#0e162e] to-slate-950 px-3 py-3 text-center text-white relative border-b-2 border-amber-400">
@@ -107,19 +158,19 @@ export default function IdCardModal({ student, data, onClose, isAdminLoggedIn = 
                 </div>
 
                 {/* Main Name & Roll Number */}
-                <div className="space-y-1 overflow-hidden">
+                <div className="space-y-1 overflow-hidden flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="px-2 py-0.5 bg-amber-50 text-amber-900 border border-amber-300 rounded-md text-[10px] font-mono font-extrabold inline-block">
+                    <span className="px-2 py-0.5 bg-amber-50 text-amber-900 border border-amber-300 rounded-md text-[10px] font-mono font-extrabold inline-block shrink-0">
                       Roll #{student.rollNo}
                     </span>
-                    <span className="px-2 py-0.5 bg-indigo-50 text-indigo-900 border border-indigo-200 rounded-md text-[9px] font-bold uppercase">
+                    <span className="px-2 py-0.5 bg-indigo-50 text-indigo-900 border border-indigo-200 rounded-md text-[9px] font-bold uppercase truncate inline-block">
                       Class {studentClass?.name || 'N/A'}
                     </span>
                   </div>
                   <h3 className="text-base font-black text-slate-900 tracking-tight uppercase leading-tight truncate">
                     {student.name}
                   </h3>
-                  <p className="text-xs text-indigo-700 font-semibold">
+                  <p className="text-xs text-indigo-700 font-semibold truncate">
                     {studentClass?.subject || 'Science & Computer'}
                   </p>
                 </div>
@@ -171,22 +222,43 @@ export default function IdCardModal({ student, data, onClose, isAdminLoggedIn = 
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 print:hidden">
+        <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 print:hidden">
           <button
-            onClick={() => window.print()}
-            className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md shadow-indigo-600/20 cursor-pointer transition-all active:scale-95"
+            onClick={handleDownloadImage}
+            disabled={isDownloading}
+            className="flex-1 sm:flex-initial px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20 cursor-pointer transition-all active:scale-95 disabled:opacity-50 whitespace-nowrap"
           >
-            <Printer className="w-4 h-4" /> Print Student ID Card
+            {isDownloading ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                <span>Saving HD...</span>
+              </>
+            ) : (
+              <>
+                <Download className="w-3.5 h-3.5 text-white" />
+                <span>Download Image</span>
+              </>
+            )}
           </button>
+
+          <button
+            onClick={handlePrint}
+            className="flex-1 sm:flex-initial px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-md shadow-indigo-600/20 cursor-pointer transition-all active:scale-95 whitespace-nowrap"
+          >
+            <Printer className="w-3.5 h-3.5 text-white" />
+            <span>Print / PDF</span>
+          </button>
+
           <button
             onClick={onClose}
-            className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold cursor-pointer transition-all"
+            className="px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold cursor-pointer transition-all active:scale-95"
           >
             Close
           </button>
         </div>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

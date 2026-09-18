@@ -13,8 +13,10 @@ export default function CertificateModal({ scorer, month, onClose }) {
     const cleanName = (scorer.studentName || 'Student').trim().replace(/\s+/g, '_');
     const cleanClass = (scorer.className || 'Topper').trim().replace(/\s+/g, '_');
     document.title = `Certificate_${cleanName}_Class_${cleanClass}`;
+    document.body.classList.add('printing-cert-active');
     window.print();
     setTimeout(() => {
+      document.body.classList.remove('printing-cert-active');
       document.title = oldTitle;
     }, 1000);
   };

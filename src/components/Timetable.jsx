@@ -280,8 +280,8 @@ export default function Timetable({ timetable = [], selectedClassId, isAdminLogg
           </span>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm border-collapse">
+        <div className="overflow-x-auto -mx-1 sm:mx-0">
+          <table className="w-full text-left text-sm border-collapse min-w-[650px]">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-100/80 dark:bg-slate-950/60 text-slate-700 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                 <th className="py-4 px-4 w-36 border-r border-slate-200 dark:border-slate-800">Time Slot</th>

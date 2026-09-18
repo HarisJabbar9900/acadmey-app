@@ -792,8 +792,12 @@ export default function FeeManager({ data, selectedClassId, isAdminLoggedIn, onS
                     const oldTitle = document.title;
                     const studentName = receiptStudent.student?.name || 'Student';
                     document.title = `Fee_Receipt_${studentName.replace(/\s+/g, '_')}_${selectedMonth}`;
+                    document.body.classList.add('printing-receipt-active');
                     window.print();
-                    setTimeout(() => { document.title = oldTitle; }, 1000);
+                    setTimeout(() => { 
+                      document.body.classList.remove('printing-receipt-active');
+                      document.title = oldTitle; 
+                    }, 1000);
                   }}
                   className="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-md shadow-indigo-600/25 transition-all cursor-pointer"
                 >
