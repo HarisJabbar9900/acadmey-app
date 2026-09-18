@@ -157,7 +157,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
                   {notice.title}
                 </h4>
 
-                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-sans bg-slate-50 dark:bg-slate-950/40 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800/80">
+                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-sans bg-slate-50 dark:bg-slate-950/40 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800/80 whitespace-pre-line">
                   {notice.content}
                 </p>
               </div>

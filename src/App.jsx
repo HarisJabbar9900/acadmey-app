@@ -209,6 +209,14 @@ export default function App() {
               });
             }
 
+            // Auto-sync official announcement notices back to cloud if missing in cloud
+            const cloudNoticeIds = new Set((cloudData.notices || []).map(n => n?.id).filter(Boolean));
+            (mergedNotices || []).forEach(n => {
+              if (n?.id && !cloudNoticeIds.has(n.id)) {
+                syncWithFirestore('notices', n.id, n).catch(() => {});
+              }
+            });
+
             return {
               ...prev,
               tests: mergedTests,

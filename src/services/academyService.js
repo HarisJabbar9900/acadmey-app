@@ -53,7 +53,18 @@ const DEFAULT_FEES = {};
 
 const DEFAULT_FEEDBACKS = [];
 
-const DEFAULT_NOTICES = [];
+export const DEFAULT_NOTICES = [
+  {
+    id: 'ntc-oct-testing-2026',
+    createdAt: Date.now(),
+    title: '📢 Monthly Testing Session Starting from 1st October | یکم اکتوبر سے تمام کلاسز کے ٹیسٹ کا آغاز',
+    category: 'Exam Notice',
+    targetClass: 'All Classes',
+    content: 'تمام طلباء و طالبات کو مطلع کیا جاتا ہے کہ یکم اکتوبر (1st October) سے اکیڈمی کی تمام کلاسز (9th, 10th, 11th, 12th) کے باقاعدہ سلیبس ٹیسٹ کا سلسلہ شروع ہو رہا ہے۔\n\n📌 ضروری ہدایات برائے طلباء:\n1. تمام اسٹوڈنٹس روزانہ کے ٹائم ٹیبل اور سبجیکٹ سلیبس کے مطابق مکمل تیاری کے ساتھ تشریف لائیں۔\n2. ٹیسٹ سیشن کے دوران 100% حاضری لازمی ہے۔\n3. ٹیسٹ رزلٹ اور مارکس باقاعدگی سے پورٹل پر اپڈیٹ ہوں گے اور والدین کو رپورٹ کارڈ جاری کیے جائیں گے۔\n\nAll students are hereby notified that comprehensive syllabus testing will officially start from 1st October across all classes. Ensure 100% attendance and diligent preparation.',
+    date: '18 September',
+    isPinned: true
+  }
+];
 
 export const DEFAULT_FACULTY = [
   {
@@ -253,10 +264,13 @@ export const getInitialData = () => {
       parsed.feedbacks = parsed.feedbacks.filter(Boolean);
     }
 
-    if (!Array.isArray(parsed.notices)) {
+    if (!Array.isArray(parsed.notices) || parsed.notices.length === 0) {
       parsed.notices = DEFAULT_NOTICES;
     } else {
       parsed.notices = parsed.notices.filter(Boolean);
+      if (!parsed.notices.some(n => n && n.id === 'ntc-oct-testing-2026')) {
+        parsed.notices = [...DEFAULT_NOTICES, ...parsed.notices];
+      }
     }
 
     const mockNames = ['haris jabbar', 'malik umar', 'hassan raza', 'abdul ghani', 'ghulam hussain', 'zaid malik'];
