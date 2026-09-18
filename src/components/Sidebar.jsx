@@ -282,7 +282,7 @@ export default function Sidebar({
               <p className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5">
                 <span>Science Portal</span>
                 <span className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-600 inline-block"></span>
-                <span className="text-indigo-600 dark:text-indigo-400 font-bold">Pro v2.5</span>
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">Session 2026-27</span>
               </p>
             </div>
           </div>

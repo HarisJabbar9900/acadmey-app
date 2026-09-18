@@ -13,7 +13,7 @@ import AiChatbot from './components/AiChatbot';
 import CommandPalette from './components/CommandPalette';
 import MobileSplashScreen from './components/MobileSplashScreen';
 import StaffInfo from './components/StaffInfo';
-import { Heart, Code, Sparkles, ShieldCheck, Clock, Award, GraduationCap } from 'lucide-react';
+import { Heart, Code, ShieldCheck, Clock, Award, GraduationCap, Phone } from 'lucide-react';
 import { 
   getInitialData, 
   saveLocalData, 
@@ -985,50 +985,64 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Right Column: Lead Software Architect & Engineering Card (5 cols) */}
+              {/* Right Column: Academy Contact & Admissions Helpdesk (5 cols) */}
               <div className="lg:col-span-5 w-full">
-                <div className="relative group rounded-2xl p-[1px] bg-gradient-to-b from-indigo-500/30 via-slate-800/40 to-transparent hover:from-indigo-500/50 transition-all duration-300 shadow-xl shadow-indigo-950/20">
+                <div className="relative rounded-2xl p-[1px] bg-gradient-to-b from-indigo-500/20 via-slate-800/30 to-transparent border border-slate-200 dark:border-slate-800/80 shadow-lg shadow-indigo-950/10">
                   <div className="rounded-[15px] bg-white/95 dark:bg-[#0b0f1d]/95 backdrop-blur-xl p-5 space-y-3.5">
                     
-                    {/* Top Row: Tag & Live Version */}
+                    {/* Top Row: Office & Status */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 rounded-lg bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-500/30">
-                          <Code className="w-3.5 h-3.5" />
+                          <Phone className="w-3.5 h-3.5" />
                         </div>
                         <span className="text-[10px] font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                          Engineering &amp; Architecture
+                          Admissions &amp; Office Helpline
                         </span>
                       </div>
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        v2.5 Live
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        Admissions Open
                       </span>
                     </div>
 
-                    {/* Developer Name & Credential */}
-                    <div className="space-y-0.5">
+                    {/* Contact Person & Direct Phone */}
+                    <div className="space-y-1">
                       <p className="text-[10px] font-medium text-slate-500 dark:text-slate-400">
-                        Designed, Engineered &amp; Maintained by
+                        Campus Incharge / Information Desk
                       </p>
-                      <div className="flex items-center gap-2">
-                        <h4 className="text-base font-black text-slate-900 dark:text-white tracking-tight">
-                          Haris Jabbar
-                        </h4>
-                        <Award className="w-4 h-4 text-amber-500 shrink-0" />
+                      <div className="flex items-center justify-between gap-2">
+                        <div>
+                          <h4 className="text-base font-black text-slate-900 dark:text-white tracking-tight">
+                            Sir Zia-ur-Rehman
+                          </h4>
+                          <p className="text-[11px] text-slate-600 dark:text-slate-400">
+                            Director &amp; Senior Academic Lead
+                          </p>
+                        </div>
+                        <a 
+                          href="https://wa.me/923346683236" 
+                          target="_blank" 
+                          rel="noreferrer"
+                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs shrink-0"
+                        >
+                          <Phone className="w-3.5 h-3.5" />
+                          <span>0334-6683236</span>
+                        </a>
                       </div>
-                      <p className="text-[11px] text-slate-600 dark:text-slate-400">
-                        Lead Full-Stack Web Architect &amp; Software Specialist
-                      </p>
                     </div>
 
-                    {/* Tech Stack Pills */}
-                    <div className="pt-2 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-wrap items-center gap-1.5">
-                      {['React', 'Next.js', 'Firebase', 'Node.js', 'Express', 'REST APIs', 'Tailwind CSS'].map((tech, i) => (
-                        <span key={i} className="text-[9px] px-2.5 py-1 rounded-lg font-mono font-semibold bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 shadow-xs">
-                          {tech}
-                        </span>
-                      ))}
+                    {/* Quick Info Badges */}
+                    <div className="pt-2 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-wrap items-center gap-2 text-[10px] text-slate-600 dark:text-slate-400">
+                      <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800/90 font-medium">
+                        🕒 3:00 PM – 6:30 PM
+                      </span>
+                      <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800/90 font-medium">
+                        📍 Main Campus
+                      </span>
+                      <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800/90 font-medium">
+                        🎓 Session 2026-2027
+                      </span>
                     </div>
 
                   </div>

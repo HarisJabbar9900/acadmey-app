@@ -293,7 +293,7 @@ export default function StudyMaterial({ data, selectedClassId, isAdminLoggedIn, 
       <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
-            <Sparkles className="w-3.5 h-3.5" />
+            <BookOpen className="w-3.5 h-3.5" />
             <span>Class-Wise Digital Library</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">

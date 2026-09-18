@@ -42,7 +42,7 @@ export default function IdCardModal({ student, data, onClose, isAdminLoggedIn = 
         <div className="flex items-center justify-between pb-3 border-b border-slate-800 print:hidden">
           <div>
             <span className="text-xs text-indigo-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" /> Official Student Identity Generator
+              <ShieldCheck className="w-3.5 h-3.5" /> Official Student Identity Card
             </span>
             <h3 className="text-lg font-extrabold text-white">Student ID Card Preview</h3>
           </div>

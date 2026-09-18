@@ -441,8 +441,8 @@ export default function CommandPalette({
           </div>
 
           <div className="hidden sm:flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 font-semibold">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Al-Zia Quick Navigator</span>
+            <Search className="w-3.5 h-3.5" />
+            <span>Al-Zia Quick Search</span>
           </div>
         </div>
 
