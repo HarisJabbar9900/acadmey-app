@@ -38,6 +38,119 @@ const isUrduText = (text) => {
   return /[\u0600-\u06FF]/.test(text);
 };
 
+// Comprehensive parser: separates Urdu lead, numbered instructions, English note, and English instructions
+export const parseNoticeContent = (notice) => {
+  if (!notice) {
+    return {
+      urduLead: '',
+      urduPoints: [],
+      englishTitle: '',
+      englishNote: '',
+      englishPoints: []
+    };
+  }
+
+  let urduLead = notice.urduLead || '';
+  let urduPoints = Array.isArray(notice.instructions) ? [...notice.instructions] : [];
+  let englishTitle = notice.englishTitle || '';
+  let englishNote = notice.englishNote || '';
+  let englishPoints = Array.isArray(notice.englishInstructions) ? [...notice.englishInstructions] : [];
+
+  // If points are not pre-structured, parse raw content string
+  if ((!urduPoints.length && !englishPoints.length) && notice.content) {
+    const rawLines = notice.content.split('\n').map(l => l.trim()).filter(Boolean);
+    const uLines = [];
+    const eLines = [];
+
+    let isEnglishBlock = false;
+
+    rawLines.forEach(line => {
+      if (/^(\[ENGLISH|ENGLISH NOTICE|OFFICIAL NOTICE|CIRCULAR)/i.test(line)) {
+        isEnglishBlock = true;
+        return;
+      }
+
+      if (isEnglishBlock) {
+        eLines.push(line);
+      } else if (isUrduText(line)) {
+        uLines.push(line);
+      } else {
+        eLines.push(line);
+      }
+    });
+
+    // Parse Urdu lines into lead and numbered points
+    uLines.forEach(line => {
+      const match = line.match(/^(\d+|[۰-۹]+)[\.\-\)]\s*(.*)$/);
+      if (match) {
+        const num = match[1];
+        const rest = match[2].trim();
+        const colonIdx = rest.indexOf(':');
+        if (colonIdx > 0 && colonIdx < 35) {
+          urduPoints.push({
+            number: num,
+            title: rest.substring(0, colonIdx).trim(),
+            text: rest.substring(colonIdx + 1).trim()
+          });
+        } else {
+          urduPoints.push({
+            number: num,
+            title: `ہدایت نمبر ${num}`,
+            text: rest
+          });
+        }
+      } else {
+        urduLead += (urduLead ? '\n' : '') + line;
+      }
+    });
+
+    // Parse English lines into lead and numbered points
+    eLines.forEach(line => {
+      const match = line.match(/^(\d+)[\.\-\)]\s*(.*)$/);
+      if (match) {
+        const num = match[1];
+        const rest = match[2].trim();
+        const colonIdx = rest.indexOf(':');
+        if (colonIdx > 0 && colonIdx < 35) {
+          englishPoints.push({
+            number: num,
+            title: rest.substring(0, colonIdx).trim(),
+            text: rest.substring(colonIdx + 1).trim()
+          });
+        } else {
+          englishPoints.push({
+            number: num,
+            title: `Point ${num}`,
+            text: rest
+          });
+        }
+      } else {
+        if (!englishTitle && line.length < 80 && !englishNote && !englishPoints.length) {
+          englishTitle = line;
+        } else {
+          englishNote += (englishNote ? ' ' : '') + line;
+        }
+      }
+    });
+  }
+
+  // Fallbacks if only single plain text exists
+  if (!urduLead && notice.content && isUrduText(notice.content) && !urduPoints.length) {
+    urduLead = notice.content;
+  }
+  if (!englishNote && notice.content && !isUrduText(notice.content) && !englishPoints.length) {
+    englishNote = notice.content;
+  }
+
+  return {
+    urduLead,
+    urduPoints,
+    englishTitle,
+    englishNote,
+    englishPoints
+  };
+};
+
 export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDeleteNotice }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState('');
@@ -124,36 +237,57 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
   };
 
   const handleCopyNotice = (notice) => {
+    const { urduLead, urduPoints, englishTitle, englishNote, englishPoints } = parseNoticeContent(notice);
+
     let textToCopy = `📢 *AL-ZIA SCIENCE ACADEMY*\n` +
       `━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
       `🏛️ *الضیاء سائنس اکیڈمی*\n` +
-      `📌 *عنوان:* ${notice.title}\n` +
       `🎯 *کلاس / Target:* ${notice.targetClass || 'All Classes'}\n` +
       `📅 *تاریخ:* ${notice.date || 'Active'}\n` +
+      (notice.startDate ? `⏳ *آغاز ٹیسٹ:* ${notice.startDate}\n` : '') +
       `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
-    if (notice.urduLead) {
-      textToCopy += `${notice.urduLead}\n\n`;
+    // Urdu Section
+    textToCopy += `🇵🇰 *[ باضابطہ اردو اعلانیہ ]*\n` +
+      `📌 *عنوان:* ${notice.title}\n\n`;
+
+    if (urduLead) {
+      textToCopy += `${urduLead}\n\n`;
     }
 
-    if (Array.isArray(notice.instructions) && notice.instructions.length > 0) {
-      textToCopy += `📌 *اہم ہدایات:*\n`;
-      notice.instructions.forEach((inst, i) => {
-        textToCopy += `${i + 1}. *${inst.title}:* ${inst.text}\n`;
+    if (urduPoints.length > 0) {
+      textToCopy += `📋 *اہم ہدایات و ضوابط (نمبر وار تفصیل):*\n`;
+      urduPoints.forEach((pt, i) => {
+        const num = pt.number || (i + 1);
+        textToCopy += `🔹 *نمبر ${num}:* ${pt.title ? `*${pt.title}* - ` : ''}${pt.text}\n`;
       });
       textToCopy += `\n`;
     }
 
-    if (notice.englishNote) {
-      textToCopy += `*English Summary:*\n${notice.englishNote}\n\n`;
-    }
+    textToCopy += `✍️ *پرنسپل و انتظامیہ الضیاء سائنس اکیڈمی*\n\n`;
 
-    if (notice.content && !notice.urduLead) {
-      textToCopy += `${notice.content}\n\n`;
-    }
+    // English Section (strictly separated)
+    if (englishTitle || englishNote || englishPoints.length > 0) {
+      textToCopy += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+        `🇬🇧 *[ OFFICIAL CIRCULAR - ENGLISH SECTION ]*\n` +
+        (englishTitle ? `📌 *Title:* ${englishTitle}\n\n` : '');
 
-    textToCopy += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-      `پرنسپل و انتظامیہ الضیاء سائنس اکیڈمی`;
+      if (englishNote) {
+        textToCopy += `${englishNote}\n\n`;
+      }
+
+      if (englishPoints.length > 0) {
+        textToCopy += `📋 *Key Directives & Instructions:*\n`;
+        englishPoints.forEach((pt, i) => {
+          const num = pt.number || (i + 1);
+          textToCopy += `▫️ *Point ${num}:* ${pt.title ? `*${pt.title}* - ` : ''}${pt.text}\n`;
+        });
+        textToCopy += `\n`;
+      }
+
+      textToCopy += `✍️ *Principal & Administration, Al-Zia Science Academy*\n` +
+        `━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+    }
 
     navigator.clipboard.writeText(textToCopy);
     setCopiedId(notice.id);
@@ -268,6 +402,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
           {pinnedAnnouncements.map((notice) => {
             const isRecent = isNoticeRecent(notice);
             const isCopied = copiedId === notice.id;
+            const parsed = parseNoticeContent(notice);
 
             return (
               <div 
@@ -282,7 +417,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
                   <GraduationCap className="w-80 h-80 text-amber-900 dark:text-amber-400" />
                 </div>
 
-                <div className="relative z-10 space-y-5">
+                <div className="relative z-10 space-y-6">
                   
                   {/* Header Ribbon */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-amber-500/20">
@@ -345,113 +480,201 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
                     </div>
                   </div>
 
-                  {/* Urdu Main Title & Headline (Beautiful Jameel Noori Nastaleeq) */}
-                  <div className="space-y-2 text-right" dir="rtl">
+                  {/* ========================================================= */}
+                  {/* 1. SEPARATE URDU SECTION (باضابطہ اردو اعلانیہ) */}
+                  {/* ========================================================= */}
+                  <div className="space-y-4">
+                    {/* Section Identifier Banner */}
+                    <div className="flex items-center justify-between pb-2 border-b border-amber-500/20" dir="rtl">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
+                        <span 
+                          style={JAMEEL_FONT} 
+                          className="text-sm font-bold text-amber-700 dark:text-amber-400"
+                        >
+                          باضابطہ اردو اعلانیہ
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                        URDU NOTICE
+                      </span>
+                    </div>
+
+                    {/* Urdu Title (Jameel Noori Nastaleeq) */}
                     <h3 
                       style={JAMEEL_FONT} 
-                      className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-amber-400 leading-[2.2] tracking-normal"
+                      dir="rtl"
+                      className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-amber-400 leading-[2.3] text-right"
                     >
                       {notice.title}
                     </h3>
-                    
-                    {notice.englishTitle && (
-                      <p className="text-xs sm:text-sm font-sans font-bold text-slate-600 dark:text-slate-300 tracking-wide text-left" dir="ltr">
-                        {notice.englishTitle}
-                      </p>
+
+                    {/* Urdu Lead Statement (Jameel Noori Nastaleeq) */}
+                    {parsed.urduLead && (
+                      <div 
+                        dir="rtl" 
+                        style={JAMEEL_FONT} 
+                        className="text-base sm:text-lg text-slate-800 dark:text-slate-200 leading-[2.4] text-right bg-amber-500/10 dark:bg-amber-500/5 p-4 sm:p-5 rounded-2xl border border-amber-500/20 shadow-xs"
+                      >
+                        {parsed.urduLead}
+                      </div>
                     )}
-                  </div>
 
-                  {/* Urdu Lead Statement (Jameel Noori Nastaleeq) */}
-                  <div 
-                    dir="rtl" 
-                    style={JAMEEL_FONT} 
-                    className="text-base sm:text-lg text-slate-800 dark:text-slate-200 leading-[2.4] text-right bg-amber-500/10 dark:bg-amber-500/5 p-4 sm:p-5 rounded-2xl border border-amber-500/20"
-                  >
-                    {notice.urduLead || notice.content}
-                  </div>
+                    {/* SEPARATED NUMBERED POINTS (ALAG ALAG NUMBER CARDS IN JAMEEL NOORI) */}
+                    {parsed.urduPoints.length > 0 && (
+                      <div className="space-y-3 pt-2">
+                        <div className="flex items-center justify-between" dir="rtl">
+                          <span 
+                            style={JAMEEL_FONT} 
+                            className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2"
+                          >
+                            📌 اہم ہدایات و ضوابط (نمبر وار تفصیل):
+                          </span>
+                          <span className="text-[11px] font-mono text-slate-400 font-bold">
+                            {parsed.urduPoints.length} Points
+                          </span>
+                        </div>
 
-                  {/* Highlighted Directives / Instructions Grid (Urdu Cards in Jameel Noori) */}
-                  {Array.isArray(notice.instructions) && notice.instructions.length > 0 && (
-                    <div className="space-y-2.5 pt-1">
-                      <div className="flex items-center justify-between" dir="rtl">
+                        {/* Each point rendered in its OWN distinct, full-width card */}
+                        <div className="space-y-3">
+                          {parsed.urduPoints.map((pt, idx) => (
+                            <div 
+                              key={idx}
+                              dir="rtl"
+                              className="p-4 sm:p-5 rounded-2xl bg-white/95 dark:bg-slate-800/90 border-2 border-amber-500/25 dark:border-amber-500/20 hover:border-amber-500/50 shadow-xs transition-all flex flex-col sm:flex-row sm:items-start gap-4"
+                            >
+                              {/* Prominent Number Badge */}
+                              <div className="shrink-0 flex items-center gap-2">
+                                <span className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-slate-950 font-black text-lg flex items-center justify-center shadow-sm font-mono">
+                                  {pt.number || (idx + 1)}
+                                </span>
+                                <span 
+                                  style={JAMEEL_FONT} 
+                                  className="text-xs font-bold text-amber-700 dark:text-amber-400 sm:hidden"
+                                >
+                                  ہدایت نمبر {pt.number || (idx + 1)}
+                                </span>
+                              </div>
+
+                              {/* Numbered point text */}
+                              <div className="space-y-1 text-right flex-1">
+                                {pt.title && (
+                                  <h4 
+                                    style={JAMEEL_FONT} 
+                                    className="font-bold text-base sm:text-lg text-slate-900 dark:text-amber-300 leading-[2.1]"
+                                  >
+                                    {pt.title}
+                                  </h4>
+                                )}
+                                <p 
+                                  style={JAMEEL_FONT} 
+                                  className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-[2.3]"
+                                >
+                                  {pt.text}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Urdu Authority Footer */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-3 border-t border-amber-500/20 text-xs">
+                      <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-3.5 h-3.5 text-amber-500" />
+                          <span>تاریخ اجراء: {notice.date || '18 September 2026'}</span>
+                        </span>
+                        {notice.startDate && (
+                          <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30 font-bold">
+                            آغاز ٹیسٹ: {notice.startDate}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 self-end sm:self-auto" dir="rtl">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
                         <span 
                           style={JAMEEL_FONT} 
-                          className="text-sm sm:text-base font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1.5"
+                          className="text-sm font-bold text-slate-800 dark:text-slate-200"
                         >
-                          📌 اہم ہدایات و ضوابط برائے طلباء:
+                          پرنسپل و انتظامیہ الضیاء سائنس اکیڈمی
                         </span>
-                        <span className="text-[11px] font-mono text-slate-400 font-bold">Session Rules</span>
                       </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-                        {notice.instructions.map((inst, idx) => (
-                          <div 
-                            key={idx}
-                            dir="rtl"
-                            className="bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 rounded-2xl p-4 shadow-xs space-y-2 flex flex-col justify-between"
-                          >
-                            <div className="flex items-center gap-2">
-                              <span className="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-700 dark:text-amber-400 font-bold text-xs flex items-center justify-center font-mono">
-                                {idx + 1}
-                              </span>
-                              <h4 
-                                style={JAMEEL_FONT} 
-                                className="font-bold text-sm sm:text-base text-slate-900 dark:text-white"
-                              >
-                                {inst.title}
-                              </h4>
-                            </div>
-                            <p 
-                              style={JAMEEL_FONT} 
-                              className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-[2.2]"
-                            >
-                              {inst.text}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Bilingual English Circular Note */}
-                  {notice.englishNote && (
-                    <div className="bg-slate-100/90 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-2xl p-3.5 sm:p-4 text-xs font-sans text-slate-700 dark:text-slate-300 flex items-start gap-3">
-                      <FileText className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
-                      <div>
-                        <span className="font-bold text-slate-900 dark:text-white block uppercase text-[10px] tracking-wider mb-0.5">
-                          English Note:
-                        </span>
-                        <p className="leading-relaxed font-medium">
-                          {notice.englishNote}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Authority Footer */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-3 border-t border-amber-500/20 text-xs">
-                    <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5 text-amber-500" />
-                        <span>Issued: {notice.date || '18 September 2026'}</span>
-                      </span>
-                      {notice.startDate && (
-                        <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30 font-bold">
-                          Testing Commences: {notice.startDate}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-2 self-end sm:self-auto" dir="rtl">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
-                      <span 
-                        style={JAMEEL_FONT} 
-                        className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300"
-                      >
-                        پرنسپل و انتظامیہ الضیاء سائنس اکیڈمی
-                      </span>
                     </div>
                   </div>
+
+                  {/* ========================================================= */}
+                  {/* 2. COMPLETELY SEPARATED ENGLISH SECTION */}
+                  {/* ========================================================= */}
+                  {(parsed.englishTitle || parsed.englishNote || parsed.englishPoints.length > 0) && (
+                    <div className="mt-8 pt-6 border-t-2 border-dashed border-slate-300 dark:border-slate-700 space-y-4" dir="ltr">
+                      {/* English Header */}
+                      <div className="flex items-center justify-between pb-2 border-b border-indigo-500/20">
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                          <span className="text-xs font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 font-mono">
+                            Official Circular (English Section)
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 font-bold border border-indigo-500/20">
+                          SEPARATE ENGLISH NOTICE
+                        </span>
+                      </div>
+
+                      {/* English Title */}
+                      {parsed.englishTitle && (
+                        <h4 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+                          {parsed.englishTitle}
+                        </h4>
+                      )}
+
+                      {/* English Summary Note */}
+                      {parsed.englishNote && (
+                        <div className="bg-indigo-50/70 dark:bg-indigo-950/20 border border-indigo-200/80 dark:border-indigo-800/40 rounded-2xl p-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                          {parsed.englishNote}
+                        </div>
+                      )}
+
+                      {/* English Numbered Points (Alag Alag Cards) */}
+                      {parsed.englishPoints.length > 0 && (
+                        <div className="space-y-2.5 pt-1">
+                          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono block">
+                            Key Directives & Instructions (Numbered):
+                          </span>
+                          <div className="space-y-2.5">
+                            {parsed.englishPoints.map((pt, idx) => (
+                              <div 
+                                key={idx}
+                                className="p-3.5 sm:p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-start gap-3.5 shadow-xs"
+                              >
+                                <span className="w-7 h-7 rounded-lg bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 font-black text-xs flex items-center justify-center font-mono shrink-0 mt-0.5">
+                                  {pt.number || (idx + 1)}
+                                </span>
+                                <div className="space-y-0.5">
+                                  {pt.title && (
+                                    <h5 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                                      {pt.title}
+                                    </h5>
+                                  )}
+                                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                                    {pt.text}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* English Authority Footer */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pt-2 border-t border-slate-200 dark:border-slate-800 text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                        <span>Authorized by: <strong>Principal & Administration, Al-Zia Science Academy</strong></span>
+                        <span>Commencement: {notice.startDate || '1 October 2026'}</span>
+                      </div>
+                    </div>
+                  )}
 
                 </div>
               </div>
@@ -472,14 +695,15 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
             {regularAnnouncements.map((notice) => {
               const isRecent = isNoticeRecent(notice);
               const isCopied = copiedId === notice.id;
-              const hasUrdu = isUrduText(notice.title) || isUrduText(notice.content);
+              const parsed = parseNoticeContent(notice);
+              const hasUrdu = isUrduText(notice.title) || isUrduText(notice.content) || isUrduText(parsed.urduLead);
 
               return (
                 <div 
                   key={notice.id}
                   className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-amber-500/40 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-3"
                 >
-                  <div className="space-y-2.5">
+                  <div className="space-y-3">
                     {/* Header Pills */}
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex flex-wrap items-center gap-2">
@@ -531,14 +755,84 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
                       {notice.title}
                     </h5>
 
-                    {/* Notice Content */}
-                    <p 
-                      style={hasUrdu ? JAMEEL_FONT : undefined} 
-                      dir={hasUrdu ? 'rtl' : 'ltr'}
-                      className={`text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200/80 dark:border-slate-700/60 whitespace-pre-line ${hasUrdu ? 'leading-[2.3] text-right' : ''}`}
-                    >
-                      {notice.content}
-                    </p>
+                    {/* Notice Urdu Body & Separated Points */}
+                    {parsed.urduLead && (
+                      <div 
+                        style={JAMEEL_FONT} 
+                        dir="rtl"
+                        className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-[2.3] text-right bg-amber-500/5 p-3 rounded-xl border border-amber-500/20"
+                      >
+                        {parsed.urduLead}
+                      </div>
+                    )}
+
+                    {/* Urdu Points (Alag Alag Cards) */}
+                    {parsed.urduPoints.length > 0 && (
+                      <div className="space-y-2 pt-1" dir="rtl">
+                        {parsed.urduPoints.map((pt, idx) => (
+                          <div 
+                            key={idx}
+                            className="p-2.5 sm:p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 flex items-start gap-2.5 text-right"
+                          >
+                            <span className="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-700 dark:text-amber-400 font-bold text-xs flex items-center justify-center font-mono shrink-0 mt-0.5">
+                              {pt.number || (idx + 1)}
+                            </span>
+                            <div className="space-y-0.5">
+                              {pt.title && (
+                                <strong style={JAMEEL_FONT} className="block text-xs font-bold text-slate-900 dark:text-amber-300">
+                                  {pt.title}
+                                </strong>
+                              )}
+                              <p style={JAMEEL_FONT} className="text-xs text-slate-700 dark:text-slate-300 leading-[2.2]">
+                                {pt.text}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Separated English Section (if present) */}
+                    {(parsed.englishTitle || parsed.englishNote || parsed.englishPoints.length > 0) && (
+                      <div className="mt-2 pt-2 border-t border-dashed border-slate-200 dark:border-slate-700 space-y-2" dir="ltr">
+                        {parsed.englishTitle && (
+                          <h6 className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                            {parsed.englishTitle}
+                          </h6>
+                        )}
+                        {parsed.englishNote && (
+                          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-lg border border-slate-200/80 dark:border-slate-700/60">
+                            {parsed.englishNote}
+                          </p>
+                        )}
+                        {parsed.englishPoints.length > 0 && (
+                          <div className="space-y-1.5">
+                            {parsed.englishPoints.map((pt, idx) => (
+                              <div key={idx} className="p-2 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/60 dark:border-indigo-800/40 flex items-start gap-2 text-xs text-slate-700 dark:text-slate-300">
+                                <span className="w-5 h-5 rounded-md bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5 font-mono">
+                                  {pt.number || (idx + 1)}
+                                </span>
+                                <div>
+                                  {pt.title && <strong className="font-semibold block text-[11px]">{pt.title}:</strong>}
+                                  <span>{pt.text}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Fallback if no parsed items (pure single-paragraph content) */}
+                    {!parsed.urduLead && !parsed.urduPoints.length && !parsed.englishNote && !parsed.englishPoints.length && notice.content && (
+                      <p 
+                        style={hasUrdu ? JAMEEL_FONT : undefined} 
+                        dir={hasUrdu ? 'rtl' : 'ltr'}
+                        className={`text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200/80 dark:border-slate-700/60 whitespace-pre-line ${hasUrdu ? 'leading-[2.3] text-right' : ''}`}
+                      >
+                        {notice.content}
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono pt-2 border-t border-slate-100 dark:border-slate-800">
@@ -657,13 +951,16 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
                 <textarea
                   required
                   rows="4"
-                  placeholder="تمام طلباء و طالبات کو مطلع کیا جاتا ہے کہ..."
+                  placeholder="تمام طلباء و طالبات کو مطلع کیا جاتا ہے کہ...&#10;1. پہلی ہدایت...&#10;2. دوسری ہدایت...&#10;&#10;English summary or instructions here..."
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   style={isUrduText(content) ? JAMEEL_FONT : undefined}
                   dir={isUrduText(content) ? 'rtl' : 'ltr'}
                   className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-amber-500"
                 />
+                <span className="text-[11px] text-amber-600 dark:text-amber-400 block mt-1" dir="rtl" style={JAMEEL_FONT}>
+                  💡 رہنمائی: نکات کو نمبر کے ساتھ لکھیں (1. تیاری... 2. حاضری...) اور انگلش کو الگ لکھیں، سسٹم ہر نمبر اور انگلش کو الگ الگ خوبصورت کارڈز میں دکھائے گا۔
+                </span>
               </div>
 
               {/* Live Jameel Noori Nastaleeq Preview if Urdu is typed */}
