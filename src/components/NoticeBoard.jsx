@@ -124,9 +124,9 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
   };
 
   const handleCopyNotice = (notice) => {
-    let textToCopy = `📢 *AL-ZIA SCIENCE ACADEMY OFFICIAL ANNOUNCEMENT*\n` +
+    let textToCopy = `📢 *AL-ZIA SCIENCE ACADEMY*\n` +
       `━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-      `🏛️ *الضیاء سائنس اکیڈمی (رجسٹرڈ)*\n` +
+      `🏛️ *الضیاء سائنس اکیڈمی*\n` +
       `📌 *عنوان:* ${notice.title}\n` +
       `🎯 *کلاس / Target:* ${notice.targetClass || 'All Classes'}\n` +
       `📅 *تاریخ:* ${notice.date || 'Active'}\n` +
@@ -137,7 +137,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
     }
 
     if (Array.isArray(notice.instructions) && notice.instructions.length > 0) {
-      textToCopy += `📌 *اہم ہدایات و ضوابط:*\n`;
+      textToCopy += `📌 *اہم ہدایات:*\n`;
       notice.instructions.forEach((inst, i) => {
         textToCopy += `${i + 1}. *${inst.title}:* ${inst.text}\n`;
       });
@@ -153,7 +153,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
     }
 
     textToCopy += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-      `تصدیق شدہ از: پرنسپل و انتظامیہ الضیاء سائنس اکیڈمی`;
+      `پرنسپل و انتظامیہ الضیاء سائنس اکیڈمی`;
 
     navigator.clipboard.writeText(textToCopy);
     setCopiedId(notice.id);
@@ -194,17 +194,17 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight">
-                Academic Gazettes & Notice Board
+                Notice Board & Announcements
               </h2>
               <span 
                 style={JAMEEL_FONT} 
                 className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30"
               >
-                سرکاری نوٹس بورڈ
+                نوٹس بورڈ
               </span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Official notifications, monthly test schedules, and academic circulars from Al-Zia Administration.
+              Latest academy updates, monthly test schedules, and important notifications.
             </p>
           </div>
         </div>
@@ -242,8 +242,8 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
           <Filter className="w-3 h-3" /> Filter:
         </span>
         {[
-          { key: 'ALL', label: 'All Notices (تمام اعلانات)' },
-          { key: 'EXAM', label: 'Exam Circulars (امتحانی نوٹس)' },
+          { key: 'ALL', label: 'All Notices (تمام نوٹسز)' },
+          { key: 'EXAM', label: 'Exam Notices (امتحانی نوٹس)' },
           { key: 'URGENT', label: 'Urgent Alerts (ضروری الرٹس)' },
           { key: 'HOLIDAY', label: 'Holidays (تعطیلات)' }
         ].map(tab => (
@@ -262,7 +262,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
         ))}
       </div>
 
-      {/* 3. PINNED GRAND ANNOUNCEMENTS (EXECUTIVE ROYAL GAZETTE VIEW) */}
+      {/* 3. PINNED ANNOUNCEMENTS */}
       {pinnedAnnouncements.length > 0 && (
         <div className="space-y-4">
           {pinnedAnnouncements.map((notice) => {
@@ -284,7 +284,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
 
                 <div className="relative z-10 space-y-5">
                   
-                  {/* Executive Header Ribbon */}
+                  {/* Header Ribbon */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-amber-500/20">
                     <div className="flex flex-wrap items-center gap-2">
                       {isRecent && (
@@ -295,16 +295,11 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
                       )}
                       <span className="px-3 py-1 rounded-lg text-xs font-black bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30 flex items-center gap-1">
                         <Pin className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-                        <span>PINNED CIRCULAR • باقاعدہ اعلامیہ</span>
+                        <span>PINNED • اہم نوٹس</span>
                       </span>
                       <span className="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border border-indigo-500/30">
                         {notice.targetClass || 'All Classes'}
                       </span>
-                      {notice.circularNo && (
-                        <span className="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
-                          Ref: {notice.circularNo}
-                        </span>
-                      )}
                     </div>
 
                     {/* Action Bar (WhatsApp Copy + Print + Delete) */}
@@ -424,7 +419,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
                       <FileText className="w-5 h-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
                       <div>
                         <span className="font-bold text-slate-900 dark:text-white block uppercase text-[10px] tracking-wider mb-0.5">
-                          Official English Circular Statement:
+                          English Note:
                         </span>
                         <p className="leading-relaxed font-medium">
                           {notice.englishNote}
@@ -433,7 +428,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
                     </div>
                   )}
 
-                  {/* Verification & Authority Footer */}
+                  {/* Authority Footer */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-3 border-t border-amber-500/20 text-xs">
                     <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
                       <span className="flex items-center gap-1">
@@ -453,7 +448,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
                         style={JAMEEL_FONT} 
                         className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300"
                       >
-                        تصدیق شدہ از: پرنسپل و انتظامیہ الضیاء سائنس اکیڈمی
+                        پرنسپل و انتظامیہ الضیاء سائنس اکیڈمی
                       </span>
                     </div>
                   </div>
@@ -470,7 +465,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
         <div className="space-y-3">
           <h4 className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
             <Bell className="w-3.5 h-3.5 text-amber-500" />
-            <span>Other Academy Circulars ({regularAnnouncements.length})</span>
+            <span>Other Notices & Updates ({regularAnnouncements.length})</span>
           </h4>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -591,12 +586,12 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
                   <Megaphone className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-black">Publish Official Announcement</h3>
+                  <h3 className="text-base font-black">Publish Announcement</h3>
                   <p 
                     style={JAMEEL_FONT} 
                     className="text-xs text-amber-600 dark:text-amber-400 font-bold"
                   >
-                    سرکاری نوٹس و اعلامیہ جاری کریں
+                    نیا نوٹس جاری کریں
                   </p>
                 </div>
               </div>

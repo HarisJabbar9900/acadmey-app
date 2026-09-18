@@ -76,11 +76,10 @@ export const DEFAULT_NOTICES = [
         text: 'ہر ٹیسٹ کے نمبرز فوری طور پر پورٹل میں درج ہوں گے اور ماہانہ پرفارمنس رپورٹ کارڈز والدین کو جاری کیے جائیں گے۔'
       }
     ],
-    englishNote: 'Official Circular: Monthly syllabus evaluation & testing series for all classes (9th, 10th, 11th, 12th) commences from 1st October 2026. All students are directed to follow the academic routine, attend on time, and ensure thorough preparation.',
+    englishNote: 'Monthly syllabus evaluation & testing series for all classes (9th, 10th, 11th, 12th) commences from 1st October 2026. All students are advised to prepare thoroughly and maintain regular attendance.',
     content: 'تمام طلباء و طالبات کو مطلع کیا جاتا ہے کہ یکم اکتوبر (1st October) سے اکیڈمی کی تمام کلاسز (9th, 10th, 11th, 12th) کے باقاعدہ سلیبس ٹیسٹ کا سلسلہ شروع ہو رہا ہے۔\n\n📌 ضروری ہدایات برائے طلباء:\n1. تمام اسٹوڈنٹس روزانہ کے ٹائم ٹیبل اور سبجیکٹ سلیبس کے مطابق مکمل تیاری کے ساتھ تشریف لائیں۔\n2. ٹیسٹ سیشن کے دوران 100% حاضری لازمی ہے۔\n3. ٹیسٹ رزلٹ اور مارکس باقاعدگی سے پورٹل پر اپڈیٹ ہوں گے اور والدین کو رپورٹ کارڈ جاری کیے جائیں گے۔\n\nAll students are hereby notified that comprehensive syllabus testing will officially start from 1st October across all classes. Ensure 100% attendance and diligent preparation.',
     date: '18 September 2026',
     startDate: '1 October 2026',
-    circularNo: 'AZA-EXAM-2026/OCT-01',
     isPinned: true
   }
 ];
