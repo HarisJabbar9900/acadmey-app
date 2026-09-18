@@ -129,7 +129,62 @@ export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty, onUp
       'tarjuma': ['tarjuma', 'quran', 'tarjuma-tul-quran', 'tarjumatul quran']
     };
 
-    // 2. CHECK DYNAMIC SUBJECT MATCH AGAINST REGISTERED FACULTY
+    // 2. CHECK GENERAL "WHO TEACHES WHAT / KON KIA PERHATA HY" QUERY
+    const isGeneralTeacherQuery = 
+      query.includes('kon kia') || 
+      query.includes('kon kya') || 
+      query.includes('kon kon') ||
+      query.includes('who teach') || 
+      query.includes('who is teaching') ||
+      query.includes('perhata') || 
+      query.includes('parhata') || 
+      query.includes('parhate') ||
+      query.includes('perhate') ||
+      query.includes('padhata') ||
+      query.includes('padhate') ||
+      query.includes('teacher') || 
+      query.includes('teachers') || 
+      query.includes('faculty') || 
+      query.includes('staff') || 
+      query.includes('asatza') || 
+      query.includes('asateza') ||
+      query.includes('ustad');
+
+    // Check if query is about a specific subject
+    const hasSpecificSubject = Object.keys(subjectAliases).some(sub => cleanQuery.includes(sub) || queryWords.includes(sub));
+    
+    // Dynamically extract teacher names from active faculty list (no hardcoding)
+    const dynamicTeacherWords = [];
+    effectiveFaculty.forEach(fac => {
+      const parts = (fac.teacher || '').toLowerCase().replace(/[()&,.-]/g, ' ').split(/\s+/).filter(w => w.length >= 3 && !['sir', 'prof', 'doctor', 'mr', 'mrs'].includes(w));
+      dynamicTeacherWords.push(...parts);
+    });
+    const hasSpecificTeacher = dynamicTeacherWords.some(name => queryWords.includes(name) || cleanQuery.includes(name));
+
+    // If query is specifically "kon kia perhata hy" or "teachers list" without a specific subject or teacher name
+    if (isGeneralTeacherQuery && !hasSpecificSubject && !hasSpecificTeacher) {
+      if (effectiveFaculty.length > 0) {
+        const listText = effectiveFaculty.map((fac, i) => {
+          const subLower = (fac.subject || '').toLowerCase();
+          const icon = subLower.includes('physics') ? '🔬' 
+            : subLower.includes('chem') ? '🧪'
+            : subLower.includes('math') ? '📐'
+            : subLower.includes('bio') ? '🧬'
+            : subLower.includes('computer') ? '💻'
+            : subLower.includes('english') || subLower.includes('urdu') ? '📖'
+            : subLower.includes('director') || subLower.includes('admin') ? '🏫'
+            : '👨‍🏫';
+
+          return `${i + 1}. ${icon} ${fac.subject}: ${fac.teacher}
+   • Qualification: ${fac.education || 'Subject Specialist'}
+   • Classes: ${fac.classes || '9th, 10th, 11th, 12th'}${fac.phone ? `\n   • Contact / رابطہ: ${fac.phone}` : ''}`;
+        }).join('\n\n');
+
+        return `👨‍🏫 Al-Zia Science Academy - اساتذہ کرام اور ان کے مضامین (Who Teaches What):\n\n${listText}\n\n💡 Agar kisi aik teacher ya subject (maslan "Physics", "Sir Haris", "Chemistry", "Math") k bary mn mazeed pochna ho to unka naam likhein!`;
+      }
+    }
+
+    // 3. CHECK DYNAMIC SUBJECT OR TEACHER MATCH AGAINST REGISTERED FACULTY
     const matchedTeachers = [];
 
     effectiveFaculty.forEach(fac => {
@@ -150,12 +205,11 @@ export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty, onUp
         isMatch = true;
       }
 
-      // (c) Word-boundary Alias check (prevents physics matching cs!)
+      // (c) Word-boundary Alias check (prevents physics matching cs)
       for (const [canonicalKey, aliases] of Object.entries(subjectAliases)) {
         if (facSub.includes(canonicalKey) || canonicalKey.includes(facSub)) {
           const aliasHit = aliases.some(alias => {
             if (alias.length <= 4) {
-              // Word boundary check for short abbreviations
               return queryWords.includes(alias);
             }
             return cleanQuery.includes(alias);
@@ -172,9 +226,9 @@ export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty, onUp
         isMatch = true;
       }
 
-      // (d) Teacher Name search: user asked e.g. "Irfan", "Zain", "Haris"
-      const teacherWords = facTeacher.replace(/[()&,.-]/g, ' ').split(/\s+/).filter(w => w.length >= 4 && !['sir', 'prof', 'doctor', 'malik'].includes(w));
-      if (teacherWords.some(w => cleanQuery.includes(w))) {
+      // (d) Teacher Name search: user asked e.g. "Haris", "Zia", "Umar", "Hassan", "Ghani"
+      const teacherWords = facTeacher.replace(/[()&,.-]/g, ' ').split(/\s+/).filter(w => w.length >= 3 && !['sir', 'prof', 'doctor'].includes(w));
+      if (teacherWords.some(w => queryWords.includes(w) || cleanQuery.includes(w))) {
         isMatch = true;
       }
 
@@ -193,30 +247,16 @@ export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty, onUp
           : subLower.includes('bio') ? '🧬'
           : subLower.includes('computer') ? '💻'
           : subLower.includes('english') || subLower.includes('urdu') ? '📖'
-          : '📚';
+          : '👨‍🏫';
 
-        return `${icon} Subject / مضمون: ${fac.subject}
-👨‍🏫 Teacher / استاد: ${fac.teacher}
+        return `${icon} مضمون / Subject: ${fac.subject}
+👨‍🏫 استاد / Teacher: ${fac.teacher}
 🎓 Qualification: ${fac.education || 'Senior Subject Specialist'}
 ⭐ Experience: ${fac.experience || 'Experienced Faculty'}
-🏫 Classes: ${fac.classes || '9th, 10th, 11th, 12th'}${fac.phone ? `\n📞 Contact: ${fac.phone}` : ''}`;
+🏫 Classes: ${fac.classes || '9th, 10th, 11th, 12th'}${fac.phone ? `\n📞 Contact / رابطہ: ${fac.phone}` : ''}`;
       }).join('\n\n────────────────\n\n');
 
-      return `🌟 Al-Zia Science Academy Faculty:\n\n${teacherCards}\n\n💡 Mazeed kisi subject ya admission ki maloomat k liye aap sawal puch sakty hain!`;
-    }
-
-    // 3. GENERAL FACULTY DIRECTORY QUERY (e.g. "teachers", "faculty", "kon kon perhata hai", "staff")
-    if (query.includes('teacher') || query.includes('faculty') || query.includes('staff') || query.includes('kon kon') || query.includes('perhata') || query.includes('parhata') || query.includes('who teach') || query.includes('tamam') || query.includes('all')) {
-      if (effectiveFaculty.length > 0) {
-        const listText = effectiveFaculty.map((f, i) => 
-          `${i + 1}. 👨‍🏫 ${f.teacher}
-   📚 Subject: ${f.subject}
-   🎓 Degree: ${f.education || 'Subject Specialist'}
-   🏫 Classes: ${f.classes || '9th, 10th, 11th, 12th'}`
-        ).join('\n\n');
-
-        return `👨‍🏫 Al-Zia Science Academy Teaching Faculty Directory:\n\n${listText}\n\n💡 Kisi specific subject (jaise "Physics", "Math", "Biology", "Computer") ka naam likhein to unke teacher ki mukammal tafseel mil jaye gi!`;
-      }
+      return `👨‍🏫 Al-Zia Science Academy Faculty Details:\n\n${teacherCards}\n\n💡 Mazeed kisi subject ya admission ki maloomat k liye aap sawal puch sakty hain!`;
     }
 
     // 4. CHECK IF SUBJECT IS OFFERED IN ACADEMY CURRICULUM (Even if teacher card is not yet added)
