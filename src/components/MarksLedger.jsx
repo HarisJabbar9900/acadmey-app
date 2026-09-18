@@ -278,7 +278,7 @@ export default function MarksLedger({ data, onAddTest, onDeleteTest, selectedCla
                 title="Print Report Cards for the whole class"
               >
                 <Printer className="w-3.5 h-3.5" />
-                <span>Batch Print Report Cards (رزلٹ کارڈز)</span>
+                <span>Batch Print Report Cards (<span className="font-jameel">رزلٹ کارڈز</span>)</span>
               </button>
             )}
             {isAdminLoggedIn && (

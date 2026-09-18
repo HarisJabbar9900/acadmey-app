@@ -397,7 +397,7 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
           >
             <ClipboardCheck className="w-4 h-4" />
             <span>Daily Roll Call</span>
-            <span className="text-[10px] opacity-75 font-normal">روزانہ حاضری</span>
+            <span className="text-xs opacity-90 font-jameel font-bold">روزانہ حاضری</span>
           </button>
 
           <button
@@ -411,7 +411,7 @@ export default function AttendanceSheet({ data, onSaveAttendance, selectedClassI
           >
             <BarChart3 className="w-4 h-4" />
             <span>Attendance & Leave Summary</span>
-            <span className="text-[10px] opacity-85 font-normal">چھٹیاں و خلاصہ</span>
+            <span className="text-xs opacity-90 font-jameel font-bold">چھٹیاں و خلاصہ</span>
           </button>
         </div>
 

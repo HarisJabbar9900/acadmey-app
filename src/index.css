@@ -5,8 +5,22 @@
   font-style: normal;
   font-weight: 400;
   src: local('Jameel Noori Nastaleeq'), 
+       local('Jameel Noori'),
+       local('JameelNooriNastaleeq'),
        url('https://fonts.cdnfonts.com/s/149204/JameelNooriNastaleeqRegular.woff') format('woff'),
+       url('https://cdn.jsdelivr.net/gh/fonturdu/jameel-noori-nastaleeq@master/Jameel%20Noori%20Nastaleeq.woff2') format('woff2'),
        url('https://fonts.cdnfonts.com/s/149204/JameelNooriNastaleeqRegular.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Jameel Noori Nastaleeq Kasheeda';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Jameel Noori Nastaleeq Kasheeda'), 
+       local('JameelNooriNastaleeqKasheeda'),
+       url('https://cdn.jsdelivr.net/gh/fonturdu/jameel-noori-nastaleeq@master/Jameel%20Noori%20Nastaleeq%20Kasheeda.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/fonturdu/jameel-noori-nastaleeq@master/Jameel%20Noori%20Nastaleeq%20Kasheeda.ttf') format('truetype');
   font-display: swap;
 }
 
@@ -67,6 +81,8 @@
 
   .font-nastaleeq, 
   .font-urdu, 
+  .font-jameel,
+  .jameel-font,
   [lang="ur"], 
   :lang(ur), 
   .nastaleeq-text, 
@@ -74,7 +90,7 @@
   .urdu, 
   [dir="rtl"] {
     font-family: 'Jameel Noori Nastaleeq', 'Jameel Noori Nastaleeq Kasheeda', 'Noto Nastaliq Urdu', 'Urdu Typesetting', Tahoma, serif !important;
-    line-height: 2 !important;
+    line-height: 2.2 !important;
   }
 }
 

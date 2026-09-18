@@ -57,11 +57,30 @@ export const DEFAULT_NOTICES = [
   {
     id: 'ntc-oct-testing-2026',
     createdAt: Date.now(),
-    title: '📢 Monthly Testing Session Starting from 1st October | یکم اکتوبر سے تمام کلاسز کے ٹیسٹ کا آغاز',
+    title: 'یکم اکتوبر سے تمام کلاسز کے سلیبس ٹیسٹ کا باقاعدہ آغاز',
+    englishTitle: 'Commencement of Monthly Syllabus Tests for All Classes from 1st October',
     category: 'Exam Notice',
-    targetClass: 'All Classes',
+    targetClass: 'All Classes (9th, 10th, 11th, 12th)',
+    urduLead: 'تمام طلباء و طالبات کو باقاعدہ مطلع کیا جاتا ہے کہ یکم اکتوبر (1st October) سے اکیڈمی کی تمام کلاسز (9th, 10th, 11th, 12th) کے مکمل سلیبس کے مطابق ماہانہ ٹیسٹ سیشن کا باضابطہ آغاز کیا جا رہا ہے۔',
+    instructions: [
+      {
+        title: 'سلیبس و روزانہ شیڈول',
+        text: 'تمام طلباء اپنے روزانہ کے ٹائم ٹیبل اور اساتذہ کے دیے گئے سلیبس کے مطابق مکمل تیاری کے ساتھ کلاس میں تشریف لائیں۔'
+      },
+      {
+        title: '100% لازمی حاضری',
+        text: 'ٹیسٹ سیشن کے دوران کسی قسم کی غیر حاضری قبول نہیں کی جائے گی۔ تمام طلباء بروقت اکیڈمی پہنچیں۔'
+      },
+      {
+        title: 'آن لائن رزلٹ و رپورٹ کارڈز',
+        text: 'ہر ٹیسٹ کے نمبرز فوری طور پر پورٹل میں درج ہوں گے اور ماہانہ پرفارمنس رپورٹ کارڈز والدین کو جاری کیے جائیں گے۔'
+      }
+    ],
+    englishNote: 'Official Circular: Monthly syllabus evaluation & testing series for all classes (9th, 10th, 11th, 12th) commences from 1st October 2026. All students are directed to follow the academic routine, attend on time, and ensure thorough preparation.',
     content: 'تمام طلباء و طالبات کو مطلع کیا جاتا ہے کہ یکم اکتوبر (1st October) سے اکیڈمی کی تمام کلاسز (9th, 10th, 11th, 12th) کے باقاعدہ سلیبس ٹیسٹ کا سلسلہ شروع ہو رہا ہے۔\n\n📌 ضروری ہدایات برائے طلباء:\n1. تمام اسٹوڈنٹس روزانہ کے ٹائم ٹیبل اور سبجیکٹ سلیبس کے مطابق مکمل تیاری کے ساتھ تشریف لائیں۔\n2. ٹیسٹ سیشن کے دوران 100% حاضری لازمی ہے۔\n3. ٹیسٹ رزلٹ اور مارکس باقاعدگی سے پورٹل پر اپڈیٹ ہوں گے اور والدین کو رپورٹ کارڈ جاری کیے جائیں گے۔\n\nAll students are hereby notified that comprehensive syllabus testing will officially start from 1st October across all classes. Ensure 100% attendance and diligent preparation.',
-    date: '18 September',
+    date: '18 September 2026',
+    startDate: '1 October 2026',
+    circularNo: 'AZA-EXAM-2026/OCT-01',
     isPinned: true
   }
 ];

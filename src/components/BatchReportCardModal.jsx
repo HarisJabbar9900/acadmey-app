@@ -261,7 +261,7 @@ export default function BatchReportCardModal({
                   <h3 className="font-black text-slate-900 dark:text-white text-base sm:text-lg">
                     Batch Print Class Report Cards
                   </h3>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-jameel font-bold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
                     پوری کلاس کے رزلٹ کارڈز
                   </span>
                 </div>
