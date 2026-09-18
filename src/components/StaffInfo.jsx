@@ -16,6 +16,7 @@ import {
   Briefcase,
   Phone
 } from 'lucide-react';
+import { DEFAULT_FACULTY } from '../services/academyService';
 
 // Official Academy Contact (Sir Zia)
 const SIR_ZIA_PHONE = '0334-6683236';
@@ -23,9 +24,9 @@ const SIR_ZIA_WA = '923346683236';
 const SIR_ZIA_TEL = '03346683236';
 
 export default function StaffInfo({ faculty = [], isAdminLoggedIn, onUpdateFaculty }) {
-  const currentFacultyList = Array.isArray(faculty) 
-    ? faculty.filter(f => f && !['fac-1', 'fac-2', 'fac-3', 'fac-4', 'fac-5', 'fac-6'].includes(f.id)) 
-    : [];
+  const currentFacultyList = Array.isArray(faculty) && faculty.length > 0 
+    ? faculty 
+    : DEFAULT_FACULTY;
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSubjectFilter, setSelectedSubjectFilter] = useState('ALL');

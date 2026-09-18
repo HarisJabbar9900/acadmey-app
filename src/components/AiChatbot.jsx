@@ -22,6 +22,8 @@ import {
   Sliders
 } from 'lucide-react';
 
+import { DEFAULT_FACULTY } from '../services/academyService';
+
 export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty, onUpdateAiRules }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isFacultyModalOpen, setIsFacultyModalOpen] = useState(false);
@@ -30,17 +32,7 @@ export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty, onUp
   const [hasUnread, setHasUnread] = useState(true);
   const messagesEndRef = useRef(null);
 
-  const defaultFaculty = [
-    { 
-      id: 'fac-director', 
-      subject: 'Academy Administration & Academics', 
-      teacher: 'Sir Zia-ur-Rehman', 
-      education: 'Director Al-Zia Science Academy', 
-      experience: 'Senior Academic Lead', 
-      classes: '9th, 10th, 11th, 12th',
-      phone: '0334-6683236'
-    }
-  ];
+  const defaultFaculty = DEFAULT_FACULTY;
 
   const defaultAiRules = [
     {
@@ -120,8 +112,7 @@ export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty, onUp
 
     // 1. Get real active faculty from academy database (ignoring legacy dummy records if real ones exist)
     const rawFaculty = Array.isArray(data?.faculty) && data.faculty.length > 0 ? data.faculty : (facultyList || []);
-    const userDefinedFaculty = rawFaculty.filter(f => f && !['fac-1', 'fac-2', 'fac-3', 'fac-4', 'fac-5', 'fac-6'].includes(f.id));
-    const effectiveFaculty = userDefinedFaculty.length > 0 ? userDefinedFaculty : rawFaculty;
+    const effectiveFaculty = Array.isArray(rawFaculty) && rawFaculty.length > 0 ? rawFaculty : DEFAULT_FACULTY;
     const currentRules = data?.aiRules || aiRulesList;
 
     // Subject dictionary with safe whole-word aliases (prevents "physics" matching "cs")
