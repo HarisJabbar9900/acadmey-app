@@ -84,12 +84,16 @@ export default function IdCardModal({ student, data, onClose, isAdminLoggedIn = 
           <div className="w-[340px] bg-white border-2 border-slate-300 rounded-2xl shadow-xl overflow-hidden text-slate-900 relative font-sans print:w-[320px] print:border-2 print:border-slate-900 print:shadow-none">
             
             {/* ID Card Header Banner: Royal Navy with Gold accent */}
-            <div className="bg-gradient-to-r from-slate-950 via-[#0e162e] to-slate-950 p-3.5 text-center text-white relative border-b-2 border-amber-400">
-              <div className="flex items-center justify-center gap-1.5 mb-1">
+            <div className="bg-gradient-to-r from-slate-950 via-[#0e162e] to-slate-950 px-3 py-3 text-center text-white relative border-b-2 border-amber-400">
+              <div className="flex items-center justify-center gap-1.5 mb-1.5">
                 <GraduationCap className="w-5 h-5 text-amber-400" />
                 <h2 className="font-black text-sm uppercase tracking-wider leading-none text-white">Al-Zia Science Academy</h2>
               </div>
-              <p className="text-[10px] font-extrabold tracking-widest text-amber-300 uppercase">Student Identity Card</p>
+              <div className="flex justify-center">
+                <span className="inline-block px-3 py-0.5 bg-gradient-to-r from-amber-400 to-amber-300 text-slate-950 font-black text-[9px] rounded-full uppercase tracking-widest shadow-xs">
+                  Student Identity Card
+                </span>
+              </div>
             </div>
 
             {/* Photo Avatar & Student Info Body */}
