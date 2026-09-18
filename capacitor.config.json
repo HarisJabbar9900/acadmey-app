@@ -1,5 +1,10 @@
 {
   "appId": "com.academy.app",
   "appName": "Al Zia Academy",
-  "webDir": "dist"
+  "webDir": "dist",
+  "server": {
+    "url": "https://alzia-academy.vercel.app",
+    "cleartext": true,
+    "androidScheme": "https"
+  }
 }
