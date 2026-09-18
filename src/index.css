@@ -66,8 +66,13 @@
     font-family: var(--font-sans);
     background-color: var(--bg-surface);
     color: var(--text-primary);
-    @apply antialiased selection:bg-indigo-500 selection:text-white min-h-screen;
+    @apply antialiased min-h-screen;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background-color: rgba(245, 158, 11, 0.3);
+    color: inherit;
   }
 
   h1, h2, h3, h4, h5, h6, .font-heading, .font-display {
@@ -90,7 +95,8 @@
   .urdu, 
   [dir="rtl"] {
     font-family: 'Jameel Noori Nastaleeq', 'Jameel Noori Nastaleeq Kasheeda', 'Noto Nastaliq Urdu', 'Urdu Typesetting', Tahoma, serif !important;
-    line-height: 2.2 !important;
+    line-height: 2.4 !important;
+    overflow: visible;
   }
 }
 
