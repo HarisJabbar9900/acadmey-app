@@ -33,6 +33,7 @@ import {
   fetchCloudData,
   syncAllDataToCloud,
   DEFAULT_TIMETABLE,
+  DEFAULT_FACULTY,
   purgeAllDummyDataFromCloud
 } from './services/academyService';
 
@@ -322,9 +323,12 @@ export default function App() {
       // 11. Real-time listener for faculty (Staff Directory)
       unsubFaculty = subscribeToDoc('settings', 'faculty', (docData) => {
         if (docData && Array.isArray(docData.list)) {
+          const list = docData.list.length > 0 && !docData.list.some(f => f && f.teacher?.includes('Haris Jabbar'))
+            ? docData.list 
+            : DEFAULT_FACULTY;
           setData(prev => {
-            if (JSON.stringify(prev.faculty) === JSON.stringify(docData.list)) return prev;
-            return { ...prev, faculty: docData.list };
+            if (JSON.stringify(prev.faculty) === JSON.stringify(list)) return prev;
+            return { ...prev, faculty: list };
           });
         }
       });

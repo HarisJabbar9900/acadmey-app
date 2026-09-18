@@ -110,8 +110,11 @@ export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty, onUp
     const cleanQuery = query.replace(/[?.,!/\\()_#\-"':;]/g, ' ');
     const queryWords = cleanQuery.split(/\s+/).filter(Boolean);
 
-    // 1. Get real active faculty from academy database (ignoring legacy dummy records if real ones exist)
-    const rawFaculty = Array.isArray(data?.faculty) && data.faculty.length > 0 ? data.faculty : (facultyList || []);
+    // 1. Get real active faculty from academy database (using real teachers: Sir Najib, Sir M. Rafiq, Sir M. Shakoor, Sir Irfan, Sir M. Ijaz, Sir Zia)
+    const hasMock = (list) => Array.isArray(list) && list.some(f => f && f.teacher?.includes('Haris Jabbar'));
+    const rawFaculty = Array.isArray(data?.faculty) && data.faculty.length > 0 && !hasMock(data.faculty)
+      ? data.faculty 
+      : (Array.isArray(facultyList) && facultyList.length > 0 && !hasMock(facultyList) ? facultyList : DEFAULT_FACULTY);
     const effectiveFaculty = Array.isArray(rawFaculty) && rawFaculty.length > 0 ? rawFaculty : DEFAULT_FACULTY;
     const currentRules = data?.aiRules || aiRulesList;
 

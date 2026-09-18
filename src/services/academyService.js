@@ -57,12 +57,11 @@ const DEFAULT_NOTICES = [];
 
 export const DEFAULT_FACULTY = [
   { id: 'fac-director', subject: 'Director & Administration', teacher: 'Sir Zia-ur-Rehman', education: 'Director Al-Zia Science Academy', experience: 'Senior Academic Lead', classes: '9th, 10th, 11th, 12th', phone: '0334-6683236' },
-  { id: 'fac-1', subject: 'Computer Science', teacher: 'Sir Haris Jabbar', education: 'BS Computer Science (BSCS - Gold Medalist)', experience: '6+ Years Board Specialist', classes: '9th, 10th, 11th, 12th' },
-  { id: 'fac-2', subject: 'Physics', teacher: 'Prof. Malik Umar', education: 'M.Sc Physics (Gold Medalist)', experience: '10+ Years Board Examiner', classes: '9th, 10th, 11th, 12th' },
-  { id: 'fac-3', subject: 'Chemistry', teacher: 'Sir Hassan Raza', education: 'M.Sc Applied Chemistry', experience: '7+ Years Teaching', classes: '9th, 10th, 11th, 12th' },
-  { id: 'fac-4', subject: 'Mathematics', teacher: 'Prof. Abdul Ghani', education: 'M.Sc Mathematics', experience: '12+ Years Mathematics Specialist', classes: '9th, 10th, 11th, 12th' },
-  { id: 'fac-5', subject: 'Biology', teacher: 'Dr. Ghulam Hussain', education: 'MBBS / M.Phil Biology', experience: '8+ Years Medical Prep Specialist', classes: '9th, 10th, 11th, 12th' },
-  { id: 'fac-6', subject: 'English & Urdu', teacher: 'Sir Zaid Malik', education: 'M.A. English & Linguistics', experience: '5+ Years Senior Lecturer', classes: 'All Classes' }
+  { id: 'fac-najib', subject: 'Physics', teacher: 'Sir Najib', education: 'Subject Specialist', experience: 'Senior Board Faculty', classes: '9th, 10th, 11th, 12th' },
+  { id: 'fac-rafiq', subject: 'Chemistry', teacher: 'Sir M. Rafiq', education: 'Subject Specialist', experience: 'Senior Faculty', classes: '9th, 10th, 11th, 12th' },
+  { id: 'fac-shakoor', subject: 'Mathematics', teacher: 'Sir M. Shakoor', education: 'Subject Specialist', experience: 'Senior Faculty', classes: '9th, 10th, 11th, 12th' },
+  { id: 'fac-irfan', subject: 'Biology', teacher: 'Sir Irfan', education: 'Subject Specialist', experience: 'Senior Faculty', classes: '9th, 10th, 11th, 12th' },
+  { id: 'fac-ijaz', subject: 'Computer Science', teacher: 'Sir M. Ijaz', education: 'Subject Specialist', experience: 'Senior Faculty', classes: '9th, 10th, 11th, 12th' }
 ];
 
 const DEFAULT_AI_RULES = [
@@ -194,10 +193,11 @@ export const getInitialData = () => {
       parsed.notices = parsed.notices.filter(Boolean);
     }
 
-    if (!Array.isArray(parsed.faculty)) {
-      parsed.faculty = [];
+    const hasMockFaculty = Array.isArray(parsed.faculty) && parsed.faculty.some(f => f && (f.teacher?.includes('Haris Jabbar') || f.teacher?.includes('Malik Umar') || f.teacher?.includes('Hassan Raza')));
+    if (hasMockFaculty || !Array.isArray(parsed.faculty) || parsed.faculty.length === 0) {
+      parsed.faculty = DEFAULT_FACULTY;
     } else {
-      parsed.faculty = parsed.faculty.filter(f => f && !['fac-1', 'fac-2', 'fac-3', 'fac-4', 'fac-5', 'fac-6'].includes(f.id));
+      parsed.faculty = parsed.faculty.filter(Boolean);
     }
 
     if (!Array.isArray(parsed.aiRules)) {
@@ -227,7 +227,7 @@ export const getInitialData = () => {
       fees: DEFAULT_FEES,
       feedbacks: DEFAULT_FEEDBACKS,
       notices: DEFAULT_NOTICES,
-      faculty: [],
+      faculty: DEFAULT_FACULTY,
     };
   }
 };
