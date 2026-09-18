@@ -56,12 +56,78 @@ const DEFAULT_FEEDBACKS = [];
 const DEFAULT_NOTICES = [];
 
 export const DEFAULT_FACULTY = [
-  { id: 'fac-director', subject: 'Director & Administration', teacher: 'Sir Zia-ur-Rehman', education: 'Director Al-Zia Science Academy', experience: 'Senior Academic Lead', classes: '9th, 10th, 11th, 12th', phone: '0334-6683236' },
-  { id: 'fac-najib', subject: 'Physics', teacher: 'Sir Najib', education: 'Subject Specialist', experience: 'Senior Board Faculty', classes: '9th, 10th, 11th, 12th' },
-  { id: 'fac-rafiq', subject: 'Chemistry', teacher: 'Sir M. Rafiq', education: 'Subject Specialist', experience: 'Senior Faculty', classes: '9th, 10th, 11th, 12th' },
-  { id: 'fac-shakoor', subject: 'Mathematics', teacher: 'Sir M. Shakoor', education: 'Subject Specialist', experience: 'Senior Faculty', classes: '9th, 10th, 11th, 12th' },
-  { id: 'fac-irfan', subject: 'Biology', teacher: 'Sir Irfan', education: 'Subject Specialist', experience: 'Senior Faculty', classes: '9th, 10th, 11th, 12th' },
-  { id: 'fac-ijaz', subject: 'Computer Science', teacher: 'Sir M. Ijaz', education: 'Subject Specialist', experience: 'Senior Faculty', classes: '9th, 10th, 11th, 12th' }
+  {
+    id: 'teacher-1789495282064',
+    teacher: 'Sir Muhammad Irfan',
+    subject: 'Mathematics',
+    classes: '9th, 10th, 11th, 12th',
+    education: 'BS. Mathematics',
+    experience: '6+ Years Experience',
+    phone: ''
+  },
+  {
+    id: 'teacher-1789495724706',
+    teacher: 'Sir Zain Ul Abideen',
+    subject: 'Biology',
+    classes: '9th, 10th, 11th, 12th',
+    education: 'BS Botany',
+    experience: '5+ Years Experience',
+    phone: ''
+  },
+  {
+    id: 'teacher-1789495847287',
+    teacher: 'Sir Malik Rafiq Ahmad',
+    subject: 'English',
+    classes: '9th, 10th, 11th, 12th',
+    education: 'M.A. English',
+    experience: 'Senior Lecturer',
+    phone: ''
+  },
+  {
+    id: 'teacher-1789495966052',
+    teacher: 'Sir Abdul Shakoor',
+    subject: 'Urdu',
+    classes: '9th, 10th, 11th, 12th',
+    education: 'M.A. Arabic, Lughat',
+    experience: 'Senior Lecturer',
+    phone: ''
+  },
+  {
+    id: 'teacher-1789496022091',
+    teacher: 'Sir Najeeb-ullah Bhatti',
+    subject: 'Physics',
+    classes: '9th, 10th, 11th, 12th',
+    education: 'M.Sc. Physics, B.Ed',
+    experience: '7+ Years Experience',
+    phone: ''
+  },
+  {
+    id: 'teacher-1789496157585',
+    teacher: 'Sir Zia-ur-Rehman Qureshi',
+    subject: 'اسلامیات + ترجمتہ القرآن + مطالعہ پاکستان',
+    classes: '9th, 10th, 11th, 12th',
+    education: 'M.A., B.Ed.',
+    experience: 'Director & Senior Lecturer',
+    phone: '0334-6683236'
+  },
+  {
+    id: 'teacher-1789496312508',
+    teacher: 'Sir Ijaz',
+    subject: 'Chemistry',
+    classes: '9th, 10th, 11th, 12th',
+    education: 'M.Phil. Chemistry',
+    experience: '4+ Years Experience',
+    phone: ''
+  },
+  {
+    id: 'teacher-1789565664938',
+    teacher: 'Sir Haris Ali',
+    subject: 'Computer science',
+    classes: '9th, 10th, 11th, 12th',
+    education: 'BS Computer Science',
+    experience: '1+ Year Experience',
+    phone: ''
+  }
 ];
 
 const DEFAULT_AI_RULES = [

@@ -229,11 +229,21 @@ export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty, onUp
         isMatch = true;
       }
 
-      // (d) Teacher Name search: user asked e.g. "Haris", "Zia", "Umar", "Hassan", "Ghani"
+      // (d) Teacher Name search: user asked e.g. "Irfan", "Zain", "Rafiq", "Shakoor", "Najeeb", "Ijaz", "Zia"
       const teacherWords = facTeacher.replace(/[()&,.-]/g, ' ').split(/\s+/).filter(w => w.length >= 3 && !['sir', 'prof', 'doctor'].includes(w));
       if (teacherWords.some(w => queryWords.includes(w) || cleanQuery.includes(w))) {
         isMatch = true;
       }
+
+      // Teacher Name spelling variants (e.g. najib/najeeb, shakoor/shakooor, rafiq/rafeeq, ijaz/ejaz)
+      if ((cleanQuery.includes('najib') || cleanQuery.includes('najeeb')) && (facTeacher.includes('najeeb') || facTeacher.includes('najib'))) isMatch = true;
+      if ((cleanQuery.includes('shakoor') || cleanQuery.includes('shakooor') || cleanQuery.includes('shakur')) && facTeacher.includes('shakoor')) isMatch = true;
+      if ((cleanQuery.includes('rafiq') || cleanQuery.includes('rafeeq')) && facTeacher.includes('rafiq')) isMatch = true;
+      if ((cleanQuery.includes('ijaz') || cleanQuery.includes('ejaz')) && facTeacher.includes('ijaz')) isMatch = true;
+      if ((cleanQuery.includes('irfan') || cleanQuery.includes('erfan')) && facTeacher.includes('irfan')) isMatch = true;
+      if ((cleanQuery.includes('zain') || cleanQuery.includes('abideen')) && facTeacher.includes('zain')) isMatch = true;
+      if (cleanQuery.includes('zia') && facTeacher.includes('zia')) isMatch = true;
+      if (cleanQuery.includes('haris') && facTeacher.includes('haris')) isMatch = true;
 
       if (isMatch && !matchedTeachers.some(t => t.id === fac.id)) {
         matchedTeachers.push(fac);
