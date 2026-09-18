@@ -110,12 +110,18 @@ export default function AiChatbot({ data, isAdminLoggedIn, onUpdateFaculty, onUp
     const cleanQuery = query.replace(/[?.,!/\\()_#\-"':;]/g, ' ');
     const queryWords = cleanQuery.split(/\s+/).filter(Boolean);
 
-    // 1. Get real active faculty from academy database (using real teachers: Sir Najib, Sir M. Rafiq, Sir M. Shakoor, Sir Irfan, Sir M. Ijaz, Sir Zia)
-    const hasMock = (list) => Array.isArray(list) && list.some(f => f && f.teacher?.includes('Haris Jabbar'));
-    const rawFaculty = Array.isArray(data?.faculty) && data.faculty.length > 0 && !hasMock(data.faculty)
-      ? data.faculty 
-      : (Array.isArray(facultyList) && facultyList.length > 0 && !hasMock(facultyList) ? facultyList : DEFAULT_FACULTY);
-    const effectiveFaculty = Array.isArray(rawFaculty) && rawFaculty.length > 0 ? rawFaculty : DEFAULT_FACULTY;
+    // 1. Get real active faculty from academy database (using authentic teachers only)
+    const mockNames = ['haris jabbar', 'malik umar', 'hassan raza', 'abdul ghani', 'ghulam hussain', 'zaid malik'];
+    const sanitizeFaculty = (list) => {
+      if (!Array.isArray(list) || list.length === 0) return DEFAULT_FACULTY;
+      const filtered = list.filter(f => {
+        if (!f || !f.teacher) return false;
+        const lower = f.teacher.toLowerCase();
+        return !mockNames.some(m => lower.includes(m)) && !['fac-1', 'fac-2', 'fac-3', 'fac-4', 'fac-5', 'fac-6'].includes(f.id);
+      });
+      return filtered.length > 0 ? filtered : DEFAULT_FACULTY;
+    };
+    const effectiveFaculty = sanitizeFaculty(data?.faculty || facultyList);
     const currentRules = data?.aiRules || aiRulesList;
 
     // Subject dictionary with safe whole-word aliases (prevents "physics" matching "cs")
@@ -604,7 +610,7 @@ Neeche diye gaye buttons par click karein ya apna sawal likhein!`;
                         value={fac.teacher || ''}
                         onChange={(e) => handleTeacherChange(fac.id, 'teacher', e.target.value)}
                         className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 font-bold"
-                        placeholder="e.g. Sir Haris Jabbar"
+                        placeholder="e.g. Sir Najeeb-ullah Bhatti"
                       />
                     </div>
                   </div>

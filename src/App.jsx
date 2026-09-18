@@ -323,9 +323,13 @@ export default function App() {
       // 11. Real-time listener for faculty (Staff Directory)
       unsubFaculty = subscribeToDoc('settings', 'faculty', (docData) => {
         if (docData && Array.isArray(docData.list)) {
-          const list = docData.list.length > 0 && !docData.list.some(f => f && f.teacher?.includes('Haris Jabbar'))
-            ? docData.list 
-            : DEFAULT_FACULTY;
+          const mockNames = ['haris jabbar', 'malik umar', 'hassan raza', 'abdul ghani', 'ghulam hussain', 'zaid malik'];
+          const cleanList = docData.list.filter(f => {
+            if (!f || !f.teacher) return false;
+            const lower = f.teacher.toLowerCase();
+            return !mockNames.some(m => lower.includes(m)) && !['fac-1', 'fac-2', 'fac-3', 'fac-4', 'fac-5', 'fac-6'].includes(f.id);
+          });
+          const list = cleanList.length > 0 ? cleanList : DEFAULT_FACULTY;
           setData(prev => {
             if (JSON.stringify(prev.faculty) === JSON.stringify(list)) return prev;
             return { ...prev, faculty: list };

@@ -259,11 +259,16 @@ export const getInitialData = () => {
       parsed.notices = parsed.notices.filter(Boolean);
     }
 
-    const hasMockFaculty = Array.isArray(parsed.faculty) && parsed.faculty.some(f => f && (f.teacher?.includes('Haris Jabbar') || f.teacher?.includes('Malik Umar') || f.teacher?.includes('Hassan Raza')));
-    if (hasMockFaculty || !Array.isArray(parsed.faculty) || parsed.faculty.length === 0) {
-      parsed.faculty = DEFAULT_FACULTY;
+    const mockNames = ['haris jabbar', 'malik umar', 'hassan raza', 'abdul ghani', 'ghulam hussain', 'zaid malik'];
+    if (Array.isArray(parsed.faculty)) {
+      const cleanList = parsed.faculty.filter(f => {
+        if (!f || !f.teacher) return false;
+        const lower = f.teacher.toLowerCase();
+        return !mockNames.some(m => lower.includes(m)) && !['fac-1', 'fac-2', 'fac-3', 'fac-4', 'fac-5', 'fac-6'].includes(f.id);
+      });
+      parsed.faculty = cleanList.length > 0 ? cleanList : DEFAULT_FACULTY;
     } else {
-      parsed.faculty = parsed.faculty.filter(Boolean);
+      parsed.faculty = DEFAULT_FACULTY;
     }
 
     if (!Array.isArray(parsed.aiRules)) {

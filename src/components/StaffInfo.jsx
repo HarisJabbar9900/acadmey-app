@@ -24,8 +24,17 @@ const SIR_ZIA_WA = '923346683236';
 const SIR_ZIA_TEL = '03346683236';
 
 export default function StaffInfo({ faculty = [], isAdminLoggedIn, onUpdateFaculty }) {
-  const currentFacultyList = Array.isArray(faculty) && faculty.length > 0 
-    ? faculty 
+  const mockNames = ['haris jabbar', 'malik umar', 'hassan raza', 'abdul ghani', 'ghulam hussain', 'zaid malik'];
+  const cleanFaculty = Array.isArray(faculty)
+    ? faculty.filter(f => {
+        if (!f || !f.teacher) return false;
+        const lower = f.teacher.toLowerCase();
+        return !mockNames.some(m => lower.includes(m)) && !['fac-1', 'fac-2', 'fac-3', 'fac-4', 'fac-5', 'fac-6'].includes(f.id);
+      })
+    : [];
+
+  const currentFacultyList = cleanFaculty.length > 0 
+    ? cleanFaculty 
     : DEFAULT_FACULTY;
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -515,7 +524,7 @@ export default function StaffInfo({ faculty = [], isAdminLoggedIn, onUpdateFacul
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Sir Haris Jabbar or Prof. Malik Umar"
+                  placeholder="e.g. Sir Najeeb-ullah Bhatti or Sir Muhammad Irfan"
                   value={formData.teacher}
                   onChange={(e) => setFormData({ ...formData, teacher: e.target.value })}
                   className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
