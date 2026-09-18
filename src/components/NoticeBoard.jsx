@@ -376,22 +376,23 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
           <Filter className="w-3 h-3" /> Filter:
         </span>
         {[
-          { key: 'ALL', label: 'All Notices (تمام نوٹسز)' },
-          { key: 'EXAM', label: 'Exam Notices (امتحانی نوٹس)' },
-          { key: 'URGENT', label: 'Urgent Alerts (ضروری الرٹس)' },
-          { key: 'HOLIDAY', label: 'Holidays (تعطیلات)' }
+          { key: 'ALL', en: 'All Notices', ur: 'تمام نوٹسز' },
+          { key: 'EXAM', en: 'Exam Notices', ur: 'امتحانی نوٹس' },
+          { key: 'URGENT', en: 'Urgent Alerts', ur: 'ضروری الرٹس' },
+          { key: 'HOLIDAY', en: 'Holidays', ur: 'تعطیلات' }
         ].map(tab => (
           <button
             key={tab.key}
             type="button"
             onClick={() => setActiveTab(tab.key)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 flex items-center gap-1.5 shadow-2xs ${
               activeTab === tab.key
                 ? 'bg-amber-500 text-slate-950 shadow-sm shadow-amber-500/25 font-black'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
             }`}
           >
-            {tab.label}
+            <span>{tab.en}</span>
+            <span style={JAMEEL_FONT} className="text-xs font-normal opacity-95">({tab.ur})</span>
           </button>
         ))}
       </div>
@@ -430,7 +431,7 @@ export default function NoticeBoard({ data, isAdminLoggedIn, onAddNotice, onDele
                       )}
                       <span className="px-2.5 py-0.5 rounded-lg text-xs font-black bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30 flex items-center gap-1">
                         <Pin className="w-3 h-3 fill-amber-500 text-amber-500" />
-                        <span>PINNED • اہم نوٹس</span>
+                        <span>PINNED • <span style={JAMEEL_FONT}>اہم نوٹس</span></span>
                       </span>
                       <span className="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border border-indigo-500/30">
                         {notice.targetClass || 'All Classes'}
