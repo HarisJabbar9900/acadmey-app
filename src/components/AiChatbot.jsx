@@ -368,10 +368,10 @@ Neeche diye gaye buttons par click karein ya apna sawal likhein!`;
           ) : (
             <div className="flex items-center gap-2">
               <div className="w-5 h-5 rounded-full bg-white/15 flex items-center justify-center shrink-0">
-                <Sparkles className="w-3 h-3 text-amber-300 animate-pulse" />
+                <Bot className="w-3.5 h-3.5 text-amber-300" />
               </div>
               <span className="text-xs font-bold tracking-tight">
-                Ask AI
+                Portal Guide
               </span>
             </div>
           )}
@@ -397,11 +397,16 @@ Neeche diye gaye buttons par click karein ya apna sawal likhein!`;
                 <Bot className="w-5 h-5 text-amber-300" />
               </div>
               <div>
-                <h3 className="font-extrabold text-white text-sm flex items-center gap-1.5">
-                  Al-Zia AI Assistant <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <h3 className="font-extrabold text-white text-sm tracking-tight flex items-center gap-1.5">
+                  Al-Zia Portal Assistant
                 </h3>
-                <p className="text-[11px] text-emerald-400 font-medium flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Online • Academy Portal Guide
+                <p className="text-[11px] font-medium flex items-center gap-1.5 mt-0.5">
+                  <span className="flex items-center gap-1 text-emerald-400 font-semibold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Online
+                  </span>
+                  <span className="text-slate-500">•</span>
+                  <span className="text-slate-300 font-normal">Academy Portal Guide</span>
                 </p>
               </div>
             </div>
